@@ -1,7 +1,5 @@
 // js/db-google.js - подключение к Google Sheets
 
-const GOOGLE_API_URL = 'ВАШ_URL_ИЗ_APPS_SCRIPT'; // Вставьте сюда ваш URL
-
 // Регистрация пользователя
 async function registerUserGoogle(userData) {
     try {
