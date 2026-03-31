@@ -36,18 +36,17 @@
                         <button class="auth-tab" data-auth="register">Регистрация</button>
                     </div>
 
-                    <!-- ФОРМА ВХОДА -->
                     <div class="auth-form active" id="loginForm">
                         <h2>Добро пожаловать!</h2>
                         <p>Войдите в свой аккаунт</p>
                         <form id="loginFormElement">
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" id="loginEmail" class="form-control" placeholder="example@mail.com" required>
+                                <input type="email" id="loginEmail" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label>Пароль</label>
-                                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                                <input type="password" id="loginPassword" class="form-control" required>
                             </div>
                             <button type="submit" class="btn btn-primary btn-full">Войти</button>
                         </form>
@@ -57,30 +56,29 @@
                         </div>
                     </div>
 
-                    <!-- ФОРМА РЕГИСТРАЦИИ -->
                     <div class="auth-form" id="registerForm">
                         <h2>Создать аккаунт</h2>
                         <p>Присоединяйтесь к сообществу</p>
                         <form id="registerFormElement">
                             <div class="form-group">
                                 <label>Имя *</label>
-                                <input type="text" id="regName" class="form-control" placeholder="Иван Иванов" required>
+                                <input type="text" id="regName" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label>Email *</label>
-                                <input type="email" id="regEmail" class="form-control" placeholder="example@mail.com" required>
+                                <input type="email" id="regEmail" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label>Телефон</label>
-                                <input type="tel" id="regPhone" class="form-control" placeholder="+7 900 123-45-67">
+                                <input type="tel" id="regPhone" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label>Пароль *</label>
-                                <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required>
+                                <input type="password" id="regPassword" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label>Подтвердите пароль *</label>
-                                <input type="password" id="regConfirmPassword" class="form-control" placeholder="••••••••" required>
+                                <input type="password" id="regConfirmPassword" class="form-control" required>
                             </div>
                             <button type="submit" class="btn btn-primary btn-full">Зарегистрироваться</button>
                         </form>
@@ -98,45 +96,49 @@
                         <i class="fas fa-exchange-alt"></i>
                         <span>One<span class="accent">Time</span></span>
                     </a>
-                    <p>OneTime — сервис аренды вещей на один раз.</p>
                 </div>
-                <div class="footer-links">
-                    <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 OneTime. Все права защищены.</p>
                 </div>
-                <div class="footer-links">
-                    <h4>Контакты</h4>
-                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 OneTime. Все права защищены.</p>
             </div>
         </div>
     </footer>
 
-    <script src="js/app.js"></script>
     <script>
-        // Дополнительная проверка на случай, если в app.js не сработало
-        document.addEventListener('DOMContentLoaded', function() {
+        // Полностью самостоятельный скрипт для auth.html
+        (function() {
             console.log('🔵 auth.html загружен');
             
-            // Форма регистрации
+            // Функция уведомлений
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 24px;
+                    border-radius: 12px;
+                    background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                    color: white;
+                    z-index: 1000;
+                    font-weight: 500;
+                `;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }
+            
+            // Регистрация
             const registerForm = document.getElementById('registerFormElement');
             if (registerForm) {
                 console.log('✅ Форма регистрации найдена');
-                // Убираем предыдущие обработчики, если были
-                const newForm = registerForm.cloneNode(true);
-                registerForm.parentNode.replaceChild(newForm, registerForm);
-                
-                newForm.addEventListener('submit', function(e) {
+                registerForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    console.log('🔵 Отправка формы регистрации');
+                    console.log('🔵 Отправка регистрации');
                     
-                    const name = document.getElementById('regName').value;
-                    const email = document.getElementById('regEmail').value;
-                    const phone = document.getElementById('regPhone').value;
+                    const name = document.getElementById('regName').value.trim();
+                    const email = document.getElementById('regEmail').value.trim();
+                    const phone = document.getElementById('regPhone').value.trim();
                     const password = document.getElementById('regPassword').value;
                     const confirmPassword = document.getElementById('regConfirmPassword').value;
                     
@@ -150,11 +152,10 @@
                         return;
                     }
                     
-                    // Получаем существующих пользователей
                     let users = JSON.parse(localStorage.getItem('users')) || [];
                     
                     if (users.find(u => u.email === email)) {
-                        showNotification('Пользователь с таким email уже существует', 'error');
+                        showNotification('Пользователь уже существует', 'error');
                         return;
                     }
                     
@@ -179,21 +180,18 @@
                     }, 1500);
                 });
             } else {
-                console.log('❌ Форма регистрации НЕ найдена!');
+                console.log('❌ Форма регистрации НЕ найдена');
             }
             
-            // Форма входа
+            // Вход
             const loginForm = document.getElementById('loginFormElement');
             if (loginForm) {
                 console.log('✅ Форма входа найдена');
-                const newLoginForm = loginForm.cloneNode(true);
-                loginForm.parentNode.replaceChild(newLoginForm, loginForm);
-                
-                newLoginForm.addEventListener('submit', function(e) {
+                loginForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    console.log('🔵 Отправка формы входа');
+                    console.log('🔵 Отправка входа');
                     
-                    const email = document.getElementById('loginEmail').value;
+                    const email = document.getElementById('loginEmail').value.trim();
                     const password = document.getElementById('loginPassword').value;
                     
                     const users = JSON.parse(localStorage.getItem('users')) || [];
@@ -211,25 +209,6 @@
                 });
             }
             
-            // Функция уведомлений
-            function showNotification(message, type) {
-                const notification = document.createElement('div');
-                notification.textContent = message;
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    padding: 12px 24px;
-                    border-radius: 12px;
-                    background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                    color: white;
-                    z-index: 1000;
-                    font-weight: 500;
-                `;
-                document.body.appendChild(notification);
-                setTimeout(() => notification.remove(), 3000);
-            }
-            
             // Переключение табов
             const tabs = document.querySelectorAll('.auth-tab');
             tabs.forEach(tab => {
@@ -240,7 +219,7 @@
                     document.getElementById(tab.dataset.auth + 'Form').classList.add('active');
                 });
             });
-        });
+        })();
     </script>
 </body>
 </html>
