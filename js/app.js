@@ -263,7 +263,7 @@ function login(event) {
 }
 
 // Регистрация
-function register(event) {
+async function register(event) {
     event.preventDefault();
     
     const name = document.getElementById('regName').value;
@@ -282,6 +282,7 @@ function register(event) {
         return;
     }
     
+    // Создаем пользователя
     const newUser = {
         id: Date.now().toString(),
         name: name,
@@ -295,9 +296,23 @@ function register(event) {
         createdAt: new Date().toISOString()
     };
     
+    // Сохраняем в localStorage (для работы сайта)
     users.push(newUser);
     currentUser = newUser;
     saveData();
+    
+    // 📤 ОТПРАВЛЯЕМ В GOOGLE ТАБЛИЦУ (чтобы вы видели)
+    try {
+        await saveUserToGoogle({
+            name: name,
+            email: email,
+            phone: phone || '',
+            password: password
+        });
+        console.log('✅ Пользователь сохранен в Google Таблицу');
+    } catch(error) {
+        console.log('⚠️ Ошибка отправки в Google, но регистрация прошла:', error);
+    }
     
     showNotification('Регистрация успешна!', 'success');
     setTimeout(() => {
@@ -880,3 +895,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// js/db-google.js - отправка данных в Google Таблицу
+
+// ⚠️ ВСТАВЬТЕ ВАШ URL ИЗ APPS SCRIPT ⚠️
+const GOOGLE_API_URL = 'https://script.google.com/macros/s/AKfycbwguH0ofpvGuPJ2vhrjlJlxf4XAs7tg3_moJDhB1oUsNYzxcsCOMLX6uLNkbMTUoqUThA/exec';
+
+// Функция для сохранения пользователя в Google Таблицу
+async function saveUserToGoogle(userData) {
+    try {
+        const response = await fetch(GOOGLE_API_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData)
+        });
+        
+        const result = await response.json();
+        console.log('Сохранение в Google:', result);
+        return result;
+    } catch(error) {
+        console.error('Ошибка сохранения в Google:', error);
+        return { success: false, error: error.message };
+    }
+}
