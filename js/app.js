@@ -362,7 +362,7 @@ function bookItem(itemId) {
         window.location.href = 'bookings.html';
     }, 1500);
 }
-function loadBookings() {
+/*function loadBookings() {
     const container = document.getElementById('bookingsList');
     if (!container) return;
     
@@ -377,7 +377,7 @@ function loadBookings() {
         container.innerHTML = '<div class="text-center">Нет бронирований</div>';
         return;
     }
-    
+    */
     container.innerHTML = userBookings.map(booking => `
         <div class="booking-card">
             <h4>${booking.itemTitle}</h4>
