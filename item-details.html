@@ -89,4 +89,39 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="js/app.js"></script>
 </body>
+    <script>
+    // Показываем ссылку на админ-панель только для администратора
+    function updateAdminLink() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const adminEmail = 'admin@arenanaraz.ru'; // EMAIL АДМИНА
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (navLinks) {
+            // Проверяем, есть ли уже ссылка на админку
+            let adminLink = document.querySelector('.admin-link');
+            
+            if (currentUser && currentUser.email === adminEmail) {
+                // Администратор вошел - показываем ссылку
+                if (!adminLink) {
+                    const link = document.createElement('a');
+                    link.href = 'admin.html';
+                    link.className = 'admin-link';
+                    link.style.color = 'var(--primary)';
+                    link.innerHTML = '👑 Админ-панель';
+                    navLinks.appendChild(link);
+                }
+            } else {
+                // Обычный пользователь - скрываем ссылку
+                if (adminLink) {
+                    adminLink.remove();
+                }
+            }
+        }
+    }
+    
+    // Запускаем при загрузке страницы
+    document.addEventListener('DOMContentLoaded', updateAdminLink);
+    // И при изменении авторизации
+    setInterval(updateAdminLink, 1000);
+</script>
 </html>
