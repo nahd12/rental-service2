@@ -261,6 +261,31 @@
         document.addEventListener('DOMContentLoaded', updateAdminLink);
         setInterval(updateAdminLink, 1000);
     </script>
+    // Обновление навигации после входа
+    function updateNavigation() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const loginBtn = document.getElementById('loginBtn');
+        const userMenu = document.getElementById('userMenu');
+        const userNameSpan = document.getElementById('userName');
+        
+        if (currentUser) {
+            if (loginBtn) loginBtn.classList.add('hidden');
+            if (userMenu) {
+                userMenu.classList.remove('hidden');
+                if (userNameSpan) userNameSpan.textContent = currentUser.name;
+            }
+        } else {
+            if (loginBtn) loginBtn.classList.remove('hidden');
+            if (userMenu) userMenu.classList.add('hidden');
+        }
+    }
+    
+    // Запускаем при загрузке
+    document.addEventListener('DOMContentLoaded', updateNavigation);
+    
+    // Проверяем каждую секунду (на случай если вход произошел на другой вкладке)
+    setInterval(updateNavigation, 1000);
+</script>
 </body>
 </script>
 </html>
