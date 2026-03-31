@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сдать вещь | Аренда на раз</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Аренда<span class="accent">НаРаз</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="create-listing.html" class="active">Сдать вещь</a>
+                <a href="bookings.html">Мои бронирования</a>
+            </div>
+            <div class="nav-user" id="navUser">
+                <a href="auth.html" class="btn btn-outline" id="loginBtn">Войти</a>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <span id="userName"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="container">
+                <h1>Сдать вещь в аренду</h1>
+                <p>Зарабатывайте на вещах, которые редко используете</p>
+            </div>
+        </div>
+
+        <section class="create-listing-section">
+            <div class="container">
+                <div class="create-listing-card">
+                    <form id="createListingForm">
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Название товара *</label>
+                                <input type="text" id="itemTitle" class="form-control" placeholder="Например: Перфоратор Makita" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Категория *</label>
+                                <select id="itemCategory" class="form-control" required>
+                                    <option value="">Выберите категорию</option>
+                                    <option value="tools">Инструменты</option>
+                                    <option value="clothing">Одежда и аксессуары</option>
+                                    <option value="outdoor">Отдых и пикник</option>
+                                    <option value="electronics">Электроника</option>
+                                    <option value="sports">Спорт</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Состояние *</label>
+                                <select id="itemCondition" class="form-control" required>
+                                    <option value="new">Как новый</option>
+                                    <option value="good">Хорошее</option>
+                                    <option value="normal">Нормальное</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Цена за час (₽)</label>
+                                <input type="number" id="itemPriceHour" class="form-control" placeholder="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Цена за день (₽) *</label>
+                                <input type="number" id="itemPriceDay" class="form-control" placeholder="500" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Сумма залога (₽) *</label>
+                                <input type="number" id="itemDeposit" class="form-control" placeholder="2000" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Описание *</label>
+                                <textarea id="itemDescription" rows="5" class="form-control" placeholder="Опишите вашу вещь: особенности, инструкции, что входит в комплект..." required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Фото товара</label>
+                                <div class="image-upload">
+                                    <input type="file" id="itemImage" accept="image/*">
+                                    <div class="image-preview" id="imagePreview">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Нажмите для загрузки фото</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Доступен самовывоз</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="pickupAvailable" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Доступна доставка</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="deliveryAvailable">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Адрес (для самовывоза)</label>
+                                <input type="text" id="itemAddress" class="form-control" placeholder="Город, улица, дом">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full">Опубликовать объявление</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Аренда<span class="accent">НаРаз</span></span>
+                    </a>
+                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Сервис</h4>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="#">Как это работает</a>
+                    <a href="#">Помощь</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Правила</h4>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Страхование</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Контакты</h4>
+                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
+                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
+                    <div class="socials">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

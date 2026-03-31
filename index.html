@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аренда на раз | Сервис аренды вещей на один раз</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Аренда<span class="accent">НаРаз</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="create-listing.html">Сдать вещь</a>
+                <a href="bookings.html">Мои бронирования</a>
+            </div>
+            <div class="nav-user" id="navUser">
+                <a href="auth.html" class="btn btn-outline" id="loginBtn">Войти</a>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <span id="userName"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Арендуйте вещи <span class="accent">на один раз</span></h1>
+                    <p>Дрель на час, костюм для фотосессии, мангал для пикника или проектор для киновечера — находите и арендуйте редко используемые предметы у соседей по городу</p>
+                    <div class="hero-buttons">
+                        <a href="catalog.html" class="btn btn-primary">Найти вещь</a>
+                        <a href="create-listing.html" class="btn btn-outline-light">Сдать в аренду</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">вещей</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">1000+</span>
+                            <span class="stat-label">арендаторов</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">98%</span>
+                            <span class="stat-label">довольных</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="container">
+                <div class="search-card">
+                    <div class="search-input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Что хотите арендовать? (дрель, костюм, мангал...)">
+                    </div>
+                    <div class="search-filters">
+                        <select id="categoryFilter">
+                            <option value="">Все категории</option>
+                            <option value="tools">Инструменты</option>
+                            <option value="clothing">Одежда и аксессуары</option>
+                            <option value="outdoor">Отдых и пикник</option>
+                            <option value="electronics">Электроника</option>
+                            <option value="sports">Спорт</option>
+                        </select>
+                        <button id="searchBtn" class="btn btn-primary">Найти</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="categories">
+            <div class="container">
+                <h2 class="section-title">Популярные категории</h2>
+                <div class="categories-grid">
+                    <div class="category-card" data-category="tools">
+                        <i class="fas fa-tools"></i>
+                        <span>Инструменты</span>
+                    </div>
+                    <div class="category-card" data-category="clothing">
+                        <i class="fas fa-tshirt"></i>
+                        <span>Одежда</span>
+                    </div>
+                    <div class="category-card" data-category="outdoor">
+                        <i class="fas fa-campground"></i>
+                        <span>Отдых</span>
+                    </div>
+                    <div class="category-card" data-category="electronics">
+                        <i class="fas fa-tv"></i>
+                        <span>Электроника</span>
+                    </div>
+                    <div class="category-card" data-category="sports">
+                        <i class="fas fa-futbol"></i>
+                        <span>Спорт</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Items -->
+        <section class="featured">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Популярные товары</h2>
+                    <a href="catalog.html" class="view-all">Смотреть все <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="items-grid" id="featuredItems">
+                    <!-- Items will be loaded by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">Как это работает</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-search"></i></div>
+                        <h3>1. Найдите вещь</h3>
+                        <p>Выберите из каталога то, что вам нужно на время</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
+                        <h3>2. Забронируйте</h3>
+                        <p>Укажите дату и время, внесите предоплату и залог</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-truck"></i></div>
+                        <h3>3. Получите</h3>
+                        <p>Доставка или самовывоз — выбирайте удобный способ</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-star"></i></div>
+                        <h3>4. Оставьте отзыв</h3>
+                        <p>После возврата оцените вещь и арендодателя</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features">
+            <div class="container">
+                <div class="features-grid">
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Безопасный залог</h3>
+                        <p>Залог хранится на платформе и возвращается после возврата вещи</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-star-half-alt"></i>
+                        <h3>Рейтинг и отзывы</h3>
+                        <p>Прозрачная система оценок арендаторов и арендодателей</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-truck-fast"></i>
+                        <h3>Удобная доставка</h3>
+                        <p>Сами договоритесь о встрече или закажите доставку</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>Безопасная оплата</h3>
+                        <p>Все платежи проходят через защищенный сервис</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Аренда<span class="accent">НаРаз</span></span>
+                    </a>
+                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Сервис</h4>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="#">Как это работает</a>
+                    <a href="#">Помощь</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Правила</h4>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Страхование</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Контакты</h4>
+                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
+                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
+                    <div class="socials">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

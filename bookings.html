@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои бронирования | Аренда на раз</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Аренда<span class="accent">НаРаз</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="create-listing.html">Сдать вещь</a>
+                <a href="bookings.html" class="active">Мои бронирования</a>
+            </div>
+            <div class="nav-user" id="navUser">
+                <a href="auth.html" class="btn btn-outline" id="loginBtn">Войти</a>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <span id="userName"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="container">
+                <h1>Мои бронирования</h1>
+                <p>Управляйте арендой вещей</p>
+            </div>
+        </div>
+
+        <section class="bookings-section">
+            <div class="container">
+                <div class="bookings-tabs">
+                    <button class="booking-tab active" data-status="active">Активные</button>
+                    <button class="booking-tab" data-status="pending">Ожидают</button>
+                    <button class="booking-tab" data-status="completed">Завершенные</button>
+                    <button class="booking-tab" data-status="cancelled">Отмененные</button>
+                </div>
+
+                <div class="bookings-list" id="bookingsList">
+                    <!-- Bookings loaded by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Аренда<span class="accent">НаРаз</span></span>
+                    </a>
+                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Сервис</h4>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="#">Как это работает</a>
+                    <a href="#">Помощь</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Правила</h4>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Страхование</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Контакты</h4>
+                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
+                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
+                    <div class="socials">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

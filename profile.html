@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль | Аренда на раз</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Аренда<span class="accent">НаРаз</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="create-listing.html">Сдать вещь</a>
+                <a href="bookings.html">Мои бронирования</a>
+            </div>
+            <div class="nav-user" id="navUser">
+                <a href="auth.html" class="btn btn-outline" id="loginBtn">Войти</a>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <span id="userName"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="container">
+                <h1>Личный кабинет</h1>
+                <p>Управляйте своими данными и объявлениями</p>
+            </div>
+        </div>
+
+        <section class="profile-section">
+            <div class="container">
+                <div class="profile-layout">
+                    <aside class="profile-sidebar">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&size=128&bold=true" alt="avatar">
+                        </div>
+                        <div class="profile-info">
+                            <h3 id="profileName">Имя пользователя</h3>
+                            <p id="profileEmail">email@example.com</p>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <span id="listingsCount">0</span>
+                                    <label>Объявлений</label>
+                                </div>
+                                <div class="stat">
+                                    <span id="reviewsCount">0</span>
+                                    <label>Отзывов</label>
+                                </div>
+                                <div class="stat">
+                                    <span id="ratingValue">0</span>
+                                    <label>Рейтинг</label>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <div class="profile-content">
+                        <div class="profile-tabs">
+                            <button class="tab-btn active" data-tab="listings">Мои объявления</button>
+                            <button class="tab-btn" data-tab="reviews">Отзывы</button>
+                            <button class="tab-btn" data-tab="settings">Настройки</button>
+                        </div>
+
+                        <div class="tab-content active" id="listingsTab">
+                            <div class="user-listings" id="userListings">
+                                <!-- User listings loaded by JS -->
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="reviewsTab">
+                            <div class="user-reviews" id="userReviews">
+                                <!-- User reviews loaded by JS -->
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="settingsTab">
+                            <div class="settings-form">
+                                <h3>Редактировать профиль</h3>
+                                <form id="profileForm">
+                                    <div class="form-group">
+                                        <label>Имя</label>
+                                        <input type="text" id="editName" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Телефон</label>
+                                        <input type="tel" id="editPhone" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Адрес</label>
+                                        <input type="text" id="editAddress" class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Аренда<span class="accent">НаРаз</span></span>
+                    </a>
+                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Сервис</h4>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="#">Как это работает</a>
+                    <a href="#">Помощь</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Правила</h4>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Страхование</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Контакты</h4>
+                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
+                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
+                    <div class="socials">
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
