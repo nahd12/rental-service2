@@ -132,14 +132,12 @@ function updateNav() {
 }
 
 function logout() {
-    currentUser = null;
     localStorage.removeItem('currentUser');
-    updateNav();
     showNotification('Вы вышли из аккаунта', 'info');
     setTimeout(() => {
         window.location.href = 'index.html';
-    }, 1000);
-}
+    }, 500);
+}}
 
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
