@@ -460,23 +460,23 @@ document.addEventListener('DOMContentLoaded', () => {
         createForm.addEventListener('submit', createListing);
     }
     
-    // Форма входа
-    const loginForm = document.getElementById('loginFormElement');
-    if (loginForm) {
-        loginForm.addEventListener('submit', login);
-        console.log('✅ Форма входа подключена');
-    } else {
-        console.log('❌ Форма входа не найдена');
-    }
-    
-    // Форма регистрации
-    const registerForm = document.getElementById('registerFormElement');
-    if (registerForm) {
-        registerForm.addEventListener('submit', register);
-        console.log('✅ Форма регистрации подключена');
-    } else {
-        console.log('❌ Форма регистрации не найдена');
-    }
+  // Форма входа
+const loginForm = document.getElementById('loginFormElement');
+if (loginForm) {
+    loginForm.addEventListener('submit', login);
+    console.log('✅ Форма входа подключена');
+} else {
+    console.log('❌ Форма входа не найдена');
+}
+
+// Форма регистрации
+const registerForm = document.getElementById('registerFormElement');
+if (registerForm) {
+    registerForm.addEventListener('submit', register);
+    console.log('✅ Форма регистрации подключена');
+} else {
+    console.log('❌ Форма регистрации не найдена');
+}
     
     // Переключение табов
     const authTabs = document.querySelectorAll('.auth-tab');
