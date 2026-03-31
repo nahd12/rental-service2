@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи | Аренда на раз</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container {
+            padding: 48px 0;
+        }
+        .users-table {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+        .users-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .users-table th, .users-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .users-table th {
+            background: var(--gray);
+            color: var(--primary);
+        }
+        .export-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Аренда<span class="accent">НаРаз</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="create-listing.html">Сдать вещь</a>
+                <a href="bookings.html">Мои бронирования</a>
+                <a href="admin.html" style="color: var(--primary);">Пользователи</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container admin-container">
+            <h1>📋 Зарегистрированные пользователи</h1>
+            <p>Всего: <strong id="totalCount">0</strong> пользователей</p>
+            
+            <button onclick="exportToCSV()" class="export-btn">📥 Экспортировать в CSV</button>
+            
+            <div class="users-table" id="usersTable">
+                <div style="text-align: center; padding: 48px;">
+                    <i class="fas fa-spinner fa-spin"></i> Загрузка...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+    <script>
+        function loadUsers() {
+            const usersData = localStorage.getItem('users');
+            if (usersData) {
+                const users = JSON.parse(usersData);
+                displayUsers(users);
+            } else {
+                document.getElementById('usersTable').innerHTML = '<div style="text-align:center; padding:48px;">Нет зарегистрированных пользователей</div>';
+            }
+        }
+        
+        function displayUsers(users) {
+            document.getElementById('totalCount').textContent = users.length;
+            
+            if (users.length === 0) {
+                document.getElementById('usersTable').innerHTML = '<div style="text-align:center; padding:48px;">Нет пользователей</div>';
+                return;
+            }
+            
+            const table = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Email</th>
+                            <th>Телефон</th>
+                            <th>Дата регистрации</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(user => `
+                            <tr>
+                                <td>${user.id}</td>
+                                <td>${user.name}</td>
+                                <td>${user.email}</td>
+                                <td>${user.phone || '-'}</td>
+                                <td>${user.createdAt ? new Date(user.createdAt).toLocaleString('ru-RU') : '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('usersTable').innerHTML = table;
+        }
+        
+        function exportToCSV() {
+            const usersData = localStorage.getItem('users');
+            if (!usersData) return;
+            
+            const users = JSON.parse(usersData);
+            const headers = ['ID', 'Имя', 'Email', 'Телефон', 'Дата регистрации'];
+            const rows = users.map(user => [
+                user.id,
+                user.name,
+                user.email,
+                user.phone || '',
+                user.createdAt ? new Date(user.createdAt).toLocaleString('ru-RU') : ''
+            ]);
+            
+            const csvContent = [headers, ...rows]
+                .map(row => row.map(cell => `"${cell}"`).join(','))
+                .join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'users.csv');
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+        
+        loadUsers();
+    </script>
+</body>
+</html>
