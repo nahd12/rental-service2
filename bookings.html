@@ -7,6 +7,156 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .booking-type-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0;
+        }
+        .type-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .type-tab.active {
+            color: var(--primary);
+        }
+        .type-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+        .type-tab:hover {
+            color: var(--primary);
+        }
+        .badge-count {
+            background: var(--gray);
+            color: var(--text);
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        .booking-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .booking-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .booking-info h4 {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .booking-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        .booking-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .status-confirmed {
+            background-color: var(--success);
+            color: white;
+        }
+        .status-pending {
+            background-color: var(--warning);
+            color: white;
+        }
+        .status-completed {
+            background-color: var(--gray-light);
+            color: var(--text);
+        }
+        .status-cancelled {
+            background-color: var(--danger);
+            color: white;
+        }
+        .booking-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .btn-confirm {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-cancel {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-view {
+            background-color: var(--gray-light);
+            color: var(--text);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-view:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .booking-card {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .booking-actions {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -41,21 +191,36 @@
         <div class="page-header">
             <div class="container">
                 <h1>Мои бронирования</h1>
-                <p>Управляйте арендой вещей</p>
+                <p>Управляйте арендой и просматривайте запросы на ваши вещи</p>
             </div>
         </div>
 
         <section class="bookings-section">
             <div class="container">
-                <div class="bookings-tabs">
-                    <button class="booking-tab active" data-status="active">Активные</button>
-                    <button class="booking-tab" data-status="pending">Ожидают</button>
-                    <button class="booking-tab" data-status="completed">Завершенные</button>
-                    <button class="booking-tab" data-status="cancelled">Отмененные</button>
+                <!-- Переключатель между вкладками -->
+                <div class="booking-type-tabs">
+                    <button class="type-tab active" data-type="rentals">
+                        <i class="fas fa-shopping-bag"></i> Мои аренды
+                        <span class="badge-count" id="rentalsCount">0</span>
+                    </button>
+                    <button class="type-tab" data-type="my-items">
+                        <i class="fas fa-store"></i> Запросы на мои вещи
+                        <span class="badge-count" id="myItemsCount">0</span>
+                    </button>
                 </div>
 
-                <div class="bookings-list" id="bookingsList">
-                    <!-- Bookings loaded by JS -->
+                <!-- Контент для моих аренд -->
+                <div id="rentalsContent">
+                    <div class="bookings-list" id="rentalsList">
+                        <!-- Загрузка... -->
+                    </div>
+                </div>
+
+                <!-- Контент для запросов на мои вещи -->
+                <div id="myItemsContent" style="display: none;">
+                    <div class="bookings-list" id="myItemsList">
+                        <!-- Загрузка... -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -88,20 +253,201 @@
     </footer>
 
     <script src="js/app.js"></script>
-    
     <script>
-        // Дополнительный скрипт для табов (на случай, если в app.js не добавили)
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.booking-tab');
-            if (tabs.length && typeof loadBookings === 'function') {
-                tabs.forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        tabs.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                        loadBookings();
-                    });
-                });
+        let currentType = 'rentals';
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU');
+        }
+        
+        function getStatusText(status) {
+            const statuses = {
+                pending: 'Ожидает подтверждения',
+                confirmed: 'Подтверждена',
+                completed: 'Завершена',
+                cancelled: 'Отменена'
+            };
+            return statuses[status] || status;
+        }
+        
+        function loadRentals() {
+            const container = document.getElementById('rentalsList');
+            if (!container) return;
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Войдите, чтобы просмотреть бронирования</p><a href="auth.html" class="btn btn-primary" style="margin-top: 16px;">Войти</a></div>';
+                return;
             }
+            
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            // Мои аренды: где я арендатор
+            const myRentals = bookings.filter(b => b.renterId === currentUser.id);
+            
+            document.getElementById('rentalsCount').textContent = myRentals.length;
+            
+            if (myRentals.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-alt"></i><p>У вас пока нет активных аренд</p><a href="catalog.html" class="btn btn-primary" style="margin-top: 16px;">Найти вещь</a></div>';
+                return;
+            }
+            
+            container.innerHTML = myRentals.map(booking => `
+                <div class="booking-card">
+                    <div class="booking-info">
+                        <h4>${booking.itemTitle}</h4>
+                        <p><i class="fas fa-calendar"></i> ${formatDate(booking.startDate)} — ${formatDate(booking.endDate)} (${booking.days} дн.)</p>
+                        <p><i class="fas fa-ruble-sign"></i> Сумма: ${booking.totalPrice} ₽ | Залог: ${booking.deposit} ₽</p>
+                        <p><i class="fas fa-user"></i> Арендодатель: ${booking.ownerName}</p>
+                        <span class="booking-status status-${booking.status}">${getStatusText(booking.status)}</span>
+                    </div>
+                    <div class="booking-actions">
+                        ${booking.status === 'confirmed' ? `
+                            <button onclick="completeRental('${booking.id}')" class="btn-confirm">Завершить аренду</button>
+                        ` : ''}
+                        ${booking.status === 'pending' ? `
+                            <button onclick="cancelBooking('${booking.id}')" class="btn-cancel">Отменить заявку</button>
+                        ` : ''}
+                        <a href="item-details.html?id=${booking.itemId}" class="btn-view">Посмотреть товар</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function loadMyItemsRequests() {
+            const container = document.getElementById('myItemsList');
+            if (!container) return;
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Войдите, чтобы просмотреть запросы</p><a href="auth.html" class="btn btn-primary" style="margin-top: 16px;">Войти</a></div>';
+                return;
+            }
+            
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            
+            // Мои вещи: товары, которые я выставил
+            const myItems = items.filter(i => i.ownerId === currentUser.id);
+            const myItemsIds = myItems.map(i => i.id);
+            
+            // Запросы на мои вещи
+            const requests = bookings.filter(b => myItemsIds.includes(b.itemId));
+            
+            document.getElementById('myItemsCount').textContent = requests.length;
+            
+            if (requests.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>Пока нет запросов на ваши вещи</p><a href="create-listing.html" class="btn btn-primary" style="margin-top: 16px;">Сдать вещь</a></div>';
+                return;
+            }
+            
+            container.innerHTML = requests.map(booking => `
+                <div class="booking-card">
+                    <div class="booking-info">
+                        <h4>${booking.itemTitle}</h4>
+                        <p><i class="fas fa-calendar"></i> ${formatDate(booking.startDate)} — ${formatDate(booking.endDate)} (${booking.days} дн.)</p>
+                        <p><i class="fas fa-ruble-sign"></i> Сумма: ${booking.totalPrice} ₽ | Залог: ${booking.deposit} ₽</p>
+                        <p><i class="fas fa-user"></i> Арендатор: ${booking.renterName}</p>
+                        <span class="booking-status status-${booking.status}">${getStatusText(booking.status)}</span>
+                    </div>
+                    <div class="booking-actions">
+                        ${booking.status === 'pending' ? `
+                            <button onclick="updateBookingStatus('${booking.id}', 'confirmed')" class="btn-confirm">Подтвердить</button>
+                            <button onclick="updateBookingStatus('${booking.id}', 'cancelled')" class="btn-cancel">Отклонить</button>
+                        ` : ''}
+                        ${booking.status === 'confirmed' ? `
+                            <button onclick="updateBookingStatus('${booking.id}', 'completed')" class="btn-confirm">Подтвердить возврат</button>
+                        ` : ''}
+                        <a href="item-details.html?id=${booking.itemId}" class="btn-view">Посмотреть товар</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function completeRental(bookingId) {
+            if (confirm('Подтверждаете возврат товара? Залог будет возвращен.')) {
+                updateBookingStatus(bookingId, 'completed');
+            }
+        }
+        
+        function cancelBooking(bookingId) {
+            if (confirm('Отменить заявку на аренду?')) {
+                updateBookingStatus(bookingId, 'cancelled');
+            }
+        }
+        
+        function updateBookingStatus(bookingId, status) {
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const bookingIndex = bookings.findIndex(b => b.id === bookingId);
+            
+            if (bookingIndex !== -1) {
+                bookings[bookingIndex].status = status;
+                localStorage.setItem('bookings', JSON.stringify(bookings));
+                
+                showNotification(`Статус бронирования изменен на "${getStatusText(status)}"`, 'success');
+                
+                // Обновляем оба списка
+                loadRentals();
+                loadMyItemsRequests();
+            }
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 12px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                z-index: 1000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        // Переключение между вкладками
+        function switchTab(type) {
+            currentType = type;
+            
+            // Обновляем активную кнопку
+            document.querySelectorAll('.type-tab').forEach(tab => {
+                if (tab.dataset.type === type) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Показываем нужный контент
+            if (type === 'rentals') {
+                document.getElementById('rentalsContent').style.display = 'block';
+                document.getElementById('myItemsContent').style.display = 'none';
+                loadRentals();
+            } else {
+                document.getElementById('rentalsContent').style.display = 'none';
+                document.getElementById('myItemsContent').style.display = 'block';
+                loadMyItemsRequests();
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Настраиваем переключение вкладок
+            const tabs = document.querySelectorAll('.type-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    switchTab(tab.dataset.type);
+                });
+            });
+            
+            // Загружаем данные
+            switchTab('rentals');
         });
     </script>
 </body>
