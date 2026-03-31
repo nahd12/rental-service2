@@ -627,21 +627,23 @@ function createListing(event) {
 }
 
 // Авторизация
-function login(event) {
+async function login(event) {
     event.preventDefault();
+    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) {
-        currentUser = user;
+    const result = await loginUserGoogle(email, password);
+    
+    if (result.success) {
+        currentUser = result.user;
         saveData();
         showNotification('Вход выполнен!', 'success');
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1000);
     } else {
-        showNotification('Неверный email или пароль', 'error');
+        showNotification(result.error || 'Неверный email или пароль', 'error');
     }
 }
 
