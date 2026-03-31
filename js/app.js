@@ -183,7 +183,8 @@ function login(event) {
     }
 }
 
-async function register(event) {
+// Простая версия регистрации (без Google)
+function register(event) {
     event.preventDefault();
     
     const name = document.getElementById('regName').value;
@@ -213,31 +214,9 @@ async function register(event) {
         createdAt: new Date().toISOString()
     };
     
-    // Сохраняем в localStorage
     users.push(newUser);
     currentUser = newUser;
     saveData();
-    
-    // Отправляем в Google (если функция существует)
-    if (typeof saveUserToGoogle === 'function') {
-        try {
-            const result = await saveUserToGoogle({
-                name: name,
-                email: email,
-                phone: phone || '',
-                password: password
-            });
-            if (result.success) {
-                console.log('✅ Данные сохранены в Google Таблицу');
-            } else {
-                console.log('⚠️ Ошибка Google:', result.error);
-            }
-        } catch(error) {
-            console.log('⚠️ Ошибка отправки:', error);
-        }
-    } else {
-        console.log('ℹ️ Функция saveUserToGoogle не найдена, данные только в localStorage');
-    }
     
     showNotification('Регистрация успешна!', 'success');
     
@@ -245,7 +224,6 @@ async function register(event) {
         window.location.href = 'index.html';
     }, 1500);
 }
-
 // ============================================
 // ОСТАЛЬНЫЕ ФУНКЦИИ
 // ============================================
