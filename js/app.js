@@ -1,4 +1,9 @@
 // ============================================
+// АРЕНДА НА РАЗ - полная рабочая версия
+// Без Google Sheets, всё работает через localStorage
+// ============================================
+
+// ============================================
 // ДАННЫЕ
 // ============================================
 
@@ -181,7 +186,7 @@ function saveData() {
 // UI ФУНКЦИИ
 // ============================================
 
-// Обновление навигации в зависимости от авторизации
+// Обновление навигации
 function updateNav() {
     const loginBtn = document.getElementById('loginBtn');
     const userMenu = document.getElementById('userMenu');
@@ -232,7 +237,78 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-// Рендер карточек товаров
+// ============================================
+// ФУНКЦИИ АВТОРИЗАЦИИ
+// ============================================
+
+// Вход в аккаунт
+function login(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    const user = users.find(u => u.email === email && u.password === password);
+    
+    if (user) {
+        currentUser = user;
+        saveData();
+        showNotification('Вход выполнен!', 'success');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+    } else {
+        showNotification('Неверный email или пароль', 'error');
+    }
+}
+
+// Регистрация
+function register(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const phone = document.getElementById('regPhone').value;
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        showNotification('Пароли не совпадают', 'error');
+        return;
+    }
+    
+    if (users.find(u => u.email === email)) {
+        showNotification('Пользователь с таким email уже существует', 'error');
+        return;
+    }
+    
+    const newUser = {
+        id: Date.now().toString(),
+        name: name,
+        email: email,
+        password: password,
+        phone: phone || '',
+        address: '',
+        rating: null,
+        reviewsCount: 0,
+        listingsCount: 0,
+        createdAt: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    currentUser = newUser;
+    saveData();
+    
+    showNotification('Регистрация успешна!', 'success');
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 1500);
+}
+
+// ============================================
+// ОСТАЛЬНЫЕ ФУНКЦИИ (каталог, товары, бронирования)
+// ============================================
+
 function renderItems(containerId, itemsToRender, showLink = true) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -271,7 +347,6 @@ function getCategoryName(category) {
     return categories[category] || category;
 }
 
-// Загрузка популярных товаров на главную
 function loadFeaturedItems() {
     if (document.getElementById('featuredItems')) {
         const featured = items.slice(0, 4);
@@ -279,32 +354,27 @@ function loadFeaturedItems() {
     }
 }
 
-// Загрузка каталога с фильтрами
 function loadCatalog() {
     const container = document.getElementById('catalogItems');
     if (!container) return;
 
     let filteredItems = [...items];
     
-    // Категория
     const selectedCategory = document.querySelector('input[name="category"]:checked');
     if (selectedCategory && selectedCategory.value) {
         filteredItems = filteredItems.filter(item => item.category === selectedCategory.value);
     }
     
-    // Цена
     const maxPrice = parseInt(document.getElementById('priceRange')?.value || 5000);
     if (maxPrice) {
         filteredItems = filteredItems.filter(item => item.priceDay <= maxPrice);
     }
     
-    // Рейтинг
     const selectedRating = document.querySelector('input[name="rating"]:checked');
     if (selectedRating && selectedRating.value > 0) {
         filteredItems = filteredItems.filter(item => (item.rating || 0) >= parseFloat(selectedRating.value));
     }
     
-    // Сортировка
     const sortBy = document.getElementById('sortBy')?.value;
     if (sortBy === 'price_asc') {
         filteredItems.sort((a, b) => a.priceDay - b.priceDay);
@@ -322,7 +392,6 @@ function loadCatalog() {
     }
 }
 
-// Загрузка детальной страницы товара
 function loadItemDetails() {
     const container = document.getElementById('itemDetails');
     if (!container) return;
@@ -384,7 +453,6 @@ function loadItemDetails() {
         </div>
     `;
     
-    // Расчет цены
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
     const totalSpan = document.getElementById('totalPrice');
@@ -407,7 +475,6 @@ function loadItemDetails() {
     if (endDateInput) endDateInput.addEventListener('change', calculateTotal);
 }
 
-// Бронирование товара
 function bookItem(itemId) {
     if (!currentUser) {
         showNotification('Войдите в аккаунт', 'error');
@@ -455,7 +522,6 @@ function bookItem(itemId) {
     }, 1500);
 }
 
-// Загрузка бронирований
 function loadBookings() {
     const container = document.getElementById('bookingsList');
     if (!container) return;
@@ -529,7 +595,6 @@ function formatDate(dateString) {
     return date.toLocaleDateString('ru-RU');
 }
 
-// Загрузка профиля
 function loadProfile() {
     if (!currentUser) {
         window.location.href = 'auth.html';
@@ -539,16 +604,11 @@ function loadProfile() {
     const nameSpan = document.getElementById('profileName');
     const emailSpan = document.getElementById('profileEmail');
     const listingsCountSpan = document.getElementById('listingsCount');
-    const reviewsCountSpan = document.getElementById('reviewsCount');
-    const ratingSpan = document.getElementById('ratingValue');
     
     if (nameSpan) nameSpan.textContent = currentUser.name;
     if (emailSpan) emailSpan.textContent = currentUser.email;
     if (listingsCountSpan) listingsCountSpan.textContent = items.filter(i => i.ownerId === currentUser.id).length;
-    if (reviewsCountSpan) reviewsCountSpan.textContent = currentUser.reviewsCount || 0;
-    if (ratingSpan) ratingSpan.textContent = currentUser.rating || 'Нет';
     
-    // Загружаем объявления пользователя
     const userListings = items.filter(i => i.ownerId === currentUser.id);
     const listingsContainer = document.getElementById('userListings');
     if (listingsContainer) {
@@ -568,14 +628,6 @@ function loadProfile() {
             `).join('');
         }
     }
-    
-    // Настройки профиля
-    const editName = document.getElementById('editName');
-    const editPhone = document.getElementById('editPhone');
-    const editAddress = document.getElementById('editAddress');
-    if (editName) editName.value = currentUser.name || '';
-    if (editPhone) editPhone.value = currentUser.phone || '';
-    if (editAddress) editAddress.value = currentUser.address || '';
 }
 
 function deleteListing(itemId) {
@@ -587,7 +639,6 @@ function deleteListing(itemId) {
     }
 }
 
-// Создание объявления
 function createListing(event) {
     event.preventDefault();
     
@@ -626,75 +677,6 @@ function createListing(event) {
     }, 1500);
 }
 
-// Авторизация
-// Вход в аккаунт (рабочая версия)
-function login(event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    // Ищем пользователя в массиве users
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-        currentUser = user;
-        saveData();
-        showNotification('Вход выполнен!', 'success');
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
-    } else {
-        showNotification('Неверный email или пароль', 'error');
-    }
-}
-
-// Регистрация нового пользователя (рабочая версия)
-function register(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const phone = document.getElementById('regPhone').value;
-    const password = document.getElementById('regPassword').value;
-    const confirmPassword = document.getElementById('regConfirmPassword').value;
-    
-    if (password !== confirmPassword) {
-        showNotification('Пароли не совпадают', 'error');
-        return;
-    }
-    
-    // Проверяем, существует ли пользователь
-    if (users.find(u => u.email === email)) {
-        showNotification('Пользователь с таким email уже существует', 'error');
-        return;
-    }
-    
-    // Создаем нового пользователя
-    const newUser = {
-        id: Date.now().toString(),
-        name: name,
-        email: email,
-        password: password,
-        phone: phone || '',
-        address: '',
-        rating: null,
-        reviewsCount: 0,
-        listingsCount: 0,
-        createdAt: new Date().toISOString()
-    };
-    
-    users.push(newUser);
-    currentUser = newUser;
-    saveData();
-    
-    showNotification('Регистрация успешна!', 'success');
-    setTimeout(() => {
-        window.location.href = 'index.html';
-    }, 1500);
-}
-
-// Поиск на главной
 function setupSearch() {
     const searchBtn = document.getElementById('searchBtn');
     const searchInput = document.getElementById('searchInput');
@@ -719,7 +701,6 @@ function setupSearch() {
     }
 }
 
-// Обработка поиска на каталоге
 function handleCatalogSearch() {
     const savedResults = localStorage.getItem('searchResults');
     if (savedResults && document.getElementById('catalogItems')) {
@@ -733,12 +714,14 @@ function handleCatalogSearch() {
     }
 }
 
-// Инициализация страницы
+// ============================================
+// ЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
+// ============================================
+
 document.addEventListener('DOMContentLoaded', () => {
     initData();
     updateNav();
     
-    // Настройка кнопки выхода
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
@@ -747,13 +730,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Загрузка компонентов в зависимости от страницы
     if (document.getElementById('featuredItems')) loadFeaturedItems();
     if (document.getElementById('catalogItems')) {
         loadCatalog();
         handleCatalogSearch();
         
-        // Фильтры на каталоге
         const priceRange = document.getElementById('priceRange');
         if (priceRange) {
             priceRange.addEventListener('input', (e) => {
@@ -784,13 +765,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('bookingsList')) loadBookings();
     if (document.getElementById('profileName')) loadProfile();
     
-    // Форма создания объявления
     const createForm = document.getElementById('createListingForm');
     if (createForm) {
         createForm.addEventListener('submit', createListing);
     }
     
-    // Формы авторизации
     const loginForm = document.getElementById('loginFormElement');
     if (loginForm) {
         loginForm.addEventListener('submit', login);
@@ -801,7 +780,6 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.addEventListener('submit', register);
     }
     
-    // Переключение табов авторизации
     const authTabs = document.querySelectorAll('.auth-tab');
     if (authTabs.length) {
         authTabs.forEach(tab => {
@@ -814,7 +792,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Переключение табов профиля
     const profileTabs = document.querySelectorAll('.tab-btn');
     if (profileTabs.length) {
         profileTabs.forEach(tab => {
@@ -827,7 +804,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Переключение табов бронирований
     const bookingTabs = document.querySelectorAll('.booking-tab');
     if (bookingTabs.length) {
         bookingTabs.forEach(tab => {
@@ -839,7 +815,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Категории на главной
     const categoryCards = document.querySelectorAll('.category-card');
     if (categoryCards.length) {
         categoryCards.forEach(card => {
@@ -851,10 +826,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Поиск на главной
     setupSearch();
     
-    // Загрузка категории из localStorage на каталог
     const savedCategory = localStorage.getItem('searchCategory');
     if (savedCategory && document.getElementById('catalogItems')) {
         const categoryRadio = document.querySelector(`input[name="category"][value="${savedCategory}"]`);
@@ -865,7 +838,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('searchCategory');
     }
     
-    // Обработка загрузки фото
     const imageUpload = document.querySelector('.image-upload');
     if (imageUpload) {
         imageUpload.addEventListener('click', () => {
@@ -888,7 +860,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Сохранение настроек профиля
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
         profileForm.addEventListener('submit', (e) => {
