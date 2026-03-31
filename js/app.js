@@ -1,6 +1,5 @@
 // ============================================
-// АРЕНДА НА РАЗ - ЧИСТАЯ ВЕРСИЯ
-// БЕЗ GOOGLE_API_URL (он только в db-google.js)
+// АРЕНДА НА РАЗ - РАБОЧАЯ ВЕРСИЯ
 // ============================================
 
 let currentUser = null;
@@ -8,8 +7,9 @@ let items = [];
 let bookings = [];
 let users = [];
 
-// Инициализация данных из localStorage
+// Инициализация данных
 function initData() {
+    // Загружаем пользователей
     const storedUsers = localStorage.getItem('users');
     if (storedUsers) {
         users = JSON.parse(storedUsers);
@@ -29,6 +29,7 @@ function initData() {
         localStorage.setItem('users', JSON.stringify(users));
     }
 
+    // Загружаем товары
     const storedItems = localStorage.getItem('items');
     if (storedItems) {
         items = JSON.parse(storedItems);
@@ -66,7 +67,7 @@ function initData() {
                 category: 'outdoor',
                 priceDay: 500,
                 deposit: 1500,
-                description: 'Для пикника, в комплекте шампура',
+                description: 'Для пикника, шампура в комплекте',
                 image: 'https://images.unsplash.com/photo-1558954138-06e851f0c4c6?w=400',
                 ownerId: '1',
                 ownerName: 'Демо Пользователь',
@@ -90,6 +91,7 @@ function initData() {
         localStorage.setItem('items', JSON.stringify(items));
     }
 
+    // Загружаем бронирования
     const storedBookings = localStorage.getItem('bookings');
     if (storedBookings) {
         bookings = JSON.parse(storedBookings);
@@ -98,6 +100,7 @@ function initData() {
         localStorage.setItem('bookings', JSON.stringify(bookings));
     }
 
+    // Проверяем авторизацию
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
@@ -154,6 +157,7 @@ function showNotification(message, type = 'info') {
         background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
         color: white;
         z-index: 1000;
+        font-weight: 500;
     `;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
@@ -183,7 +187,6 @@ function login(event) {
     }
 }
 
-// Простая рабочая версия регистрации (без Google)
 function register(event) {
     event.preventDefault();
     
@@ -193,19 +196,21 @@ function register(event) {
     const password = document.getElementById('regPassword').value;
     const confirmPassword = document.getElementById('regConfirmPassword').value;
     
-    // Проверка паролей
+    if (!name || !email || !password) {
+        showNotification('Заполните все обязательные поля', 'error');
+        return;
+    }
+    
     if (password !== confirmPassword) {
         showNotification('Пароли не совпадают', 'error');
         return;
     }
     
-    // Проверка на существующего пользователя
     if (users.find(u => u.email === email)) {
         showNotification('Пользователь с таким email уже существует', 'error');
         return;
     }
     
-    // Создаем нового пользователя
     const newUser = {
         id: Date.now().toString(),
         name: name,
@@ -217,18 +222,17 @@ function register(event) {
         createdAt: new Date().toISOString()
     };
     
-    // Сохраняем
     users.push(newUser);
     currentUser = newUser;
     saveData();
     
     showNotification('Регистрация успешна!', 'success');
     
-    // Переход на главную
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1500);
 }
+
 // ============================================
 // ОСТАЛЬНЫЕ ФУНКЦИИ
 // ============================================
@@ -409,21 +413,63 @@ function createListing(event) {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔵 Сайт загружен, инициализация...');
+    
     initData();
     updateNav();
     
-    document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        logout();
-    });
+    // Кнопка выхода
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
     
+    // Загрузка компонентов
     if (document.getElementById('featuredItems')) loadFeaturedItems();
     if (document.getElementById('catalogItems')) loadCatalog();
     if (document.getElementById('itemDetails')) loadItemDetails();
     if (document.getElementById('bookingsList')) loadBookings();
     if (document.getElementById('profileName')) loadProfile();
     
-    document.getElementById('createListingForm')?.addEventListener('submit', createListing);
-    document.getElementById('loginFormElement')?.addEventListener('submit', login);
-    document.getElementById('registerFormElement')?.addEventListener('submit', register);
+    // Форма создания объявления
+    const createForm = document.getElementById('createListingForm');
+    if (createForm) {
+        createForm.addEventListener('submit', createListing);
+    }
+    
+    // Форма входа
+    const loginForm = document.getElementById('loginFormElement');
+    if (loginForm) {
+        loginForm.addEventListener('submit', login);
+        console.log('✅ Форма входа подключена');
+    } else {
+        console.log('❌ Форма входа не найдена');
+    }
+    
+    // Форма регистрации
+    const registerForm = document.getElementById('registerFormElement');
+    if (registerForm) {
+        registerForm.addEventListener('submit', register);
+        console.log('✅ Форма регистрации подключена');
+    } else {
+        console.log('❌ Форма регистрации не найдена');
+    }
+    
+    // Переключение табов
+    const authTabs = document.querySelectorAll('.auth-tab');
+    if (authTabs.length) {
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                document.getElementById(tab.dataset.auth + 'Form').classList.add('active');
+            });
+        });
+    }
+    
+    console.log('✅ Инициализация завершена');
 });
