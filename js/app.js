@@ -198,10 +198,11 @@ async function register(event) {
     }
     
     if (users.find(u => u.email === email)) {
-        showNotification('Пользователь уже существует', 'error');
+        showNotification('Пользователь с таким email уже существует', 'error');
         return;
     }
     
+    // Создаем пользователя
     const newUser = {
         id: Date.now().toString(),
         name: name,
@@ -213,26 +214,39 @@ async function register(event) {
         createdAt: new Date().toISOString()
     };
     
+    // Сохраняем в localStorage
     users.push(newUser);
     currentUser = newUser;
     saveData();
     
-    // Отправка в Google (если функция существует)
+    // ========== ОТПРАВКА В GOOGLE ==========
+    console.log('🔵 Начинаем отправку в Google...');
+    
+    // Проверяем, существует ли функция saveUserToGoogle
     if (typeof saveUserToGoogle === 'function') {
         try {
-            await saveUserToGoogle({
+            const result = await saveUserToGoogle({
                 name: name,
                 email: email,
                 phone: phone || '',
                 password: password
             });
-            console.log('✅ Отправлено в Google');
-        } catch(e) {
-            console.log('⚠️ Ошибка Google:', e);
+            
+            if (result.success) {
+                console.log('✅ Данные сохранены в Google Таблицу!');
+                showNotification('Регистрация успешна! Данные сохранены', 'success');
+            } else {
+                console.log('⚠️ Ошибка Google:', result.error);
+                showNotification('Регистрация успешна, но данные не сохранены в таблицу', 'warning');
+            }
+        } catch(error) {
+            console.error('❌ Ошибка при отправке:', error);
         }
+    } else {
+        console.warn('⚠️ Функция saveUserToGoogle не найдена! Проверьте подключение db-google.js');
     }
+    // =====================================
     
-    showNotification('Регистрация успешна!', 'success');
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1500);
