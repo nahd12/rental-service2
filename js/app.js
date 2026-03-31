@@ -1,5 +1,5 @@
 // ============================================
-// АРЕНДА НА РАЗ - РАБОЧАЯ ВЕРСИЯ
+// АРЕНДА НА РАЗ - ПОЛНАЯ РАБОЧАЯ ВЕРСИЯ
 // ============================================
 
 let currentUser = null;
@@ -9,7 +9,6 @@ let users = [];
 
 // Инициализация данных
 function initData() {
-    // Загружаем пользователей
     const storedUsers = localStorage.getItem('users');
     if (storedUsers) {
         users = JSON.parse(storedUsers);
@@ -29,7 +28,6 @@ function initData() {
         localStorage.setItem('users', JSON.stringify(users));
     }
 
-    // Загружаем товары
     const storedItems = localStorage.getItem('items');
     if (storedItems) {
         items = JSON.parse(storedItems);
@@ -67,7 +65,7 @@ function initData() {
                 category: 'outdoor',
                 priceDay: 500,
                 deposit: 1500,
-                description: 'Для пикника, шампура в комплекте',
+                description: 'Для пикника',
                 image: 'https://images.unsplash.com/photo-1558954138-06e851f0c4c6?w=400',
                 ownerId: '1',
                 ownerName: 'Демо Пользователь',
@@ -91,7 +89,6 @@ function initData() {
         localStorage.setItem('items', JSON.stringify(items));
     }
 
-    // Загружаем бронирования
     const storedBookings = localStorage.getItem('bookings');
     if (storedBookings) {
         bookings = JSON.parse(storedBookings);
@@ -100,7 +97,6 @@ function initData() {
         localStorage.setItem('bookings', JSON.stringify(bookings));
     }
 
-    // Проверяем авторизацию
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
@@ -206,7 +202,6 @@ async function register(event) {
         return;
     }
     
-    // Создаем пользователя
     const newUser = {
         id: Date.now().toString(),
         name: name,
@@ -218,12 +213,12 @@ async function register(event) {
         createdAt: new Date().toISOString()
     };
     
-    // 1. Сохраняем в localStorage (для работы сайта)
+    // Сохраняем в localStorage
     users.push(newUser);
     currentUser = newUser;
     saveData();
     
-    // 2. Отправляем в Google Таблицу (чтобы вы видели)
+    // Отправляем в Google (если функция существует)
     if (typeof saveUserToGoogle === 'function') {
         try {
             const result = await saveUserToGoogle({
@@ -232,27 +227,25 @@ async function register(event) {
                 phone: phone || '',
                 password: password
             });
-            
             if (result.success) {
-                console.log('✅ Пользователь сохранен в Google Таблицу!');
-                showNotification('Регистрация успешна!', 'success');
+                console.log('✅ Данные сохранены в Google Таблицу');
             } else {
                 console.log('⚠️ Ошибка Google:', result.error);
-                showNotification('Регистрация успешна! (ошибка синхронизации)', 'warning');
             }
         } catch(error) {
-            console.error('❌ Ошибка при отправке в Google:', error);
-            showNotification('Регистрация успешна!', 'success');
+            console.log('⚠️ Ошибка отправки:', error);
         }
     } else {
-        console.warn('⚠️ Функция saveUserToGoogle не найдена');
-        showNotification('Регистрация успешна!', 'success');
+        console.log('ℹ️ Функция saveUserToGoogle не найдена, данные только в localStorage');
     }
+    
+    showNotification('Регистрация успешна!', 'success');
     
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1500);
 }
+
 // ============================================
 // ОСТАЛЬНЫЕ ФУНКЦИИ
 // ============================================
@@ -429,7 +422,7 @@ function createListing(event) {
 }
 
 // ============================================
-// ЗАПУСК
+// ЗАПУСК ПРИ ЗАГРУЗКЕ
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -447,36 +440,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Загрузка компонентов
-    if (document.getElementById('featuredItems')) loadFeaturedItems();
-    if (document.getElementById('catalogItems')) loadCatalog();
-    if (document.getElementById('itemDetails')) loadItemDetails();
-    if (document.getElementById('bookingsList')) loadBookings();
-    if (document.getElementById('profileName')) loadProfile();
-    
-    // Форма создания объявления
-    const createForm = document.getElementById('createListingForm');
-    if (createForm) {
-        createForm.addEventListener('submit', createListing);
+    // Форма входа
+    const loginForm = document.getElementById('loginFormElement');
+    if (loginForm) {
+        loginForm.addEventListener('submit', login);
+        console.log('✅ Форма входа подключена');
+    } else {
+        console.log('❌ Форма входа не найдена');
     }
     
-  // Форма входа
-const loginForm = document.getElementById('loginFormElement');
-if (loginForm) {
-    loginForm.addEventListener('submit', login);
-    console.log('✅ Форма входа подключена');
-} else {
-    console.log('❌ Форма входа не найдена');
-}
-
-// Форма регистрации
-const registerForm = document.getElementById('registerFormElement');
-if (registerForm) {
-    registerForm.addEventListener('submit', register);
-    console.log('✅ Форма регистрации подключена');
-} else {
-    console.log('❌ Форма регистрации не найдена');
-}
+    // Форма регистрации
+    const registerForm = document.getElementById('registerFormElement');
+    if (registerForm) {
+        registerForm.addEventListener('submit', register);
+        console.log('✅ Форма регистрации подключена');
+    } else {
+        console.log('❌ Форма регистрации не найдена');
+    }
     
     // Переключение табов
     const authTabs = document.querySelectorAll('.auth-tab');
@@ -489,6 +469,20 @@ if (registerForm) {
                 document.getElementById(tab.dataset.auth + 'Form').classList.add('active');
             });
         });
+        console.log('✅ Табы подключены');
+    }
+    
+    // Загрузка компонентов страницы
+    if (document.getElementById('featuredItems')) loadFeaturedItems();
+    if (document.getElementById('catalogItems')) loadCatalog();
+    if (document.getElementById('itemDetails')) loadItemDetails();
+    if (document.getElementById('bookingsList')) loadBookings();
+    if (document.getElementById('profileName')) loadProfile();
+    
+    // Форма создания объявления
+    const createForm = document.getElementById('createListingForm');
+    if (createForm) {
+        createForm.addEventListener('submit', createListing);
     }
     
     console.log('✅ Инициализация завершена');
