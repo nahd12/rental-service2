@@ -898,8 +898,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // js/db-google.js - отправка данных в Google Таблицу
 
-// ⚠️ ВСТАВЬТЕ ВАШ URL ИЗ APPS SCRIPT ⚠️
-const GOOGLE_API_URL = 'https://script.google.com/macros/s/AKfycbwguH0ofpvGuPJ2vhrjlJlxf4XAs7tg3_moJDhB1oUsNYzxcsCOMLX6uLNkbMTUoqUThA/exec';
 
 // Функция для сохранения пользователя в Google Таблицу
 async function saveUserToGoogle(userData) {
