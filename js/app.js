@@ -183,7 +183,8 @@ function login(event) {
     }
 }
 
-async function register(event) {
+// Простая рабочая версия регистрации (без Google)
+function register(event) {
     event.preventDefault();
     
     const name = document.getElementById('regName').value;
@@ -192,17 +193,19 @@ async function register(event) {
     const password = document.getElementById('regPassword').value;
     const confirmPassword = document.getElementById('regConfirmPassword').value;
     
+    // Проверка паролей
     if (password !== confirmPassword) {
         showNotification('Пароли не совпадают', 'error');
         return;
     }
     
+    // Проверка на существующего пользователя
     if (users.find(u => u.email === email)) {
         showNotification('Пользователь с таким email уже существует', 'error');
         return;
     }
     
-    // Создаем пользователя
+    // Создаем нового пользователя
     const newUser = {
         id: Date.now().toString(),
         name: name,
@@ -214,44 +217,18 @@ async function register(event) {
         createdAt: new Date().toISOString()
     };
     
-    // Сохраняем в localStorage
+    // Сохраняем
     users.push(newUser);
     currentUser = newUser;
     saveData();
     
-    // ========== ОТПРАВКА В GOOGLE ==========
-    console.log('🔵 Начинаем отправку в Google...');
+    showNotification('Регистрация успешна!', 'success');
     
-    // Проверяем, существует ли функция saveUserToGoogle
-    if (typeof saveUserToGoogle === 'function') {
-        try {
-            const result = await saveUserToGoogle({
-                name: name,
-                email: email,
-                phone: phone || '',
-                password: password
-            });
-            
-            if (result.success) {
-                console.log('✅ Данные сохранены в Google Таблицу!');
-                showNotification('Регистрация успешна! Данные сохранены', 'success');
-            } else {
-                console.log('⚠️ Ошибка Google:', result.error);
-                showNotification('Регистрация успешна, но данные не сохранены в таблицу', 'warning');
-            }
-        } catch(error) {
-            console.error('❌ Ошибка при отправке:', error);
-        }
-    } else {
-        console.warn('⚠️ Функция saveUserToGoogle не найдена! Проверьте подключение db-google.js');
-    }
-    // =====================================
-    
+    // Переход на главную
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1500);
 }
-
 // ============================================
 // ОСТАЛЬНЫЕ ФУНКЦИИ
 // ============================================
