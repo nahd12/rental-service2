@@ -645,8 +645,9 @@ function login(event) {
     }
 }
 
-function register(event) {
+async function register(event) {
     event.preventDefault();
+    
     const name = document.getElementById('regName').value;
     const email = document.getElementById('regEmail').value;
     const phone = document.getElementById('regPhone').value;
@@ -658,31 +659,23 @@ function register(event) {
         return;
     }
     
-    if (users.find(u => u.email === email)) {
-        showNotification('Пользователь с таким email уже существует', 'error');
-        return;
-    }
-    
-    const newUser = {
-        id: Date.now().toString(),
+    const result = await registerUserGoogle({
         name: name,
         email: email,
         password: password,
-        phone: phone,
-        address: '',
-        rating: null,
-        reviewsCount: 0,
-        listingsCount: 0,
-        createdAt: new Date().toISOString()
-    };
+        phone: phone
+    });
     
-    users.push(newUser);
-    currentUser = newUser;
-    saveData();
-    showNotification('Регистрация успешна!', 'success');
-    setTimeout(() => {
-        window.location.href = 'index.html';
-    }, 1000);
+    if (result.success) {
+        currentUser = result.user;
+        saveData();
+        showNotification('Регистрация успешна!', 'success');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+    } else {
+        showNotification(result.error || 'Ошибка регистрации', 'error');
+    }
 }
 
 // Поиск на главной
