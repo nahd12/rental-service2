@@ -305,33 +305,63 @@ function loadItemDetails() {
 }
 
 function bookItem(itemId) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
     if (!currentUser) {
         showNotification('Войдите в аккаунт', 'error');
         window.location.href = 'auth.html';
         return;
     }
     
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    
+    if (!startDate || !endDate) {
+        showNotification('Выберите даты аренды', 'error');
+        return;
+    }
+    
+    const items = JSON.parse(localStorage.getItem('items')) || [];
     const item = items.find(i => i.id === itemId);
+    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+    
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    
+    if (days <= 0) {
+        showNotification('Дата окончания должна быть позже даты начала', 'error');
+        return;
+    }
+    
+    const totalPrice = days * item.priceDay;
+    
     const newBooking = {
         id: Date.now().toString(),
         itemId: item.id,
         itemTitle: item.title,
+        itemImage: item.image,
         renterId: currentUser.id,
         renterName: currentUser.name,
         ownerId: item.ownerId,
         ownerName: item.ownerName,
+        startDate: startDate,
+        endDate: endDate,
+        days: days,
+        totalPrice: totalPrice,
+        deposit: item.deposit,
         status: 'pending',
         createdAt: new Date().toISOString()
     };
     
     bookings.push(newBooking);
-    saveData();
-    showNotification('Заявка отправлена!', 'success');
+    localStorage.setItem('bookings', JSON.stringify(bookings));
+    
+    showNotification('Заявка на бронирование отправлена!', 'success');
     setTimeout(() => {
         window.location.href = 'bookings.html';
     }, 1500);
 }
-
 function loadBookings() {
     const container = document.getElementById('bookingsList');
     if (!container) return;
