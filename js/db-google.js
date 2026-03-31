@@ -1,21 +1,20 @@
-// js/db-google.js - подключение к Google Sheets
+// js/db-google.js
+const GOOGLE_API_URL = 'https://script.google.com/macros/s/AKfycbwguH0ofpvGuPJ2vhrjlJlxf4XAs7tg3_moJDhB1oUsNYzxcsCOMLX6uLNkbMTUoqUThA/exec';
 
-// Регистрация пользователя
-async function registerUserGoogle(userData) {
+async function saveUserToGoogle(userData) {
+    console.log('📤 Отправка в Google:', userData);
     try {
         const response = await fetch(GOOGLE_API_URL, {
             method: 'POST',
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
-        
         const result = await response.json();
+        console.log('✅ Ответ:', result);
         return result;
     } catch(error) {
-        console.error('Ошибка регистрации:', error);
+        console.error('❌ Ошибка:', error);
         return { success: false, error: error.message };
     }
 }
