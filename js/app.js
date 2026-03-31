@@ -627,27 +627,30 @@ function createListing(event) {
 }
 
 // Авторизация
-async function login(event) {
+// Вход в аккаунт (рабочая версия)
+function login(event) {
     event.preventDefault();
     
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
-    const result = await loginUserGoogle(email, password);
+    // Ищем пользователя в массиве users
+    const user = users.find(u => u.email === email && u.password === password);
     
-    if (result.success) {
-        currentUser = result.user;
+    if (user) {
+        currentUser = user;
         saveData();
         showNotification('Вход выполнен!', 'success');
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1000);
     } else {
-        showNotification(result.error || 'Неверный email или пароль', 'error');
+        showNotification('Неверный email или пароль', 'error');
     }
 }
 
-async function register(event) {
+// Регистрация нового пользователя (рабочая версия)
+function register(event) {
     event.preventDefault();
     
     const name = document.getElementById('regName').value;
@@ -661,23 +664,34 @@ async function register(event) {
         return;
     }
     
-    const result = await registerUserGoogle({
+    // Проверяем, существует ли пользователь
+    if (users.find(u => u.email === email)) {
+        showNotification('Пользователь с таким email уже существует', 'error');
+        return;
+    }
+    
+    // Создаем нового пользователя
+    const newUser = {
+        id: Date.now().toString(),
         name: name,
         email: email,
         password: password,
-        phone: phone
-    });
+        phone: phone || '',
+        address: '',
+        rating: null,
+        reviewsCount: 0,
+        listingsCount: 0,
+        createdAt: new Date().toISOString()
+    };
     
-    if (result.success) {
-        currentUser = result.user;
-        saveData();
-        showNotification('Регистрация успешна!', 'success');
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1500);
-    } else {
-        showNotification(result.error || 'Ошибка регистрации', 'error');
-    }
+    users.push(newUser);
+    currentUser = newUser;
+    saveData();
+    
+    showNotification('Регистрация успешна!', 'success');
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 1500);
 }
 
 // Поиск на главной
