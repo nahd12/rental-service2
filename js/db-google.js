@@ -1,6 +1,6 @@
 // js/db-google.js
 // ⚠️ ВСТАВЬТЕ ВАШ URL ИЗ GOOGLE APPS SCRIPT ⚠️
-const GOOGLE_API_URL = 'https://script.google.com/macros/s/AKfycbwfhAt2gLbmpJWsqltKB299vG7oICFpJxWpuQpAzdPvyH4yBagZARZVT08x64161WuuxA/exec';
+const GOOGLE_API_URL = 'https://script.google.com/macros/s/AKfycbweCBHNsTv3SMAunijB24YIpvUHKu6KtT0CeNjxpynwhMV3UUq4VdVWzct9OyL5o2iBFw/exec';
 
 async function saveUserToGoogle(userData) {
     console.log('📤 Отправка в Google Таблицу:', userData);
