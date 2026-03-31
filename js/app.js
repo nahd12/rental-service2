@@ -384,7 +384,6 @@ function bookItem(itemId) {
             <p>Статус: ${booking.status}</p>
         </div>
     `).join('');
-}
 
 function loadProfile() {
     if (!currentUser) {
