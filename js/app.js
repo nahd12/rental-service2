@@ -187,7 +187,7 @@ function login(event) {
     }
 }
 
-function register(event) {
+async function register(event) {
     event.preventDefault();
     
     const name = document.getElementById('regName').value;
@@ -195,11 +195,6 @@ function register(event) {
     const phone = document.getElementById('regPhone').value;
     const password = document.getElementById('regPassword').value;
     const confirmPassword = document.getElementById('regConfirmPassword').value;
-    
-    if (!name || !email || !password) {
-        showNotification('Заполните все обязательные поля', 'error');
-        return;
-    }
     
     if (password !== confirmPassword) {
         showNotification('Пароли не совпадают', 'error');
@@ -211,6 +206,7 @@ function register(event) {
         return;
     }
     
+    // Создаем пользователя
     const newUser = {
         id: Date.now().toString(),
         name: name,
@@ -222,17 +218,41 @@ function register(event) {
         createdAt: new Date().toISOString()
     };
     
+    // 1. Сохраняем в localStorage (для работы сайта)
     users.push(newUser);
     currentUser = newUser;
     saveData();
     
-    showNotification('Регистрация успешна!', 'success');
+    // 2. Отправляем в Google Таблицу (чтобы вы видели)
+    if (typeof saveUserToGoogle === 'function') {
+        try {
+            const result = await saveUserToGoogle({
+                name: name,
+                email: email,
+                phone: phone || '',
+                password: password
+            });
+            
+            if (result.success) {
+                console.log('✅ Пользователь сохранен в Google Таблицу!');
+                showNotification('Регистрация успешна!', 'success');
+            } else {
+                console.log('⚠️ Ошибка Google:', result.error);
+                showNotification('Регистрация успешна! (ошибка синхронизации)', 'warning');
+            }
+        } catch(error) {
+            console.error('❌ Ошибка при отправке в Google:', error);
+            showNotification('Регистрация успешна!', 'success');
+        }
+    } else {
+        console.warn('⚠️ Функция saveUserToGoogle не найдена');
+        showNotification('Регистрация успешна!', 'success');
+    }
     
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1500);
 }
-
 // ============================================
 // ОСТАЛЬНЫЕ ФУНКЦИИ
 // ============================================
