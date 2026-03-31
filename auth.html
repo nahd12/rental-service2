@@ -105,11 +105,9 @@
     </footer>
 
     <script>
-        // Полностью самостоятельный скрипт для auth.html
         (function() {
             console.log('🔵 auth.html загружен');
             
-            // Функция уведомлений
             function showNotification(message, type) {
                 const notification = document.createElement('div');
                 notification.textContent = message;
@@ -123,12 +121,19 @@
                     color: white;
                     z-index: 1000;
                     font-weight: 500;
+                    z-index: 10000;
                 `;
                 document.body.appendChild(notification);
-                setTimeout(() => notification.remove(), 3000);
+                setTimeout(() => notification.remove(), 2000);
             }
             
-            // Регистрация
+            // Функция перенаправления с принудительной перезагрузкой
+            function redirectToHome() {
+                console.log('🔄 Перенаправление на главную...');
+                window.location.href = 'index.html';
+            }
+            
+            // ========== РЕГИСТРАЦИЯ ==========
             const registerForm = document.getElementById('registerFormElement');
             if (registerForm) {
                 console.log('✅ Форма регистрации найдена');
@@ -149,6 +154,11 @@
                     
                     if (password !== confirmPassword) {
                         showNotification('Пароли не совпадают', 'error');
+                        return;
+                    }
+                    
+                    if (password.length < 4) {
+                        showNotification('Пароль должен быть минимум 4 символа', 'error');
                         return;
                     }
                     
@@ -174,16 +184,15 @@
                     localStorage.setItem('users', JSON.stringify(users));
                     localStorage.setItem('currentUser', JSON.stringify(newUser));
                     
+                    console.log('✅ Пользователь сохранен:', newUser);
+                    console.log('📦 currentUser в localStorage:', localStorage.getItem('currentUser'));
+                    
                     showNotification('Регистрация успешна!', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                    setTimeout(redirectToHome, 1500);
                 });
-            } else {
-                console.log('❌ Форма регистрации НЕ найдена');
             }
             
-            // Вход
+            // ========== ВХОД ==========
             const loginForm = document.getElementById('loginFormElement');
             if (loginForm) {
                 console.log('✅ Форма входа найдена');
@@ -194,16 +203,27 @@
                     const email = document.getElementById('loginEmail').value.trim();
                     const password = document.getElementById('loginPassword').value;
                     
+                    console.log('📧 Email:', email);
+                    
                     const users = JSON.parse(localStorage.getItem('users')) || [];
+                    console.log('👥 Всего пользователей:', users.length);
+                    
                     const user = users.find(u => u.email === email && u.password === password);
                     
                     if (user) {
+                        console.log('✅ Пользователь найден:', user);
                         localStorage.setItem('currentUser', JSON.stringify(user));
+                        console.log('📦 currentUser сохранен:', localStorage.getItem('currentUser'));
+                        
                         showNotification('Вход выполнен!', 'success');
-                        setTimeout(() => {
+                        
+                        // Принудительное перенаправление
+                        setTimeout(function() {
+                            console.log('🔄 Перенаправление на главную...');
                             window.location.href = 'index.html';
                         }, 1000);
                     } else {
+                        console.log('❌ Пользователь не найден');
                         showNotification('Неверный email или пароль', 'error');
                     }
                 });
@@ -219,6 +239,13 @@
                     document.getElementById(tab.dataset.auth + 'Form').classList.add('active');
                 });
             });
+            
+            // Проверка: если уже залогинены, перенаправляем на главную
+            const alreadyLoggedIn = localStorage.getItem('currentUser');
+            if (alreadyLoggedIn) {
+                console.log('👤 Пользователь уже залогинен, перенаправление...');
+                window.location.href = 'index.html';
+            }
         })();
     </script>
 </body>
