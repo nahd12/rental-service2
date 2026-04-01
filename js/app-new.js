@@ -135,8 +135,25 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('currentUser');
     updateNav();
-    alert('Вы вышли из аккаунта');
-    window.location.href = 'index.html';
+    
+    // Красивое уведомление в углу экрана
+    const notification = document.createElement('div');
+    notification.textContent = 'Вы вышли из аккаунта';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        border-radius: 12px;
+        background: #3b82f6;
+        color: white;
+        z-index: 1000;
+        font-weight: 500;
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.remove(), 2000);
+    setTimeout(() => window.location.href = 'index.html', 500);
 }
 
 function showNotification(message, type) {
