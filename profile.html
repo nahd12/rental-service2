@@ -79,17 +79,17 @@
                             <button class="tab-btn" data-tab="settings">Настройки</button>
                         </div>
 
-                        <!-- Вкладка: Мои объявления -->
                         <div class="tab-content active" id="listingsTab">
                             <div id="userListings" class="user-listings">
-                                <!-- Загрузка... -->
+                                <div style="text-align: center; padding: 40px;">
+                                    <i class="fas fa-spinner fa-spin"></i> Загрузка...
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Вкладка: Отзывы -->
                         <div class="tab-content" id="reviewsTab">
                             <div id="userReviews" class="user-reviews">
-                                <div class="text-center" style="padding: 40px;">
+                                <div style="text-align: center; padding: 40px;">
                                     <i class="fas fa-star" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
                                     <p>У вас пока нет отзывов</p>
                                     <p style="font-size: 14px; color: var(--text-muted);">После завершения аренды вы сможете оставлять отзывы</p>
@@ -97,7 +97,6 @@
                             </div>
                         </div>
 
-                        <!-- Вкладка: Настройки -->
                         <div class="tab-content" id="settingsTab">
                             <div class="settings-form">
                                 <h3>Редактировать профиль</h3>
@@ -152,7 +151,26 @@
 
     <script src="js/app-new.js"></script>
     <script>
-        // Дополнительный скрипт для работы вкладок профиля
+        // Функция показа уведомлений (без alert)
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 12px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                z-index: 1000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🔵 Профиль загружен');
             
@@ -160,17 +178,11 @@
             const tabs = document.querySelectorAll('.tab-btn');
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
-                    // Убираем active у всех кнопок
                     tabs.forEach(t => t.classList.remove('active'));
-                    // Добавляем active нажатой кнопке
                     this.classList.add('active');
-                    
-                    // Скрываем все вкладки
                     document.querySelectorAll('.tab-content').forEach(content => {
                         content.classList.remove('active');
                     });
-                    
-                    // Показываем выбранную вкладку
                     const tabId = this.dataset.tab + 'Tab';
                     document.getElementById(tabId).classList.add('active');
                 });
@@ -183,7 +195,7 @@
                 const container = document.getElementById('userListings');
                 
                 if (!currentUser) {
-                    container.innerHTML = '<div class="text-center">Войдите в аккаунт</div>';
+                    container.innerHTML = '<div style="text-align: center; padding: 40px;">Войдите в аккаунт</div>';
                     return;
                 }
                 
@@ -191,7 +203,7 @@
                 
                 if (userItems.length === 0) {
                     container.innerHTML = `
-                        <div class="text-center" style="padding: 40px;">
+                        <div style="text-align: center; padding: 40px;">
                             <i class="fas fa-box-open" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
                             <p>У вас пока нет объявлений</p>
                             <a href="create-listing.html" class="btn btn-primary" style="margin-top: 16px;">Создать объявление</a>
@@ -201,13 +213,13 @@
                 }
                 
                 container.innerHTML = userItems.map(item => `
-                    <div class="listing-item" style="background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);">
-                        <div class="listing-info">
+                    <div style="background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);">
+                        <div>
                             <h4 style="margin-bottom: 8px;">${item.title}</h4>
                             <p style="color: var(--text-muted); font-size: 0.85rem;">${item.priceDay} ₽/день | Залог: ${item.deposit} ₽</p>
                             <span style="display: inline-block; padding: 2px 8px; background: ${item.available ? '#10b981' : '#ef4444'}; border-radius: 20px; font-size: 0.7rem; color: white;">${item.available ? 'Доступна' : 'В аренде'}</span>
                         </div>
-                        <div class="listing-actions">
+                        <div>
                             <button onclick="deleteItem('${item.id}')" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem;">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -222,10 +234,9 @@
                     let items = JSON.parse(localStorage.getItem('items')) || [];
                     items = items.filter(i => i.id !== itemId);
                     localStorage.setItem('items', JSON.stringify(items));
-                    alert('Объявление удалено');
+                    showNotification('Объявление удалено', 'success');
                     loadUserListings();
                     
-                    // Обновляем счетчик
                     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
                     if (currentUser) {
                         const count = items.filter(i => i.ownerId === currentUser.id).length;
@@ -234,7 +245,7 @@
                 }
             };
             
-            // Загрузка настроек профиля
+            // Загрузка настроек
             function loadSettings() {
                 const currentUser = JSON.parse(localStorage.getItem('currentUser'));
                 if (currentUser) {
@@ -256,7 +267,6 @@
                         currentUser.phone = document.getElementById('editPhone').value;
                         currentUser.address = document.getElementById('editAddress').value;
                         
-                        // Обновляем в массиве users
                         let users = JSON.parse(localStorage.getItem('users')) || [];
                         const userIndex = users.findIndex(u => u.id === currentUser.id);
                         if (userIndex !== -1) {
@@ -265,14 +275,13 @@
                         localStorage.setItem('users', JSON.stringify(users));
                         localStorage.setItem('currentUser', JSON.stringify(currentUser));
                         
-                        // Обновляем отображение
                         document.getElementById('profileName').textContent = currentUser.name;
-                        alert('Профиль обновлен');
+                        showNotification('Профиль обновлен', 'success');
                     }
                 });
             }
             
-            // Обновление счетчика объявлений
+            // Обновление статистики
             function updateStats() {
                 const currentUser = JSON.parse(localStorage.getItem('currentUser'));
                 if (currentUser) {
@@ -286,7 +295,6 @@
                 }
             }
             
-            // Запускаем загрузку
             loadUserListings();
             loadSettings();
             updateStats();
