@@ -7,91 +7,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Дополнительные стили для страницы авторизации */
-        .auth-page {
-            min-height: calc(100vh - 200px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 48px 24px;
-        }
-        .auth-card-custom {
-            max-width: 480px;
-            width: 100%;
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 40px;
-            border: 1px solid var(--border);
-        }
-        .auth-tabs-custom {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 32px;
-            border-bottom: 1px solid var(--border);
-        }
-        .auth-tab-custom {
-            flex: 1;
-            text-align: center;
-            padding: 12px 0;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .auth-tab-custom.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-            margin-bottom: -1px;
-        }
-        .auth-form-custom {
-            display: none;
-        }
-        .auth-form-custom.active {
-            display: block;
-        }
-        .auth-form-custom h2 {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-        .auth-form-custom p {
-            color: var(--text-muted);
-            margin-bottom: 24px;
-        }
-        .demo-credentials {
-            margin-top: 24px;
-            padding: 16px;
-            background: var(--gray);
-            border-radius: 12px;
-            text-align: center;
-        }
-        .demo-credentials p {
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-        }
-        .demo-credentials code {
-            background: var(--dark);
-            padding: 4px 8px;
-            border-radius: 6px;
-            color: var(--primary);
-            font-size: 0.85rem;
-        }
-        .home-link {
-            text-align: center;
-            margin-top: 24px;
-        }
-        .home-link a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        .home-link a:hover {
-            color: var(--primary);
-        }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -112,66 +27,66 @@
         </nav>
     </header>
 
-    <main class="auth-page">
-        <div class="auth-card-custom">
-            <div class="auth-tabs-custom">
-                <button class="auth-tab-custom active" data-tab="login">Вход</button>
-                <button class="auth-tab-custom" data-tab="register">Регистрация</button>
+    <main style="min-height: calc(100vh - 300px); display: flex; align-items: center; justify-content: center; padding: 48px 24px;">
+        <div style="max-width: 480px; width: 100%; background: var(--card-bg); border-radius: 24px; padding: 40px; border: 1px solid var(--border);">
+            <div style="display: flex; gap: 16px; margin-bottom: 32px; border-bottom: 1px solid var(--border);">
+                <button id="tabLogin" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--primary); font-weight: 600; font-size: 1rem; cursor: pointer; border-bottom: 2px solid var(--primary); margin-bottom: -1px;">Вход</button>
+                <button id="tabRegister" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--text-muted); font-weight: 600; font-size: 1rem; cursor: pointer;">Регистрация</button>
             </div>
 
             <!-- Форма входа -->
-            <div class="auth-form-custom active" id="loginForm">
-                <h2>Добро пожаловать!</h2>
-                <p>Войдите в свой аккаунт</p>
-                <form id="loginFormElement">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="loginEmail" class="form-control" placeholder="example@mail.com" required>
+            <div id="loginFormBlock">
+                <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Добро пожаловать!</h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">Войдите в свой аккаунт</p>
+                <form id="loginForm">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email</label>
+                        <input type="email" id="loginEmail" style="width: 100%; padding: 12px 16px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem;">
                     </div>
-                    <div class="form-group">
-                        <label>Пароль</label>
-                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Пароль</label>
+                        <input type="password" id="loginPassword" style="width: 100%; padding: 12px 16px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem;">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full">Войти</button>
+                    <button type="submit" style="width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Войти</button>
                 </form>
-                <div class="demo-credentials">
-                    <p>📌 Тестовый аккаунт:</p>
-                    <code>demo@example.com</code> / <code>123456</code>
+                <div style="margin-top: 24px; padding: 16px; background: var(--gray); border-radius: 12px; text-align: center;">
+                    <p style="margin-bottom: 8px;">📌 Тестовый аккаунт:</p>
+                    <code style="background: var(--dark); padding: 4px 8px; border-radius: 6px; color: var(--primary);">demo@example.com</code> / <code style="background: var(--dark); padding: 4px 8px; border-radius: 6px; color: var(--primary);">123456</code>
                 </div>
-                <div class="home-link">
-                    <a href="index.html">← На главную</a>
+                <div style="text-align: center; margin-top: 24px;">
+                    <a href="index.html" style="color: var(--text-muted); text-decoration: none;">← На главную</a>
                 </div>
             </div>
 
             <!-- Форма регистрации -->
-            <div class="auth-form-custom" id="registerForm">
-                <h2>Создать аккаунт</h2>
-                <p>Присоединяйтесь к сообществу</p>
-                <form id="registerFormElement">
-                    <div class="form-group">
-                        <label>Имя *</label>
-                        <input type="text" id="regName" class="form-control" placeholder="Иван Иванов" required>
+            <div id="registerFormBlock" style="display: none;">
+                <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Создать аккаунт</h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">Присоединяйтесь к сообществу</p>
+                <form id="registerForm">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Имя *</label>
+                        <input type="text" id="regName" style="width: 100%; padding: 12px 16px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem;">
                     </div>
-                    <div class="form-group">
-                        <label>Email *</label>
-                        <input type="email" id="regEmail" class="form-control" placeholder="example@mail.com" required>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email *</label>
+                        <input type="email" id="regEmail" style="width: 100%; padding: 12px 16px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem;">
                     </div>
-                    <div class="form-group">
-                        <label>Телефон</label>
-                        <input type="tel" id="regPhone" class="form-control" placeholder="+7 900 123-45-67">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Телефон</label>
+                        <input type="tel" id="regPhone" style="width: 100%; padding: 12px 16px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem;">
                     </div>
-                    <div class="form-group">
-                        <label>Пароль *</label>
-                        <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Пароль *</label>
+                        <input type="password" id="regPassword" style="width: 100%; padding: 12px 16px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem;">
                     </div>
-                    <div class="form-group">
-                        <label>Подтвердите пароль *</label>
-                        <input type="password" id="regConfirmPassword" class="form-control" placeholder="••••••••" required>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Подтвердите пароль *</label>
+                        <input type="password" id="regConfirmPassword" style="width: 100%; padding: 12px 16px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1rem;">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full">Зарегистрироваться</button>
+                    <button type="submit" style="width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Зарегистрироваться</button>
                 </form>
-                <div class="home-link">
-                    <a href="index.html">← На главную</a>
+                <div style="text-align: center; margin-top: 24px;">
+                    <a href="index.html" style="color: var(--text-muted); text-decoration: none;">← На главную</a>
                 </div>
             </div>
         </div>
@@ -203,158 +118,163 @@
         </div>
     </footer>
 
-    <script src="js/app-new.js"></script>
     <script>
-        (function() {
-            console.log('🔵 Страница входа загружена');
+        // Функция красивого уведомления (без alert!)
+        function showNotification(message, type) {
+            // Удаляем старые уведомления, если есть
+            const oldNotifications = document.querySelectorAll('.custom-notification');
+            oldNotifications.forEach(n => n.remove());
             
-            // Функция показа уведомлений в стиле сайта
-            function showNotification(message, type) {
-                const notification = document.createElement('div');
-                notification.textContent = message;
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    padding: 12px 24px;
-                    border-radius: 12px;
-                    background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                    color: white;
-                    z-index: 1000;
-                    font-weight: 500;
-                    animation: slideIn 0.3s ease;
-                `;
-                document.body.appendChild(notification);
-                setTimeout(() => notification.remove(), 3000);
-            }
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 12px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                z-index: 9999;
+                font-weight: 500;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
             
-            // Инициализация пользователей
-            function initUsers() {
-                let users = localStorage.getItem('users');
-                if (!users) {
-                    const defaultUsers = [
-                        {
-                            id: '1',
-                            name: 'Демо Пользователь',
-                            email: 'demo@example.com',
-                            password: '123456',
-                            phone: '+7 900 123-45-67',
-                            address: '',
-                            rating: null,
-                            createdAt: new Date().toISOString()
-                        }
-                    ];
-                    localStorage.setItem('users', JSON.stringify(defaultUsers));
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2500);
+        }
+
+        // Добавляем анимации
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
                 }
             }
-            
-            // Регистрация
-            function registerUser(name, email, phone, password) {
-                let users = JSON.parse(localStorage.getItem('users')) || [];
-                
-                if (users.find(u => u.email === email)) {
-                    showNotification('Пользователь с таким email уже существует', 'error');
-                    return false;
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
                 }
-                
-                const newUser = {
-                    id: Date.now().toString(),
-                    name: name,
-                    email: email,
-                    password: password,
-                    phone: phone || '',
-                    address: '',
-                    rating: null,
-                    createdAt: new Date().toISOString()
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('users', JSON.stringify(users));
-                localStorage.setItem('currentUser', JSON.stringify(newUser));
-                
-                showNotification('Регистрация успешна!', 'success');
-                return true;
-            }
-            
-            // Вход
-            function loginUser(email, password) {
-                const users = JSON.parse(localStorage.getItem('users')) || [];
-                const user = users.find(u => u.email === email && u.password === password);
-                
-               if (user) {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    showNotification('Вход выполнен!', 'success');  // ← красивое уведомление
-    setTimeout(() => { window.location.href = 'index.html'; }, 1000);
-} else {
-                    showNotification('Неверный email или пароль', 'error');
-                    return false;
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
                 }
             }
+        `;
+        document.head.appendChild(style);
+
+        // Переключение между вкладками
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const loginBlock = document.getElementById('loginFormBlock');
+        const registerBlock = document.getElementById('registerFormBlock');
+
+        tabLogin.addEventListener('click', function() {
+            tabLogin.style.color = 'var(--primary)';
+            tabLogin.style.borderBottom = '2px solid var(--primary)';
+            tabRegister.style.color = 'var(--text-muted)';
+            tabRegister.style.borderBottom = 'none';
+            loginBlock.style.display = 'block';
+            registerBlock.style.display = 'none';
+        });
+
+        tabRegister.addEventListener('click', function() {
+            tabRegister.style.color = 'var(--primary)';
+            tabRegister.style.borderBottom = '2px solid var(--primary)';
+            tabLogin.style.color = 'var(--text-muted)';
+            tabLogin.style.borderBottom = 'none';
+            registerBlock.style.display = 'block';
+            loginBlock.style.display = 'none';
+        });
+
+        // Вход (без alert!)
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
             
-            // Переключение табов
-            const tabs = document.querySelectorAll('.auth-tab-custom');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.querySelectorAll('.auth-form-custom').forEach(f => f.classList.remove('active'));
-                    document.getElementById(tab.dataset.tab + 'Form').classList.add('active');
-                });
-            });
-            
-            // Обработчик входа
-            const loginForm = document.getElementById('loginFormElement');
-            if (loginForm) {
-                loginForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const email = document.getElementById('loginEmail').value.trim();
-                    const password = document.getElementById('loginPassword').value;
-                    
-                    if (loginUser(email, password)) {
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1000);
-                    }
-                });
+            if (!email || !password) {
+                showNotification('Заполните email и пароль', 'error');
+                return;
             }
             
-            // Обработчик регистрации
-            const registerForm = document.getElementById('registerFormElement');
-            if (registerForm) {
-                registerForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    const name = document.getElementById('regName').value.trim();
-                    const email = document.getElementById('regEmail').value.trim();
-                    const phone = document.getElementById('regPhone').value.trim();
-                    const password = document.getElementById('regPassword').value;
-                    const confirmPassword = document.getElementById('regConfirmPassword').value;
-                    
-                    if (!name || !email || !password) {
-                        showNotification('Заполните все обязательные поля', 'error');
-                        return;
-                    }
-                    
-                    if (password !== confirmPassword) {
-                        showNotification('Пароли не совпадают', 'error');
-                        return;
-                    }
-                    
-                    if (password.length < 4) {
-                        showNotification('Пароль должен быть минимум 4 символа', 'error');
-                        return;
-                    }
-                    
-                    if (registerUser(name, email, phone, password)) {
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1500);
-                    }
-                });
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showNotification('Вход выполнен!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                showNotification('Неверный email или пароль', 'error');
+            }
+        });
+
+        // Регистрация (без alert!)
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            if (!name || !email || !password) {
+                showNotification('Заполните все обязательные поля', 'error');
+                return;
             }
             
-            initUsers();
-        })();
+            if (password !== confirmPassword) {
+                showNotification('Пароли не совпадают', 'error');
+                return;
+            }
+            
+            if (password.length < 4) {
+                showNotification('Пароль должен быть минимум 4 символа', 'error');
+                return;
+            }
+            
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.find(u => u.email === email)) {
+                showNotification('Пользователь уже существует', 'error');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now().toString(),
+                name: name,
+                email: email,
+                password: password,
+                phone: phone || '',
+                address: '',
+                rating: null,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            showNotification('Регистрация успешна!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        });
     </script>
 </body>
 </html>
