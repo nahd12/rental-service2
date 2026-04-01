@@ -1,5 +1,5 @@
 // ============================================
-// АРЕНДА НА РАЗ - ПОЛНАЯ РАБОЧАЯ ВЕРСИЯ
+// OneTime - полная рабочая версия
 // ============================================
 
 let currentUser = null;
@@ -65,7 +65,7 @@ function initData() {
                 category: 'outdoor',
                 priceDay: 500,
                 deposit: 1500,
-                description: 'Для пикника',
+                description: 'Для пикника, шампура в комплекте',
                 image: 'https://images.unsplash.com/photo-1558954138-06e851f0c4c6?w=400',
                 ownerId: '1',
                 ownerName: 'Демо Пользователь',
@@ -132,12 +132,14 @@ function updateNav() {
 }
 
 function logout() {
+    currentUser = null;
     localStorage.removeItem('currentUser');
+    updateNav();
     showNotification('Вы вышли из аккаунта', 'info');
     setTimeout(() => {
         window.location.href = 'index.html';
-    }, 500);
-
+    }, 1000);
+}
 
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
@@ -181,7 +183,6 @@ function login(event) {
     }
 }
 
-// Простая версия регистрации (без Google)
 function register(event) {
     event.preventDefault();
     
@@ -222,11 +223,12 @@ function register(event) {
         window.location.href = 'index.html';
     }, 1500);
 }
+
 // ============================================
-// ОСТАЛЬНЫЕ ФУНКЦИИ
+// РАБОТА С ТОВАРАМИ
 // ============================================
 
-function renderItems(containerId, itemsToRender) {
+function renderItems(containerId, itemsToRender, onClick = true) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -236,7 +238,7 @@ function renderItems(containerId, itemsToRender) {
     }
 
     container.innerHTML = itemsToRender.map(item => `
-        <div class="item-card" onclick="location.href='item-details.html?id=${item.id}'">
+        <div class="item-card" ${onClick ? `onclick="location.href='item-details.html?id=${item.id}'"` : ''}>
             <div class="item-image" style="background-image: url('${item.image}')">
                 <span class="item-category">${getCategoryName(item.category)}</span>
             </div>
@@ -303,36 +305,13 @@ function loadItemDetails() {
 }
 
 function bookItem(itemId) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
     if (!currentUser) {
         showNotification('Войдите в аккаунт', 'error');
-        window.location.href = 'auth.html';
+        window.location.href = 'login.html';
         return;
     }
     
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    
-    if (!startDate || !endDate) {
-        showNotification('Выберите даты аренды', 'error');
-        return;
-    }
-    
-    const items = JSON.parse(localStorage.getItem('items')) || [];
     const item = items.find(i => i.id === itemId);
-    const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-    
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-    
-    if (days <= 0) {
-        showNotification('Дата окончания должна быть позже даты начала', 'error');
-        return;
-    }
-    
-    const totalPrice = days * item.priceDay;
     
     const newBooking = {
         id: Date.now().toString(),
@@ -343,24 +322,24 @@ function bookItem(itemId) {
         renterName: currentUser.name,
         ownerId: item.ownerId,
         ownerName: item.ownerName,
-        startDate: startDate,
-        endDate: endDate,
-        days: days,
-        totalPrice: totalPrice,
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+        days: 1,
+        totalPrice: item.priceDay,
         deposit: item.deposit,
         status: 'pending',
         createdAt: new Date().toISOString()
     };
     
     bookings.push(newBooking);
-    localStorage.setItem('bookings', JSON.stringify(bookings));
-    
+    saveData();
     showNotification('Заявка на бронирование отправлена!', 'success');
     setTimeout(() => {
         window.location.href = 'bookings.html';
     }, 1500);
 }
-/*function loadBookings() {
+
+function loadBookings() {
     const container = document.getElementById('bookingsList');
     if (!container) return;
     
@@ -375,17 +354,18 @@ function bookItem(itemId) {
         container.innerHTML = '<div class="text-center">Нет бронирований</div>';
         return;
     }
-    */
+    
     container.innerHTML = userBookings.map(booking => `
         <div class="booking-card">
             <h4>${booking.itemTitle}</h4>
             <p>Статус: ${booking.status}</p>
         </div>
     `).join('');
+}
 
 function loadProfile() {
     if (!currentUser) {
-        window.location.href = 'auth.html';
+        window.location.href = 'login.html';
         return;
     }
     
@@ -400,7 +380,7 @@ function createListing(event) {
     
     if (!currentUser) {
         showNotification('Войдите в аккаунт', 'error');
-        window.location.href = 'auth.html';
+        window.location.href = 'login.html';
         return;
     }
     
@@ -415,7 +395,8 @@ function createListing(event) {
         ownerId: currentUser.id,
         ownerName: currentUser.name,
         rating: null,
-        available: true
+        available: true,
+        createdAt: new Date().toISOString()
     };
     
     items.push(newItem);
@@ -426,8 +407,43 @@ function createListing(event) {
     }, 1500);
 }
 
+function setupSearch() {
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.toLowerCase();
+            const category = categoryFilter?.value || '';
+            let filtered = items;
+            
+            if (query) {
+                filtered = filtered.filter(item => item.title.toLowerCase().includes(query));
+            }
+            if (category) {
+                filtered = filtered.filter(item => item.category === category);
+            }
+            
+            localStorage.setItem('searchResults', JSON.stringify(filtered));
+            window.location.href = 'catalog.html';
+        });
+    }
+}
+
+function handleCatalogSearch() {
+    const savedResults = localStorage.getItem('searchResults');
+    if (savedResults && document.getElementById('catalogItems')) {
+        const results = JSON.parse(savedResults);
+        if (results.length > 0) {
+            renderItems('catalogItems', results, true);
+        }
+        localStorage.removeItem('searchResults');
+    }
+}
+
 // ============================================
-// ЗАПУСК ПРИ ЗАГРУЗКЕ
+// ЗАПУСК
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -436,7 +452,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initData();
     updateNav();
     
-    // Кнопка выхода
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
@@ -445,25 +460,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Форма входа
     const loginForm = document.getElementById('loginFormElement');
     if (loginForm) {
         loginForm.addEventListener('submit', login);
         console.log('✅ Форма входа подключена');
-    } else {
-        console.log('❌ Форма входа не найдена');
     }
     
-    // Форма регистрации
     const registerForm = document.getElementById('registerFormElement');
     if (registerForm) {
         registerForm.addEventListener('submit', register);
         console.log('✅ Форма регистрации подключена');
-    } else {
-        console.log('❌ Форма регистрации не найдена');
     }
     
-    // Переключение табов
     const authTabs = document.querySelectorAll('.auth-tab');
     if (authTabs.length) {
         authTabs.forEach(tab => {
@@ -474,21 +482,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById(tab.dataset.auth + 'Form').classList.add('active');
             });
         });
-        console.log('✅ Табы подключены');
     }
     
-    // Загрузка компонентов страницы
     if (document.getElementById('featuredItems')) loadFeaturedItems();
-    if (document.getElementById('catalogItems')) loadCatalog();
+    if (document.getElementById('catalogItems')) {
+        loadCatalog();
+        handleCatalogSearch();
+    }
     if (document.getElementById('itemDetails')) loadItemDetails();
     if (document.getElementById('bookingsList')) loadBookings();
     if (document.getElementById('profileName')) loadProfile();
     
-    // Форма создания объявления
     const createForm = document.getElementById('createListingForm');
     if (createForm) {
         createForm.addEventListener('submit', createListing);
     }
+    
+    setupSearch();
     
     console.log('✅ Инициализация завершена');
 });
