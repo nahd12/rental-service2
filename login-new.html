@@ -30,8 +30,8 @@
     <main style="min-height: calc(100vh - 300px); display: flex; align-items: center; justify-content: center; padding: 48px 24px;">
         <div style="max-width: 480px; width: 100%; background: var(--card-bg); border-radius: 24px; padding: 40px; border: 1px solid var(--border);">
             <div style="display: flex; gap: 16px; margin-bottom: 32px; border-bottom: 1px solid var(--border);">
-                <button class="tab-btn-active" id="tabLogin" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--primary); font-weight: 600; font-size: 1rem; cursor: pointer; border-bottom: 2px solid var(--primary); margin-bottom: -1px;">Вход</button>
-                <button class="tab-btn-inactive" id="tabRegister" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--text-muted); font-weight: 600; font-size: 1rem; cursor: pointer;">Регистрация</button>
+                <button id="tabLogin" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--primary); font-weight: 600; font-size: 1rem; cursor: pointer; border-bottom: 2px solid var(--primary); margin-bottom: -1px;">Вход</button>
+                <button id="tabRegister" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--text-muted); font-weight: 600; font-size: 1rem; cursor: pointer;">Регистрация</button>
             </div>
 
             <!-- Форма входа -->
@@ -58,7 +58,7 @@
                 </div>
             </div>
 
-            <!-- Форма регистрации (скрыта по умолчанию) -->
+            <!-- Форма регистрации -->
             <div id="registerFormBlock" style="display: none;">
                 <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Создать аккаунт</h2>
                 <p style="color: var(--text-muted); margin-bottom: 24px;">Присоединяйтесь к сообществу</p>
@@ -119,6 +119,63 @@
     </footer>
 
     <script>
+        // Функция красивого уведомления (без alert!)
+        function showNotification(message, type) {
+            // Удаляем старые уведомления, если есть
+            const oldNotifications = document.querySelectorAll('.custom-notification');
+            oldNotifications.forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 12px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                z-index: 9999;
+                font-weight: 500;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2500);
+        }
+
+        // Добавляем анимации
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
         // Переключение между вкладками
         const tabLogin = document.getElementById('tabLogin');
         const tabRegister = document.getElementById('tabRegister');
@@ -143,30 +200,16 @@
             loginBlock.style.display = 'none';
         });
 
-        // Функция уведомлений
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 12px 24px;
-                border-radius: 12px;
-                background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                color: white;
-                z-index: 1000;
-                font-weight: 500;
-            `;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        // Вход
+        // Вход (без alert!)
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showNotification('Заполните email и пароль', 'error');
+                return;
+            }
             
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.email === email && u.password === password);
@@ -174,23 +217,35 @@
             if (user) {
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 showNotification('Вход выполнен!', 'success');
-                setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
             } else {
                 showNotification('Неверный email или пароль', 'error');
             }
         });
 
-        // Регистрация
+        // Регистрация (без alert!)
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const phone = document.getElementById('regPhone').value;
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPassword').value;
             const confirmPassword = document.getElementById('regConfirmPassword').value;
             
+            if (!name || !email || !password) {
+                showNotification('Заполните все обязательные поля', 'error');
+                return;
+            }
+            
             if (password !== confirmPassword) {
                 showNotification('Пароли не совпадают', 'error');
+                return;
+            }
+            
+            if (password.length < 4) {
+                showNotification('Пароль должен быть минимум 4 символа', 'error');
                 return;
             }
             
@@ -216,7 +271,9 @@
             localStorage.setItem('currentUser', JSON.stringify(newUser));
             
             showNotification('Регистрация успешна!', 'success');
-            setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
         });
     </script>
 </body>
