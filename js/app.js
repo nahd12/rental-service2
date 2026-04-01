@@ -137,7 +137,7 @@ function logout() {
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 500);
-}
+
 
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
