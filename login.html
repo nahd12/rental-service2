@@ -281,11 +281,11 @@
                 const users = JSON.parse(localStorage.getItem('users')) || [];
                 const user = users.find(u => u.email === email && u.password === password);
                 
-                if (user) {
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    showNotification('Вход выполнен!', 'success');
-                    return true;
-                } else {
+               if (user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    showNotification('Вход выполнен!', 'success');  // ← красивое уведомление
+    setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+} else {
                     showNotification('Неверный email или пароль', 'error');
                     return false;
                 }
