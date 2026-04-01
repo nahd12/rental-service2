@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль | Аренда на раз</title>
+    <title>Профиль | OneTime</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,7 @@
         <nav class="nav container">
             <a href="index.html" class="logo">
                 <i class="fas fa-exchange-alt"></i>
-               <span>Аренда<span class="accent">НаРаз</span></span>
+                <span>One<span class="accent">Time</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
@@ -22,7 +22,7 @@
                 <a href="bookings.html">Мои бронирования</a>
             </div>
             <div class="nav-user" id="navUser">
-                <a href="auth.html" class="btn btn-outline" id="loginBtn">Войти</a>
+                <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
                 <div class="user-menu hidden" id="userMenu">
                     <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
                     <span id="userName"></span>
@@ -49,7 +49,7 @@
             <div class="container">
                 <div class="profile-layout">
                     <aside class="profile-sidebar">
-                        <div class="profile-avatar" id="profileAvatar">
+                        <div class="profile-avatar">
                             <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&size=128&bold=true" alt="avatar">
                         </div>
                         <div class="profile-info">
@@ -79,18 +79,25 @@
                             <button class="tab-btn" data-tab="settings">Настройки</button>
                         </div>
 
+                        <!-- Вкладка: Мои объявления -->
                         <div class="tab-content active" id="listingsTab">
-                            <div class="user-listings" id="userListings">
-                                <!-- User listings loaded by JS -->
+                            <div id="userListings" class="user-listings">
+                                <!-- Загрузка... -->
                             </div>
                         </div>
 
+                        <!-- Вкладка: Отзывы -->
                         <div class="tab-content" id="reviewsTab">
-                            <div class="user-reviews" id="userReviews">
-                                <!-- User reviews loaded by JS -->
+                            <div id="userReviews" class="user-reviews">
+                                <div class="text-center" style="padding: 40px;">
+                                    <i class="fas fa-star" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                                    <p>У вас пока нет отзывов</p>
+                                    <p style="font-size: 14px; color: var(--text-muted);">После завершения аренды вы сможете оставлять отзывы</p>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- Вкладка: Настройки -->
                         <div class="tab-content" id="settingsTab">
                             <div class="settings-form">
                                 <h3>Редактировать профиль</h3>
@@ -105,7 +112,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Адрес</label>
-                                        <input type="text" id="editAddress" class="form-control">
+                                        <input type="text" id="editAddress" class="form-control" placeholder="Город, улица">
                                     </div>
                                     <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                                 </form>
@@ -123,70 +130,167 @@
                 <div class="footer-brand">
                     <a href="index.html" class="logo">
                         <i class="fas fa-exchange-alt"></i>
-                        <span>Аренда<span class="accent">НаРаз</span></span>
+                        <span>One<span class="accent">Time</span></span>
                     </a>
-                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                    <p>OneTime — сервис аренды вещей на один раз.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
                     <a href="catalog.html">Каталог</a>
                     <a href="create-listing.html">Сдать вещь</a>
-                    <a href="#">Как это работает</a>
-                    <a href="#">Помощь</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Правила</h4>
-                    <a href="#">Условия использования</a>
-                    <a href="#">Политика конфиденциальности</a>
-                    <a href="#">Страхование</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
-                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
-                    <div class="socials">
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                        <a href="#"><i class="fab fa-vk"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    </div>
+                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+                <p>&copy; 2025 OneTime. Все права защищены.</p>
             </div>
         </div>
     </footer>
 
-    <script src="js/app.js"></script>
+    <script src="js/app-new.js"></script>
     <script>
-        // Показываем ссылку на админ-панель только для администратора
-        function updateAdminLink() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const adminEmail = 'mishkakirill12@gmail.com'; // ← ЗДЕСЬ ЗАМЕНИТЬ НА ВАШ EMAIL
-            const navLinks = document.querySelector('.nav-links');
+        // Дополнительный скрипт для работы вкладок профиля
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔵 Профиль загружен');
             
-            if (navLinks) {
-                let adminLink = document.querySelector('.admin-link');
+            // Переключение вкладок
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Убираем active у всех кнопок
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Добавляем active нажатой кнопке
+                    this.classList.add('active');
+                    
+                    // Скрываем все вкладки
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Показываем выбранную вкладку
+                    const tabId = this.dataset.tab + 'Tab';
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Загрузка объявлений пользователя
+            function loadUserListings() {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                const items = JSON.parse(localStorage.getItem('items')) || [];
+                const container = document.getElementById('userListings');
                 
-                if (currentUser && currentUser.email === adminEmail) {
-                    if (!adminLink) {
-                        const link = document.createElement('a');
-                        link.href = 'admin.html';
-                        link.className = 'admin-link';
-                        link.style.color = 'var(--primary)';
-                        link.innerHTML = '👑 Админ-панель';
-                        navLinks.appendChild(link);
-                    }
-                } else {
-                    if (adminLink) {
-                        adminLink.remove();
+                if (!currentUser) {
+                    container.innerHTML = '<div class="text-center">Войдите в аккаунт</div>';
+                    return;
+                }
+                
+                const userItems = items.filter(item => item.ownerId === currentUser.id);
+                
+                if (userItems.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center" style="padding: 40px;">
+                            <i class="fas fa-box-open" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                            <p>У вас пока нет объявлений</p>
+                            <a href="create-listing.html" class="btn btn-primary" style="margin-top: 16px;">Создать объявление</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = userItems.map(item => `
+                    <div class="listing-item" style="background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);">
+                        <div class="listing-info">
+                            <h4 style="margin-bottom: 8px;">${item.title}</h4>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">${item.priceDay} ₽/день | Залог: ${item.deposit} ₽</p>
+                            <span style="display: inline-block; padding: 2px 8px; background: ${item.available ? '#10b981' : '#ef4444'}; border-radius: 20px; font-size: 0.7rem; color: white;">${item.available ? 'Доступна' : 'В аренде'}</span>
+                        </div>
+                        <div class="listing-actions">
+                            <button onclick="deleteItem('${item.id}')" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Удаление объявления
+            window.deleteItem = function(itemId) {
+                if (confirm('Удалить это объявление?')) {
+                    let items = JSON.parse(localStorage.getItem('items')) || [];
+                    items = items.filter(i => i.id !== itemId);
+                    localStorage.setItem('items', JSON.stringify(items));
+                    alert('Объявление удалено');
+                    loadUserListings();
+                    
+                    // Обновляем счетчик
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                    if (currentUser) {
+                        const count = items.filter(i => i.ownerId === currentUser.id).length;
+                        document.getElementById('listingsCount').textContent = count;
                     }
                 }
+            };
+            
+            // Загрузка настроек профиля
+            function loadSettings() {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser) {
+                    document.getElementById('editName').value = currentUser.name || '';
+                    document.getElementById('editPhone').value = currentUser.phone || '';
+                    document.getElementById('editAddress').value = currentUser.address || '';
+                }
             }
-        }
-        
-        document.addEventListener('DOMContentLoaded', updateAdminLink);
-        setInterval(updateAdminLink, 1000);
+            
+            // Сохранение настроек
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                    
+                    if (currentUser) {
+                        currentUser.name = document.getElementById('editName').value;
+                        currentUser.phone = document.getElementById('editPhone').value;
+                        currentUser.address = document.getElementById('editAddress').value;
+                        
+                        // Обновляем в массиве users
+                        let users = JSON.parse(localStorage.getItem('users')) || [];
+                        const userIndex = users.findIndex(u => u.id === currentUser.id);
+                        if (userIndex !== -1) {
+                            users[userIndex] = currentUser;
+                        }
+                        localStorage.setItem('users', JSON.stringify(users));
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        // Обновляем отображение
+                        document.getElementById('profileName').textContent = currentUser.name;
+                        alert('Профиль обновлен');
+                    }
+                });
+            }
+            
+            // Обновление счетчика объявлений
+            function updateStats() {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser) {
+                    const items = JSON.parse(localStorage.getItem('items')) || [];
+                    const userItemsCount = items.filter(i => i.ownerId === currentUser.id).length;
+                    document.getElementById('listingsCount').textContent = userItemsCount;
+                    document.getElementById('profileName').textContent = currentUser.name;
+                    document.getElementById('profileEmail').textContent = currentUser.email;
+                    document.getElementById('reviewsCount').textContent = currentUser.reviewsCount || 0;
+                    document.getElementById('ratingValue').textContent = currentUser.rating || 'Нет';
+                }
+            }
+            
+            // Запускаем загрузку
+            loadUserListings();
+            loadSettings();
+            updateStats();
+        });
     </script>
 </body>
 </html>
