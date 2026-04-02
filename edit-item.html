@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать товар | OneTime</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>One<span class="accent">Time</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="create-listing.html">Сдать вещь</a>
+                <a href="bookings.html">Мои бронирования</a>
+            </div>
+            <div class="nav-user" id="navUser">
+                <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <span id="userName"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="container">
+                <h1>✏️ Редактировать товар</h1>
+                <p>Измените информацию о вашем товаре</p>
+            </div>
+        </div>
+
+        <section style="padding: 48px 0;">
+            <div class="container">
+                <div class="create-listing-card" style="max-width: 600px; margin: 0 auto;">
+                    <form id="editForm">
+                        <div class="form-group">
+                            <label>Название товара *</label>
+                            <input type="text" id="editTitle" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Категория *</label>
+                            <select id="editCategory" class="form-control" required>
+                                <option value="tools">Инструменты</option>
+                                <option value="clothing">Одежда</option>
+                                <option value="outdoor">Отдых</option>
+                                <option value="electronics">Электроника</option>
+                                <option value="sports">Спорт</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Цена за день (₽) *</label>
+                            <input type="number" id="editPrice" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Сумма залога (₽) *</label>
+                            <input type="number" id="editDeposit" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Описание *</label>
+                            <textarea id="editDescription" rows="4" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Фото товара</label>
+                            <input type="file" id="editImage" accept="image/*">
+                            <img id="editImagePreview" style="width: 100%; margin-top: 12px; border-radius: 12px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">💾 Сохранить изменения</button>
+                        <a href="catalog.html" class="btn btn-outline btn-full" style="margin-top: 12px;">Отмена</a>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemId = urlParams.get('id');
+        
+        function loadItem() {
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            const item = items.find(i => i.id === itemId);
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!item || (currentUser && item.ownerId !== currentUser.id)) {
+                alert('У вас нет прав на редактирование этого товара');
+                window.location.href = 'catalog.html';
+                return;
+            }
+            
+            document.getElementById('editTitle').value = item.title;
+            document.getElementById('editCategory').value = item.category;
+            document.getElementById('editPrice').value = item.priceDay;
+            document.getElementById('editDeposit').value = item.deposit;
+            document.getElementById('editDescription').value = item.description;
+            document.getElementById('editImagePreview').src = item.image;
+        }
+        
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            const itemIndex = items.findIndex(i => i.id === itemId);
+            
+            if (itemIndex === -1) {
+                alert('Товар не найден');
+                return;
+            }
+            
+            const updatedItem = {
+                ...items[itemIndex],
+                title: document.getElementById('editTitle').value,
+                category: document.getElementById('editCategory').value,
+                priceDay: parseInt(document.getElementById('editPrice').value),
+                deposit: parseInt(document.getElementById('editDeposit').value),
+                description: document.getElementById('editDescription').value
+            };
+            
+            const imageFile = document.getElementById('editImage').files[0];
+            
+            function saveUpdatedItem(imageData) {
+                if (imageData) updatedItem.image = imageData;
+                items[itemIndex] = updatedItem;
+                localStorage.setItem('items', JSON.stringify(items));
+                alert('Товар обновлен!');
+                window.location.href = 'catalog.html';
+            }
+            
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveUpdatedItem(event.target.result);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveUpdatedItem(null);
+            }
+        });
+        
+        document.getElementById('editImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('editImagePreview').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        loadItem();
+    </script>
+</body>
+</html>
