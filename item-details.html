@@ -7,6 +7,136 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .modal-close:hover {
+            color: #ef4444;
+        }
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--gray);
+            border-radius: 3px;
+        }
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .edit-preview {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 12px;
+            background: var(--gray);
+        }
+        .owner-actions {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .owner-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .btn-edit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-save {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .btn-cancel-modal {
+            background: var(--gray);
+            color: var(--text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -28,9 +158,9 @@
                     <span id="userName"></span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
-                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
-                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
-                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                        <a href="profile.html">Профиль</a>
+                        <a href="bookings.html">Бронирования</a>
+                        <a href="#" id="logoutBtn">Выйти</a>
                     </div>
                 </div>
             </div>
@@ -40,8 +170,8 @@
     <main>
         <div class="container" id="itemDetails" style="padding: 48px 0;">
             <div style="text-align: center; padding: 60px;">
-                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
-                <p>Загрузка товара...</p>
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i>
+                <p>Загрузка...</p>
             </div>
         </div>
     </main>
@@ -72,125 +202,292 @@
         </div>
     </footer>
 
-    <script src="js/app.js"></script>
+    <!-- Модальное окно редактирования -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Редактирование товара</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Название</label>
+                    <input type="text" id="editTitle" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Категория</label>
+                    <select id="editCategory" class="form-control">
+                        <option value="tools">Инструменты</option>
+                        <option value="clothing">Одежда</option>
+                        <option value="outdoor">Отдых</option>
+                        <option value="electronics">Электроника</option>
+                        <option value="sports">Спорт</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Цена за день (₽)</label>
+                    <input type="number" id="editPrice" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Залог (₽)</label>
+                    <input type="number" id="editDeposit" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea id="editDescription" rows="3" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Фото</label>
+                    <input type="file" id="editImage" accept="image/*">
+                    <img id="editImagePreview" class="edit-preview">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel-modal" onclick="closeModal()">Отмена</button>
+                <button class="btn-save" onclick="saveEdit()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Функция для загрузки деталей товара
+        let currentItemId = null;
+        let currentItem = null;
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 12px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                z-index: 10000;
+                font-weight: 500;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function openModal(item) {
+            currentItemId = item.id;
+            currentItem = item;
+            
+            document.getElementById('editTitle').value = item.title;
+            document.getElementById('editCategory').value = item.category;
+            document.getElementById('editPrice').value = item.priceDay;
+            document.getElementById('editDeposit').value = item.deposit;
+            document.getElementById('editDescription').value = item.description;
+            document.getElementById('editImagePreview').src = item.image;
+            
+            document.getElementById('editModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+            document.body.style.overflow = '';
+            currentItemId = null;
+        }
+
+        function saveEdit() {
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            const index = items.findIndex(i => i.id === currentItemId);
+            
+            if (index === -1) {
+                showNotification('Товар не найден', 'error');
+                closeModal();
+                return;
+            }
+            
+            const updatedItem = {
+                ...items[index],
+                title: document.getElementById('editTitle').value,
+                category: document.getElementById('editCategory').value,
+                priceDay: parseInt(document.getElementById('editPrice').value),
+                deposit: parseInt(document.getElementById('editDeposit').value),
+                description: document.getElementById('editDescription').value
+            };
+            
+            const imageFile = document.getElementById('editImage').files[0];
+            
+            function saveItem(imgData) {
+                if (imgData) updatedItem.image = imgData;
+                items[index] = updatedItem;
+                localStorage.setItem('items', JSON.stringify(items));
+                showNotification('Товар обновлен', 'success');
+                closeModal();
+                loadItemDetails();
+                if (typeof loadCatalog === 'function') loadCatalog();
+            }
+            
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = e => saveItem(e.target.result);
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveItem(null);
+            }
+        }
+
+        function deleteCurrentItem() {
+            if (!confirm('Удалить этот товар?')) return;
+            
+            let items = JSON.parse(localStorage.getItem('items')) || [];
+            items = items.filter(i => i.id !== currentItemId);
+            localStorage.setItem('items', JSON.stringify(items));
+            
+            showNotification('Товар удален', 'success');
+            setTimeout(() => {
+                window.location.href = 'catalog.html';
+            }, 1000);
+        }
+
+        document.getElementById('editImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    document.getElementById('editImagePreview').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         function loadItemDetails() {
+            const container = document.getElementById('itemDetails');
             const urlParams = new URLSearchParams(window.location.search);
             const itemId = urlParams.get('id');
             
-            console.log('ID товара:', itemId);
-            
-            if (!itemId) {
-                document.getElementById('itemDetails').innerHTML = '<div style="text-align: center; padding: 60px;"><h2>Товар не найден</h2><a href="catalog.html" class="btn btn-primary">Вернуться в каталог</a></div>';
-                return;
-            }
-            
             const items = JSON.parse(localStorage.getItem('items')) || [];
             const item = items.find(i => i.id === itemId);
-            
-            console.log('Найденный товар:', item);
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             
             if (!item) {
-                document.getElementById('itemDetails').innerHTML = '<div style="text-align: center; padding: 60px;"><h2>Товар не найден</h2><a href="catalog.html" class="btn btn-primary">Вернуться в каталог</a></div>';
+                container.innerHTML = '<div style="text-align: center; padding: 60px;"><h2>Товар не найден</h2><a href="catalog.html" class="btn btn-primary">Вернуться в каталог</a></div>';
                 return;
             }
             
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            currentItemId = item.id;
+            currentItem = item;
+            const isOwner = currentUser && item.ownerId === currentUser.id;
             
-            document.getElementById('itemDetails').innerHTML = `
-                <div class="details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
-                    <div class="details-image">
-                        <img src="${item.image}" alt="${item.title}" style="width: 100%; border-radius: 24px; object-fit: cover;">
-                    </div>
-                    <div class="details-info">
-                        <h1 style="font-size: 2rem; margin-bottom: 16px;">${item.title}</h1>
-                        <div class="item-rating" style="margin-bottom: 16px;">
-                            <i class="fas fa-star" style="color: #f59e0b;"></i>
-                            <span>${item.rating || 'Новый'} (0 отзывов)</span>
+            if (isOwner) {
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
+                        <div>
+                            <img src="${item.image}" style="width: 100%; border-radius: 24px;">
                         </div>
-                        <p style="color: var(--text-muted); margin-bottom: 24px;">${item.description}</p>
-                        <div class="details-price" style="background: var(--card-bg); padding: 24px; border-radius: 20px; margin-bottom: 24px;">
-                            <div class="price-row" style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                <span>Аренда на день:</span>
-                                <span class="price" style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${item.priceDay} ₽</span>
+                        <div>
+                            <h1 style="font-size: 2rem; margin-bottom: 16px;">${item.title}</h1>
+                            <div style="margin-bottom: 16px;">
+                                <i class="fas fa-star" style="color: #f59e0b;"></i>
+                                <span>${item.rating || 'Новый'}</span>
                             </div>
-                            <div class="deposit-row" style="color: var(--text-muted);">
-                                <span>Залог: ${item.deposit} ₽ (возвращается после аренды)</span>
+                            <p style="color: var(--text-muted); margin-bottom: 24px;">${item.description}</p>
+                            <div style="background: var(--card-bg); padding: 24px; border-radius: 20px; margin-bottom: 24px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                    <span>Аренда на день:</span>
+                                    <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${item.priceDay} ₽</span>
+                                </div>
+                                <div style="color: var(--text-muted);">Залог: ${item.deposit} ₽</div>
                             </div>
-                        </div>
-                        <div class="booking-card" style="background: var(--card-bg); padding: 24px; border-radius: 20px;">
-                            <h3 style="margin-bottom: 16px;">Забронировать</h3>
-                            <div class="form-group" style="margin-bottom: 16px;">
-                                <label>Дата начала:</label>
-                                <input type="date" id="startDate" class="form-control" style="width: 100%; padding: 12px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text);">
+                            <div class="owner-actions">
+                                <p style="margin-bottom: 16px;">Это ваш товар</p>
+                                <div class="owner-buttons">
+                                    <button onclick="openModal(currentItem)" class="btn-edit">Редактировать</button>
+                                    <button onclick="deleteCurrentItem()" class="btn-delete">Удалить</button>
+                                </div>
                             </div>
-                            <div class="form-group" style="margin-bottom: 16px;">
-                                <label>Дата окончания:</label>
-                                <input type="date" id="endDate" class="form-control" style="width: 100%; padding: 12px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text);">
-                            </div>
-                            <div id="totalPrice" class="total-price" style="margin-bottom: 16px;"></div>
-                            <button onclick="bookThisItem('${item.id}')" class="btn btn-primary btn-full" style="width: 100%; padding: 14px;">
-                                ${currentUser ? 'Забронировать' : 'Войдите, чтобы забронировать'}
-                            </button>
                         </div>
                     </div>
-                </div>
-                <div class="reviews-section" style="margin-top: 48px;">
-                    <h3>Отзывы</h3>
-                    <p style="color: var(--text-muted);">Пока нет отзывов. Будьте первым!</p>
-                </div>
-            `;
-            
-            // Расчет стоимости
-            const startDate = document.getElementById('startDate');
-            const endDate = document.getElementById('endDate');
-            const totalSpan = document.getElementById('totalPrice');
-            
-            function calculateTotal() {
-                if (startDate.value && endDate.value) {
-                    const start = new Date(startDate.value);
-                    const end = new Date(endDate.value);
-                    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-                    if (days > 0) {
-                        const total = days * item.priceDay;
-                        totalSpan.innerHTML = `<strong>Итого: ${total} ₽ + залог ${item.deposit} ₽</strong>`;
-                    } else {
-                        totalSpan.innerHTML = '<strong>Выберите корректные даты</strong>';
+                `;
+            } else {
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
+                        <div>
+                            <img src="${item.image}" style="width: 100%; border-radius: 24px;">
+                        </div>
+                        <div>
+                            <h1 style="font-size: 2rem; margin-bottom: 16px;">${item.title}</h1>
+                            <div style="margin-bottom: 16px;">
+                                <i class="fas fa-star" style="color: #f59e0b;"></i>
+                                <span>${item.rating || 'Новый'}</span>
+                            </div>
+                            <p style="color: var(--text-muted); margin-bottom: 24px;">${item.description}</p>
+                            <div style="background: var(--card-bg); padding: 24px; border-radius: 20px; margin-bottom: 24px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                    <span>Аренда на день:</span>
+                                    <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${item.priceDay} ₽</span>
+                                </div>
+                                <div style="color: var(--text-muted);">Залог: ${item.deposit} ₽</div>
+                            </div>
+                            <div style="background: var(--card-bg); padding: 24px; border-radius: 20px;">
+                                <h3 style="margin-bottom: 16px;">Забронировать</h3>
+                                <div style="margin-bottom: 16px;">
+                                    <label>Дата начала:</label>
+                                    <input type="date" id="startDate" class="form-control">
+                                </div>
+                                <div style="margin-bottom: 16px;">
+                                    <label>Дата окончания:</label>
+                                    <input type="date" id="endDate" class="form-control">
+                                </div>
+                                <div id="totalPrice" style="margin-bottom: 16px;"></div>
+                                <button onclick="bookItem('${item.id}')" class="btn btn-primary btn-full" style="width: 100%;">
+                                    ${currentUser ? 'Забронировать' : 'Войдите, чтобы забронировать'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const startDate = document.getElementById('startDate');
+                const endDate = document.getElementById('endDate');
+                const totalSpan = document.getElementById('totalPrice');
+                
+                if (startDate && endDate) {
+                    function calculateTotal() {
+                        if (startDate.value && endDate.value) {
+                            const start = new Date(startDate.value);
+                            const end = new Date(endDate.value);
+                            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                            if (days > 0) {
+                                totalSpan.innerHTML = `<strong>Итого: ${days * item.priceDay} ₽ + залог ${item.deposit} ₽</strong>`;
+                            }
+                        }
                     }
+                    startDate.addEventListener('change', calculateTotal);
+                    endDate.addEventListener('change', calculateTotal);
                 }
             }
-            
-            if (startDate) startDate.addEventListener('change', calculateTotal);
-            if (endDate) endDate.addEventListener('change', calculateTotal);
         }
-        
-        // Функция бронирования
-        function bookThisItem(itemId) {
+
+        function bookItem(itemId) {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            
             if (!currentUser) {
-                alert('Войдите в аккаунт');
+                showNotification('Войдите в аккаунт', 'error');
                 window.location.href = 'login.html';
                 return;
             }
             
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
-            
-            if (!startDate || !endDate) {
-                alert('Выберите даты аренды');
-                return;
-            }
-            
             const items = JSON.parse(localStorage.getItem('items')) || [];
             const item = items.find(i => i.id === itemId);
             const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
             
+            if (!startDate || !endDate) {
+                showNotification('Выберите даты', 'error');
+                return;
+            }
+            
             const start = new Date(startDate);
             const end = new Date(endDate);
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-            const totalPrice = days * item.priceDay;
             
             const newBooking = {
                 id: Date.now().toString(),
@@ -204,7 +501,7 @@
                 startDate: startDate,
                 endDate: endDate,
                 days: days,
-                totalPrice: totalPrice,
+                totalPrice: days * item.priceDay,
                 deposit: item.deposit,
                 status: 'pending',
                 createdAt: new Date().toISOString()
@@ -212,16 +509,11 @@
             
             bookings.push(newBooking);
             localStorage.setItem('bookings', JSON.stringify(bookings));
-            
-            alert('Заявка на бронирование отправлена!');
-            window.location.href = 'bookings.html';
+            showNotification('Заявка отправлена', 'success');
+            setTimeout(() => window.location.href = 'bookings.html', 1500);
         }
-        
-        // Запуск при загрузке
-        document.addEventListener('DOMContentLoaded', function() {
-            loadItemDetails();
-            
-            // Обновление навигации
+
+        document.addEventListener('DOMContentLoaded', () => {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             const loginBtn = document.getElementById('loginBtn');
             const userMenu = document.getElementById('userMenu');
@@ -235,12 +527,23 @@
                 }
             }
             
-            // Кнопка выхода
-            document.getElementById('logoutBtn')?.addEventListener('click', function(e) {
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('currentUser');
                 window.location.href = 'index.html';
             });
+            
+            loadItemDetails();
+        });
+        
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('editModal').classList.contains('active')) {
+                closeModal();
+            }
         });
     </script>
 </body>
