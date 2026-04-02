@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сдать вещь | Аренда на раз</title>
+    <title>Сдать вещь | OneTime</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,7 +13,7 @@
         <nav class="nav container">
             <a href="index.html" class="logo">
                 <i class="fas fa-exchange-alt"></i>
-                <span>Аренда<span class="accent">НаРаз</span></span>
+                <span>One<span class="accent">Time</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
@@ -52,7 +52,7 @@
                         <div class="form-row">
                             <div class="form-group full-width">
                                 <label>Название товара *</label>
-                                <input type="text" id="itemTitle" class="form-control" placeholder="Например: Перфоратор Makita" required>
+                                <input type="text" id="itemTitle" class="form-control" required>
                             </div>
                         </div>
 
@@ -62,15 +62,15 @@
                                 <select id="itemCategory" class="form-control" required>
                                     <option value="">Выберите категорию</option>
                                     <option value="tools">Инструменты</option>
-                                    <option value="clothing">Одежда и аксессуары</option>
-                                    <option value="outdoor">Отдых и пикник</option>
+                                    <option value="clothing">Одежда</option>
+                                    <option value="outdoor">Отдых</option>
                                     <option value="electronics">Электроника</option>
                                     <option value="sports">Спорт</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Состояние *</label>
-                                <select id="itemCondition" class="form-control" required>
+                                <label>Состояние</label>
+                                <select id="itemCondition" class="form-control">
                                     <option value="new">Как новый</option>
                                     <option value="good">Хорошее</option>
                                     <option value="normal">Нормальное</option>
@@ -80,60 +80,31 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Цена за час (₽)</label>
-                                <input type="number" id="itemPriceHour" class="form-control" placeholder="0" value="0">
-                            </div>
-                            <div class="form-group">
                                 <label>Цена за день (₽) *</label>
-                                <input type="number" id="itemPriceDay" class="form-control" placeholder="500" required>
+                                <input type="number" id="itemPriceDay" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label>Сумма залога (₽) *</label>
-                                <input type="number" id="itemDeposit" class="form-control" placeholder="2000" required>
+                                <input type="number" id="itemDeposit" class="form-control" required>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group full-width">
                                 <label>Описание *</label>
-                                <textarea id="itemDescription" rows="5" class="form-control" placeholder="Опишите вашу вещь: особенности, инструкции, что входит в комплект..." required></textarea>
+                                <textarea id="itemDescription" rows="4" class="form-control" required></textarea>
                             </div>
                         </div>
 
+                        <!-- БЛОК ДЛЯ ЗАГРУЗКИ ФОТО -->
                         <div class="form-row">
                             <div class="form-group full-width">
                                 <label>Фото товара</label>
-                                <div class="image-upload">
-                                    <input type="file" id="itemImage" accept="image/*">
-                                    <div class="image-preview" id="imagePreview">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                        <p>Нажмите для загрузки фото</p>
-                                    </div>
+                                <input type="file" id="itemImage" accept="image/*" style="display: none;">
+                                <div id="imagePreview" style="width: 100%; height: 150px; background: var(--gray); border: 1px dashed var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('itemImage').click();">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-muted);"></i>
+                                    <span style="margin-left: 8px; color: var(--text-muted);">Нажмите для загрузки фото</span>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Доступен самовывоз</label>
-                                <label class="switch">
-                                    <input type="checkbox" id="pickupAvailable" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Доступна доставка</label>
-                                <label class="switch">
-                                    <input type="checkbox" id="deliveryAvailable">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group full-width">
-                                <label>Адрес (для самовывоза)</label>
-                                <input type="text" id="itemAddress" class="form-control" placeholder="Город, улица, дом">
                             </div>
                         </div>
 
@@ -150,71 +121,40 @@
                 <div class="footer-brand">
                     <a href="index.html" class="logo">
                         <i class="fas fa-exchange-alt"></i>
-                        <span>Аренда<span class="accent">НаРаз</span></span>
+                        <span>One<span class="accent">Time</span></span>
                     </a>
-                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                    <p>OneTime — сервис аренды вещей на один раз.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
                     <a href="catalog.html">Каталог</a>
                     <a href="create-listing.html">Сдать вещь</a>
-                    <a href="#">Как это работает</a>
-                    <a href="#">Помощь</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Правила</h4>
-                    <a href="#">Условия использования</a>
-                    <a href="#">Политика конфиденциальности</a>
-                    <a href="#">Страхование</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
-                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
-                    <div class="socials">
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                        <a href="#"><i class="fab fa-vk"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    </div>
+                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+                <p>&copy; 2025 OneTime. Все права защищены.</p>
             </div>
         </div>
     </footer>
 
-    <script src="js/app.js"></script>
-     <script>
-        // Показываем ссылку на админ-панель только для администратора
-        function updateAdminLink() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const adminEmail = 'mishkakirill12@gmail.com'; // ← ЗДЕСЬ ЗАМЕНИТЬ НА ВАШ EMAIL
-            const navLinks = document.querySelector('.nav-links');
-            
-            if (navLinks) {
-                let adminLink = document.querySelector('.admin-link');
-                
-                if (currentUser && currentUser.email === adminEmail) {
-                    if (!adminLink) {
-                        const link = document.createElement('a');
-                        link.href = 'admin.html';
-                        link.className = 'admin-link';
-                        link.style.color = 'var(--primary)';
-                        link.innerHTML = '👑 Админ-панель';
-                        navLinks.appendChild(link);
-                    }
-                } else {
-                    if (adminLink) {
-                        adminLink.remove();
-                    }
-                }
+    <script src="js/app-new.js"></script>
+    <script>
+        // Показываем превью фото при выборе
+        document.getElementById('itemImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `<img src="${event.target.result}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 12px;">`;
+                };
+                reader.readAsDataURL(file);
             }
-        }
-        
-        document.addEventListener('DOMContentLoaded', updateAdminLink);
-        setInterval(updateAdminLink, 1000);
+        });
     </script>
 </body>
-</script>
 </html>
