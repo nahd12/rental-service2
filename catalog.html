@@ -2,18 +2,117 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог | Аренда на раз</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Каталог | OneTime</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Мобильные стили для фильтра */
+        .filter-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 90;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .filter-panel {
+            transition: transform 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .catalog-layout {
+                position: relative;
+            }
+            
+            .filter-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .catalog-filters {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 100;
+                background: var(--darker);
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                overflow-y: auto;
+                padding: 20px;
+                margin: 0;
+                border-radius: 0;
+                width: 85%;
+                max-width: 300px;
+            }
+            
+            .catalog-filters.open {
+                transform: translateX(0);
+            }
+            
+            .filter-close {
+                display: block;
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: none;
+                border: none;
+                color: var(--text);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+            
+            .filter-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 99;
+            }
+            
+            .filter-overlay.active {
+                display: block;
+            }
+            
+            .catalog-content {
+                width: 100%;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .filter-close,
+            .filter-overlay {
+                display: none;
+            }
+        }
+        
+        .filter-close {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
                 <i class="fas fa-exchange-alt"></i>
-                <span>Аренда<span class="accent">НаРаз</span></span>
+                <span>One<span class="accent">Time</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
@@ -48,14 +147,16 @@
         <section class="catalog-section">
             <div class="container">
                 <div class="catalog-layout">
-                    <aside class="catalog-filters">
+                    <!-- Фильтры -->
+                    <aside class="catalog-filters" id="filterPanel">
+                        <button class="filter-close" id="filterCloseBtn">&times;</button>
                         <div class="filter-group">
                             <h3>Категории</h3>
                             <div class="filter-categories" id="filterCategories">
                                 <label><input type="radio" name="category" value=""> Все</label>
                                 <label><input type="radio" name="category" value="tools"> Инструменты</label>
-                                <label><input type="radio" name="category" value="clothing"> Одежда и аксессуары</label>
-                                <label><input type="radio" name="category" value="outdoor"> Отдых и пикник</label>
+                                <label><input type="radio" name="category" value="clothing"> Одежда</label>
+                                <label><input type="radio" name="category" value="outdoor"> Отдых</label>
                                 <label><input type="radio" name="category" value="electronics"> Электроника</label>
                                 <label><input type="radio" name="category" value="sports"> Спорт</label>
                             </div>
@@ -63,10 +164,10 @@
                         <div class="filter-group">
                             <h3>Цена за день</h3>
                             <div class="price-range">
-                                <input type="range" id="priceRange" min="0" max="5000" step="100" value="5000">
+                                <input type="range" id="priceRange" min="0" max="10000" step="100" value="10000">
                                 <div class="price-values">
                                     <span>0 ₽</span>
-                                    <span id="priceValue">5000 ₽</span>
+                                    <span id="priceValue">10000 ₽</span>
                                 </div>
                             </div>
                         </div>
@@ -78,8 +179,16 @@
                                 <label><input type="radio" name="rating" value="4.5"> 4.5+ ★</label>
                             </div>
                         </div>
-                        <button id="resetFilters" class="btn btn-outline">Сбросить фильтры</button>
+                        <button id="resetFilters" class="btn btn-outline" style="width: 100%;">Сбросить фильтры</button>
                     </aside>
+                    
+                    <!-- Затемнение для мобильных -->
+                    <div id="filterOverlay" class="filter-overlay"></div>
+                    
+                    <!-- Кнопка открытия фильтра на мобильных -->
+                    <button id="filterToggleBtn" class="filter-toggle">
+                        <i class="fas fa-filter"></i>
+                    </button>
 
                     <div class="catalog-content">
                         <div class="catalog-header">
@@ -92,7 +201,7 @@
                             </select>
                         </div>
                         <div class="items-grid" id="catalogItems">
-                            <!-- Items loaded by JS -->
+                            <!-- Товары загружаются через JS -->
                         </div>
                     </div>
                 </div>
@@ -104,73 +213,197 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>Аренда<span class="accent">НаРаз</span></span>
-                    </a>
-                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                    <a href="index.html" class="logo">One<span class="accent">Time</span></a>
+                    <p>OneTime — сервис аренды вещей на один раз.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
                     <a href="catalog.html">Каталог</a>
                     <a href="create-listing.html">Сдать вещь</a>
-                    <a href="#">Как это работает</a>
-                    <a href="#">Помощь</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Правила</h4>
-                    <a href="#">Условия использования</a>
-                    <a href="#">Политика конфиденциальности</a>
-                    <a href="#">Страхование</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
-                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
-                    <div class="socials">
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                        <a href="#"><i class="fab fa-vk"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    </div>
+                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+                <p>&copy; 2025 OneTime. Все права защищены.</p>
             </div>
         </div>
     </footer>
 
     <script src="js/app.js"></script>
-     <script>
-        // Показываем ссылку на админ-панель только для администратора
-        function updateAdminLink() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const adminEmail = 'mishkakirill12@gmail.com'; // ← ЗДЕСЬ ЗАМЕНИТЬ НА ВАШ EMAIL
-            const navLinks = document.querySelector('.nav-links');
+    <script>
+        // Мобильный фильтр
+        const filterPanel = document.getElementById('filterPanel');
+        const filterToggle = document.getElementById('filterToggleBtn');
+        const filterClose = document.getElementById('filterCloseBtn');
+        const filterOverlay = document.getElementById('filterOverlay');
+        
+        function openFilter() {
+            filterPanel.classList.add('open');
+            filterOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeFilter() {
+            filterPanel.classList.remove('open');
+            filterOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        if (filterToggle) {
+            filterToggle.addEventListener('click', openFilter);
+        }
+        if (filterClose) {
+            filterClose.addEventListener('click', closeFilter);
+        }
+        if (filterOverlay) {
+            filterOverlay.addEventListener('click', closeFilter);
+        }
+        
+        // Обновление цены
+        const priceRange = document.getElementById('priceRange');
+        const priceValue = document.getElementById('priceValue');
+        if (priceRange) {
+            priceRange.addEventListener('input', function() {
+                priceValue.textContent = this.value + ' ₽';
+            });
+        }
+        
+        // Загрузка товаров
+        function loadCatalogItems() {
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            const container = document.getElementById('catalogItems');
+            const countSpan = document.getElementById('itemsCount');
             
-            if (navLinks) {
-                let adminLink = document.querySelector('.admin-link');
-                
-                if (currentUser && currentUser.email === adminEmail) {
-                    if (!adminLink) {
-                        const link = document.createElement('a');
-                        link.href = 'admin.html';
-                        link.className = 'admin-link';
-                        link.style.color = 'var(--primary)';
-                        link.innerHTML = '👑 Админ-панель';
-                        navLinks.appendChild(link);
-                    }
-                } else {
-                    if (adminLink) {
-                        adminLink.remove();
-                    }
-                }
+            if (!container) return;
+            
+            // Получаем значения фильтров
+            const selectedCategory = document.querySelector('input[name="category"]:checked');
+            const category = selectedCategory ? selectedCategory.value : '';
+            
+            const maxPrice = priceRange ? parseInt(priceRange.value) : 10000;
+            
+            const selectedRating = document.querySelector('input[name="rating"]:checked');
+            const rating = selectedRating ? parseFloat(selectedRating.value) : 0;
+            
+            const sortBy = document.getElementById('sortBy') ? document.getElementById('sortBy').value : 'default';
+            
+            // Фильтрация
+            let filtered = items.filter(item => {
+                if (category && item.category !== category) return false;
+                if (item.priceDay > maxPrice) return false;
+                if (rating > 0 && (item.rating || 0) < rating) return false;
+                return true;
+            });
+            
+            // Сортировка
+            if (sortBy === 'price_asc') {
+                filtered.sort((a, b) => a.priceDay - b.priceDay);
+            } else if (sortBy === 'price_desc') {
+                filtered.sort((a, b) => b.priceDay - a.priceDay);
+            } else if (sortBy === 'rating') {
+                filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            }
+            
+            if (countSpan) countSpan.textContent = filtered.length + ' товаров';
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 60px;">Ничего не найдено</div>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(item => `
+                <div class="item-card" onclick="location.href='item-details.html?id=${item.id}'">
+                    <div class="item-image" style="background-image: url('${item.image}'); background-size: cover; background-position: center; height: 180px;">
+                        <span class="item-category">${getCategoryName(item.category)}</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-price">${item.priceDay} ₽ / день</div>
+                        <div class="item-deposit">Залог: ${item.deposit} ₽</div>
+                        <div class="item-rating">
+                            <i class="fas fa-star"></i>
+                            <span>${item.rating || 'Новый'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoryName(category) {
+            const categories = {
+                tools: 'Инструменты',
+                clothing: 'Одежда',
+                outdoor: 'Отдых',
+                electronics: 'Электроника',
+                sports: 'Спорт'
+            };
+            return categories[category] || category;
+        }
+        
+        // Обновление при изменении фильтров
+        function bindFilters() {
+            const filters = document.querySelectorAll('input[name="category"], input[name="rating"], #sortBy');
+            filters.forEach(filter => {
+                filter.addEventListener('change', () => {
+                    loadCatalogItems();
+                    if (window.innerWidth <= 768) closeFilter();
+                });
+            });
+            
+            if (priceRange) {
+                priceRange.addEventListener('input', () => {
+                    loadCatalogItems();
+                });
+            }
+            
+            const resetBtn = document.getElementById('resetFilters');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    document.querySelectorAll('input[name="category"]').forEach(i => i.checked = false);
+                    document.querySelectorAll('input[name="rating"]').forEach(i => i.checked = false);
+                    if (priceRange) priceRange.value = 10000;
+                    if (priceValue) priceValue.textContent = '10000 ₽';
+                    document.getElementById('sortBy').value = 'default';
+                    loadCatalogItems();
+                    if (window.innerWidth <= 768) closeFilter();
+                });
             }
         }
         
-        document.addEventListener('DOMContentLoaded', updateAdminLink);
-        setInterval(updateAdminLink, 1000);
+        // Навигация
+        function updateNav() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const loginBtn = document.getElementById('loginBtn');
+            const userMenu = document.getElementById('userMenu');
+            const userNameSpan = document.getElementById('userName');
+            
+            if (currentUser) {
+                if (loginBtn) loginBtn.classList.add('hidden');
+                if (userMenu) {
+                    userMenu.classList.remove('hidden');
+                    if (userNameSpan) userNameSpan.textContent = currentUser.name;
+                }
+            } else {
+                if (loginBtn) loginBtn.classList.remove('hidden');
+                if (userMenu) userMenu.classList.add('hidden');
+            }
+        }
+        
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        });
+        
+        // Запуск
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNav();
+            loadCatalogItems();
+            bindFilters();
+        });
     </script>
 </body>
-</script>
 </html>
