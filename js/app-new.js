@@ -1,5 +1,5 @@
 // ============================================
-// OneTime - минимальная рабочая версия
+// OneTime - полная рабочая версия
 // ============================================
 
 let currentUser = null;
@@ -7,24 +7,21 @@ let items = [];
 let bookings = [];
 let users = [];
 
-// Инициализация данных
 function initData() {
     const storedUsers = localStorage.getItem('users');
     if (storedUsers) {
         users = JSON.parse(storedUsers);
     } else {
-        users = [
-            {
-                id: '1',
-                name: 'Демо Пользователь',
-                email: 'demo@example.com',
-                password: '123456',
-                phone: '+7 900 123-45-67',
-                address: 'г. Москва',
-                rating: 4.8,
-                createdAt: new Date().toISOString()
-            }
-        ];
+        users = [{
+            id: '1',
+            name: 'Демо Пользователь',
+            email: 'demo@example.com',
+            password: '123456',
+            phone: '+7 900 123-45-67',
+            address: 'г. Москва',
+            rating: 4.8,
+            createdAt: new Date().toISOString()
+        }];
         localStorage.setItem('users', JSON.stringify(users));
     }
 
@@ -58,49 +55,16 @@ function initData() {
                 ownerName: 'Демо Пользователь',
                 rating: 5.0,
                 available: true
-            },
-            {
-                id: '3',
-                title: 'Мангал складной',
-                category: 'outdoor',
-                priceDay: 500,
-                deposit: 1500,
-                description: 'Для пикника',
-                image: 'https://images.unsplash.com/photo-1558954138-06e851f0c4c6?w=400',
-                ownerId: '1',
-                ownerName: 'Демо Пользователь',
-                rating: 4.7,
-                available: true
-            },
-            {
-                id: '4',
-                title: 'Проектор XGIMI',
-                category: 'electronics',
-                priceDay: 1000,
-                deposit: 15000,
-                description: 'Для домашнего кинотеатра',
-                image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400',
-                ownerId: '1',
-                ownerName: 'Демо Пользователь',
-                rating: 5.0,
-                available: true
             }
         ];
         localStorage.setItem('items', JSON.stringify(items));
     }
 
     const storedBookings = localStorage.getItem('bookings');
-    if (storedBookings) {
-        bookings = JSON.parse(storedBookings);
-    } else {
-        bookings = [];
-        localStorage.setItem('bookings', JSON.stringify(bookings));
-    }
-
+    bookings = storedBookings ? JSON.parse(storedBookings) : [];
+    
     const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-    }
+    if (savedUser) currentUser = JSON.parse(savedUser);
 }
 
 function saveData() {
@@ -114,11 +78,29 @@ function saveData() {
     }
 }
 
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        border-radius: 12px;
+        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        color: white;
+        z-index: 9999;
+        font-weight: 500;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
 function updateNav() {
     const loginBtn = document.getElementById('loginBtn');
     const userMenu = document.getElementById('userMenu');
     const userNameSpan = document.getElementById('userName');
-
+    
     if (currentUser) {
         if (loginBtn) loginBtn.classList.add('hidden');
         if (userMenu) {
@@ -135,99 +117,22 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('currentUser');
     updateNav();
-    
-    // Красивое уведомление в углу экрана
-    const notification = document.createElement('div');
-    notification.textContent = 'Вы вышли из аккаунта';
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 12px 24px;
-        border-radius: 12px;
-        background: #3b82f6;
-        color: white;
-        z-index: 1000;
-        font-weight: 500;
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => notification.remove(), 2000);
+    showNotification('Вы вышли из аккаунта', 'info');
     setTimeout(() => window.location.href = 'index.html', 500);
-}
-
-function showNotification(message, type) {
-    alert(message);
-}
-
-function login(event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-        currentUser = user;
-        saveData();
-        alert('Вход выполнен!');
-        window.location.href = 'index.html';
-    } else {
-        alert('Неверный email или пароль');
-    }
-}
-
-function register(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const phone = document.getElementById('regPhone').value;
-    const password = document.getElementById('regPassword').value;
-    const confirmPassword = document.getElementById('regConfirmPassword').value;
-    
-    if (password !== confirmPassword) {
-        alert('Пароли не совпадают');
-        return;
-    }
-    
-    if (users.find(u => u.email === email)) {
-        alert('Пользователь с таким email уже существует');
-        return;
-    }
-    
-    const newUser = {
-        id: Date.now().toString(),
-        name: name,
-        email: email,
-        password: password,
-        phone: phone || '',
-        address: '',
-        rating: null,
-        createdAt: new Date().toISOString()
-    };
-    
-    users.push(newUser);
-    currentUser = newUser;
-    saveData();
-    
-    alert('Регистрация успешна!');
-    window.location.href = 'index.html';
 }
 
 function renderItems(containerId, itemsToRender) {
     const container = document.getElementById(containerId);
     if (!container) return;
-
+    
     if (!itemsToRender || itemsToRender.length === 0) {
         container.innerHTML = '<div class="text-center">Ничего не найдено</div>';
         return;
     }
-
+    
     container.innerHTML = itemsToRender.map(item => `
         <div class="item-card" onclick="location.href='item-details.html?id=${item.id}'">
-            <div class="item-image" style="background-image: url('${item.image}')">
+            <div class="item-image" style="background-image: url('${item.image}'); background-size: cover; background-position: center; height: 180px;">
                 <span class="item-category">${getCategoryName(item.category)}</span>
             </div>
             <div class="item-info">
@@ -240,13 +145,7 @@ function renderItems(containerId, itemsToRender) {
 }
 
 function getCategoryName(category) {
-    const categories = {
-        tools: 'Инструменты',
-        clothing: 'Одежда',
-        outdoor: 'Отдых',
-        electronics: 'Электроника',
-        sports: 'Спорт'
-    };
+    const categories = { tools: 'Инструменты', clothing: 'Одежда', outdoor: 'Отдых', electronics: 'Электроника', sports: 'Спорт' };
     return categories[category] || category;
 }
 
@@ -260,105 +159,6 @@ function loadCatalog() {
     if (document.getElementById('catalogItems')) {
         renderItems('catalogItems', items);
     }
-}
-
-function loadItemDetails() {
-    const container = document.getElementById('itemDetails');
-    if (!container) return;
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const item = items.find(i => i.id === urlParams.get('id'));
-    
-    if (!item) {
-        container.innerHTML = '<div class="text-center">Товар не найден</div>';
-        return;
-    }
-    
-    container.innerHTML = `
-        <div class="details-grid">
-            <div class="details-image" style="background-image: url('${item.image}')"></div>
-            <div class="details-info">
-                <h1>${item.title}</h1>
-                <p>${item.description}</p>
-                <div class="details-price">
-                    <div>Цена: ${item.priceDay} ₽/день</div>
-                    <div>Залог: ${item.deposit} ₽</div>
-                </div>
-                <button onclick="bookItem('${item.id}')" class="btn btn-primary">
-                    ${currentUser ? 'Забронировать' : 'Войдите, чтобы забронировать'}
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-function bookItem(itemId) {
-    if (!currentUser) {
-        alert('Войдите в аккаунт');
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    const item = items.find(i => i.id === itemId);
-    
-    const newBooking = {
-        id: Date.now().toString(),
-        itemId: item.id,
-        itemTitle: item.title,
-        itemImage: item.image,
-        renterId: currentUser.id,
-        renterName: currentUser.name,
-        ownerId: item.ownerId,
-        ownerName: item.ownerName,
-        startDate: new Date().toISOString().split('T')[0],
-        endDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-        days: 1,
-        totalPrice: item.priceDay,
-        deposit: item.deposit,
-        status: 'pending',
-        createdAt: new Date().toISOString()
-    };
-    
-    bookings.push(newBooking);
-    saveData();
-    alert('Заявка на бронирование отправлена!');
-    window.location.href = 'bookings.html';
-}
-
-function loadBookings() {
-    const container = document.getElementById('bookingsList');
-    if (!container) return;
-    
-    if (!currentUser) {
-        container.innerHTML = '<div class="text-center">Войдите в аккаунт</div>';
-        return;
-    }
-    
-    const userBookings = bookings.filter(b => b.renterId === currentUser.id);
-    
-    if (userBookings.length === 0) {
-        container.innerHTML = '<div class="text-center">Нет бронирований</div>';
-        return;
-    }
-    
-    container.innerHTML = userBookings.map(booking => `
-        <div class="booking-card">
-            <h4>${booking.itemTitle}</h4>
-            <p>Статус: ${booking.status}</p>
-        </div>
-    `).join('');
-}
-
-function loadProfile() {
-    if (!currentUser) {
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    const nameSpan = document.getElementById('profileName');
-    const emailSpan = document.getElementById('profileEmail');
-    if (nameSpan) nameSpan.textContent = currentUser.name;
-    if (emailSpan) emailSpan.textContent = currentUser.email;
 }
 
 function createListing(event) {
@@ -376,116 +176,105 @@ function createListing(event) {
     const deposit = parseInt(document.getElementById('itemDeposit').value);
     const description = document.getElementById('itemDescription').value;
     
-    // Получаем фото (если есть)
-    const imageFile = document.getElementById('itemImage').files[0];
-    
     if (!title || !category || !priceDay || !deposit || !description) {
-        showNotification('Заполните все обязательные поля', 'error');
+        showNotification('Заполните все поля', 'error');
         return;
     }
     
-    const newItem = {
-        id: Date.now().toString(),
-        title: title,
-        category: category,
-        priceDay: priceDay,
-        deposit: deposit,
-        description: description,
-        image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400', // фото по умолчанию
-        ownerId: currentUser.id,
-        ownerName: currentUser.name,
-        rating: null,
-        available: true,
-        createdAt: new Date().toISOString()
-    };
+    const imageInput = document.getElementById('itemImage');
+    const imageFile = imageInput && imageInput.files.length > 0 ? imageInput.files[0] : null;
     
-    // Если есть загруженное фото, сохраняем его в localStorage
-    if (imageFile) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            newItem.image = e.target.result; // сохраняем фото как base64
-            items.push(newItem);
-            saveData();
-            showNotification('Объявление опубликовано!', 'success');
-            setTimeout(() => {
-                window.location.href = 'profile.html';
-            }, 1500);
+    function saveItem(imageData) {
+        const newItem = {
+            id: Date.now().toString(),
+            title: title,
+            category: category,
+            priceDay: priceDay,
+            deposit: deposit,
+            description: description,
+            image: imageData || 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400',
+            ownerId: currentUser.id,
+            ownerName: currentUser.name,
+            rating: null,
+            available: true,
+            createdAt: new Date().toISOString()
         };
-        reader.readAsDataURL(imageFile);
-    } else {
         items.push(newItem);
         saveData();
         showNotification('Объявление опубликовано!', 'success');
-        setTimeout(() => {
-            window.location.href = 'profile.html';
-        }, 1500);
+        setTimeout(() => window.location.href = 'profile.html', 1500);
     }
-}
-
-function setupSearch() {
-    const searchBtn = document.getElementById('searchBtn');
-    const searchInput = document.getElementById('searchInput');
     
-    if (searchBtn && searchInput) {
-        searchBtn.addEventListener('click', () => {
-            const query = searchInput.value.toLowerCase();
-            let filtered = items.filter(item => item.title.toLowerCase().includes(query));
-            localStorage.setItem('searchResults', JSON.stringify(filtered));
-            window.location.href = 'catalog.html';
-        });
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = e => saveItem(e.target.result);
+        reader.onerror = () => saveItem(null);
+        reader.readAsDataURL(imageFile);
+    } else {
+        saveItem(null);
     }
 }
 
-function handleCatalogSearch() {
-    const savedResults = localStorage.getItem('searchResults');
-    if (savedResults && document.getElementById('catalogItems')) {
-        const results = JSON.parse(savedResults);
-        if (results.length > 0) {
-            renderItems('catalogItems', results);
-        }
-        localStorage.removeItem('searchResults');
-    }
-}
-
-// Запуск при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔵 Сайт загружен');
+document.addEventListener('DOMContentLoaded', () => {
     initData();
     updateNav();
     
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            logout();
-        });
-    }
+    document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        logout();
+    });
     
-    const loginForm = document.getElementById('loginFormElement');
-    if (loginForm) {
-        loginForm.addEventListener('submit', login);
-    }
+    document.getElementById('loginFormElement')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const user = users.find(u => u.email === email && u.password === password);
+        if (user) {
+            currentUser = user;
+            saveData();
+            showNotification('Вход выполнен!', 'success');
+            setTimeout(() => window.location.href = 'index.html', 1000);
+        } else {
+            showNotification('Неверный email или пароль', 'error');
+        }
+    });
     
-    const registerForm = document.getElementById('registerFormElement');
-    if (registerForm) {
-        registerForm.addEventListener('submit', register);
-    }
+    document.getElementById('registerFormElement')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const phone = document.getElementById('regPhone').value;
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirmPassword').value;
+        
+        if (password !== confirm) {
+            showNotification('Пароли не совпадают', 'error');
+            return;
+        }
+        if (users.find(u => u.email === email)) {
+            showNotification('Email уже используется', 'error');
+            return;
+        }
+        
+        const newUser = {
+            id: Date.now().toString(),
+            name: name,
+            email: email,
+            password: password,
+            phone: phone || '',
+            address: '',
+            rating: null,
+            createdAt: new Date().toISOString()
+        };
+        users.push(newUser);
+        currentUser = newUser;
+        saveData();
+        showNotification('Регистрация успешна!', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+    });
     
     if (document.getElementById('featuredItems')) loadFeaturedItems();
-    if (document.getElementById('catalogItems')) {
-        loadCatalog();
-        handleCatalogSearch();
-    }
-    if (document.getElementById('itemDetails')) loadItemDetails();
-    if (document.getElementById('bookingsList')) loadBookings();
-    if (document.getElementById('profileName')) loadProfile();
+    if (document.getElementById('catalogItems')) loadCatalog();
     
-    const createForm = document.getElementById('createListingForm');
-    if (createForm) {
-        createForm.addEventListener('submit', createListing);
-    }
-    
-    setupSearch();
-    
-    console.log('✅ Готово');
+    document.getElementById('createListingForm')?.addEventListener('submit', createListing);
 });
