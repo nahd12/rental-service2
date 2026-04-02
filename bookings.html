@@ -8,133 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.active {
+        .booking-type-tabs {
             display: flex;
-        }
-        .modal-container {
-            background: var(--card-bg);
-            border-radius: 24px;
-            width: 90%;
-            max-width: 520px;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--border);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 24px;
+            gap: 16px;
+            margin-bottom: 32px;
             border-bottom: 1px solid var(--border);
-        }
-        .modal-header h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 0;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.25rem;
-            cursor: pointer;
-            padding: 4px;
-        }
-        .modal-close:hover {
-            color: #ef4444;
-        }
-        .modal-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-        }
-        .modal-body::-webkit-scrollbar {
-            width: 6px;
-        }
-        .modal-body::-webkit-scrollbar-track {
-            background: var(--gray);
-            border-radius: 3px;
-        }
-        .modal-body::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-        .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-        .edit-preview {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-top: 12px;
-            background: var(--gray);
-        }
-        .btn-save {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .btn-cancel-modal {
-            background: var(--gray);
-            color: var(--text);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .edit-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        .delete-btn {
-            background: transparent;
-            border: 1px solid #ef4444;
-            color: #ef4444;
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        .delete-btn:hover {
-            background: #ef4444;
-            color: white;
-        }
-        .booking-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-        }
-        .booking-card:hover {
-            border-color: var(--primary);
         }
         .type-tab {
             padding: 12px 24px;
@@ -148,6 +26,13 @@
             color: var(--primary);
             border-bottom: 2px solid var(--primary);
         }
+        .booking-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
         .booking-status {
             display: inline-block;
             padding: 4px 12px;
@@ -155,103 +40,25 @@
             font-size: 0.7rem;
             font-weight: 600;
         }
-        .status-pending {
-            background: #f59e0b;
+        .status-pending { background: #f59e0b; color: white; }
+        .status-confirmed { background: #10b981; color: white; }
+        .status-completed { background: #6b7280; color: white; }
+        .status-cancelled { background: #ef4444; color: white; }
+        .edit-btn {
+            background: var(--primary);
             color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
         }
-        .status-confirmed {
-            background: #10b981;
-            color: white;
-        }
-        .status-completed {
-            background: #6b7280;
-            color: white;
-        }
-        .status-cancelled {
-            background: #ef4444;
-            color: white;
-        }
-        .booking-type-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 32px;
-            border-bottom: 1px solid var(--border);
-        }
-        .my-items-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .item-info-row {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            flex: 1;
-        }
-        .item-thumb {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-        .item-details h4 {
-            margin-bottom: 4px;
-        }
-        .item-details p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        .item-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .requests-block {
-            margin-top: 16px;
-            padding: 16px;
-            background: var(--gray);
-            border-radius: 12px;
-        }
-        .requests-title {
-            font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-        .request-item {
-            padding: 12px;
-            background: var(--card-bg);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border);
-        }
-        .request-item:last-child {
-            margin-bottom: 0;
-        }
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .request-user {
-            font-weight: 600;
-            color: var(--primary);
-        }
-        .request-dates {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .request-price {
-            font-size: 0.85rem;
-            margin: 6px 0;
+        .delete-btn {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
         }
         .btn-confirm {
             background: #10b981;
@@ -260,7 +67,6 @@
             border-radius: 6px;
             color: white;
             cursor: pointer;
-            font-size: 0.75rem;
         }
         .btn-reject {
             background: #ef4444;
@@ -269,23 +75,39 @@
             border-radius: 6px;
             color: white;
             cursor: pointer;
-            font-size: 0.75rem;
         }
-        .text-muted {
-            color: var(--text-muted);
+        .requests-block {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--gray);
+            border-radius: 12px;
         }
-        .text-center {
-            text-align: center;
-        }
-        .mt-4 {
-            margin-top: 12px;
-        }
-        .no-requests {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            text-align: center;
+        .request-item {
             padding: 12px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
         }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .item-info-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .item-thumb {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .text-center { text-align: center; }
+        .mt-4 { margin-top: 12px; }
     </style>
 </head>
 <body>
@@ -304,9 +126,8 @@
             <div class="nav-user" id="navUser">
                 <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
                 <div class="user-menu hidden" id="userMenu">
-                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" class="avatar" style="width: 40px; height: 40px; border-radius: 50%;">
                     <span id="userName"></span>
-                    <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
                         <a href="profile.html">Профиль</a>
                         <a href="bookings.html">Бронирования</a>
@@ -331,387 +152,137 @@
                     <button class="type-tab active" data-type="rentals">Мои аренды</button>
                     <button class="type-tab" data-type="my-items">Мои вещи</button>
                 </div>
-
                 <div id="rentalsContainer"></div>
                 <div id="myItemsContainer" style="display: none;"></div>
             </div>
         </section>
     </main>
 
-    <!-- Модальное окно редактирования -->
-    <div id="editModal" class="modal-overlay">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3>Редактирование товара</h3>
-                <button class="modal-close" onclick="closeEditModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Название</label>
-                    <input type="text" id="editTitle" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Категория</label>
-                    <select id="editCategory" class="form-control">
-                        <option value="tools">Инструменты</option>
-                        <option value="clothing">Одежда</option>
-                        <option value="outdoor">Отдых</option>
-                        <option value="electronics">Электроника</option>
-                        <option value="sports">Спорт</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Цена за день (₽)</label>
-                    <input type="number" id="editPrice" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Залог (₽)</label>
-                    <input type="number" id="editDeposit" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Описание</label>
-                    <textarea id="editDescription" rows="3" class="form-control"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Фото</label>
-                    <input type="file" id="editImage" accept="image/*">
-                    <img id="editImagePreview" class="edit-preview">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel-modal" onclick="closeEditModal()">Отмена</button>
-                <button class="btn-save" onclick="saveEditItem()">Сохранить</button>
-            </div>
-        </div>
-    </div>
-
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>One<span class="accent">Time</span></span>
-                    </a>
+                    <a href="index.html" class="logo">OneTime</a>
                     <p>OneTime — сервис аренды вещей на один раз.</p>
                 </div>
-                <div class="footer-links">
-                    <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Контакты</h4>
-                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 OneTime. Все права защищены.</p>
             </div>
         </div>
     </footer>
 
+    <script src="js/app.js"></script>
     <script>
         let currentEditItemId = null;
 
-        function formatDate(dateString) {
-            if (!dateString) return '—';
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return '—';
-            return date.toLocaleDateString('ru-RU');
+        function formatDate(d) { if (!d) return '—'; let date = new Date(d); return isNaN(date.getTime()) ? '—' : date.toLocaleDateString('ru-RU'); }
+        function getStatusText(s) { return { pending:'Ожидает', confirmed:'Подтверждена', completed:'Завершена', cancelled:'Отменена' }[s] || s; }
+        
+        function showNotification(m, t) {
+            let n = document.createElement('div');
+            n.textContent = m;
+            n.style.cssText = `position:fixed;bottom:20px;right:20px;padding:12px 24px;border-radius:12px;background:${t==='success'?'#10b981':'#ef4444'};color:white;z-index:10000;`;
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 3000);
         }
 
-        function getStatusText(status) {
-            const statuses = {
-                pending: 'Ожидает подтверждения',
-                confirmed: 'Подтверждена',
-                completed: 'Завершена',
-                cancelled: 'Отменена'
-            };
-            return statuses[status] || status;
-        }
-
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                padding: 12px 24px;
-                border-radius: 12px;
-                background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                color: white;
-                z-index: 10000;
-                font-weight: 500;
-            `;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        function updateBookingStatus(bookingId, newStatus) {
+        function updateBookingStatus(id, status) {
             let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-            const index = bookings.findIndex(b => b.id === bookingId);
-            if (index !== -1) {
-                bookings[index].status = newStatus;
-                localStorage.setItem('bookings', JSON.stringify(bookings));
-                showNotification('Статус изменен', 'success');
-                loadRentals();
-                loadMyItems();
-            }
+            let idx = bookings.findIndex(b => b.id === id);
+            if (idx !== -1) { bookings[idx].status = status; localStorage.setItem('bookings', JSON.stringify(bookings)); showNotification('Статус изменен', 'success'); loadRentals(); loadMyItems(); }
         }
 
-        function openEditModal(itemId) {
-            const items = JSON.parse(localStorage.getItem('items')) || [];
-            const item = items.find(i => i.id === itemId);
-            if (!item) return;
-
-            currentEditItemId = itemId;
-            document.getElementById('editTitle').value = item.title || '';
-            document.getElementById('editCategory').value = item.category || 'tools';
-            document.getElementById('editPrice').value = item.priceDay || 0;
-            document.getElementById('editDeposit').value = item.deposit || 0;
-            document.getElementById('editDescription').value = item.description || '';
-            document.getElementById('editImagePreview').src = item.image || '';
-
-            document.getElementById('editModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').classList.remove('active');
-            document.body.style.overflow = '';
-            currentEditItemId = null;
-        }
-
-        function saveEditItem() {
+        function deleteItem(id) {
+            if (!confirm('Удалить товар?')) return;
             let items = JSON.parse(localStorage.getItem('items')) || [];
-            const itemIndex = items.findIndex(i => i.id === currentEditItemId);
-
-            if (itemIndex === -1) {
-                showNotification('Товар не найден', 'error');
-                closeEditModal();
-                return;
-            }
-
-            const updatedItem = {
-                ...items[itemIndex],
-                title: document.getElementById('editTitle').value,
-                category: document.getElementById('editCategory').value,
-                priceDay: parseInt(document.getElementById('editPrice').value),
-                deposit: parseInt(document.getElementById('editDeposit').value),
-                description: document.getElementById('editDescription').value
-            };
-
-            const imageFile = document.getElementById('editImage').files[0];
-
-            function saveItem(imageData) {
-                if (imageData) updatedItem.image = imageData;
-                items[itemIndex] = updatedItem;
-                localStorage.setItem('items', JSON.stringify(items));
-                showNotification('Товар обновлен', 'success');
-                closeEditModal();
-                loadMyItems();
-            }
-
-            if (imageFile) {
-                const reader = new FileReader();
-                reader.onload = e => saveItem(e.target.result);
-                reader.readAsDataURL(imageFile);
-            } else {
-                saveItem(null);
-            }
-        }
-
-        document.getElementById('editImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('editImagePreview').src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function deleteItem(itemId) {
-            if (!confirm('Удалить этот товар?')) return;
-            let items = JSON.parse(localStorage.getItem('items')) || [];
-            items = items.filter(i => i.id !== itemId);
+            items = items.filter(i => i.id !== id);
             localStorage.setItem('items', JSON.stringify(items));
             showNotification('Товар удален', 'success');
             loadMyItems();
         }
 
         function loadRentals() {
-            const container = document.getElementById('rentalsContainer');
-            if (!container) return;
-
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (!currentUser) {
-                container.innerHTML = '<div class="text-center" style="padding: 40px;">Войдите, чтобы просмотреть бронирования</div>';
-                return;
-            }
-
-            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-            const myRentals = bookings.filter(b => b.renterId === currentUser.id);
-
-            if (myRentals.length === 0) {
-                container.innerHTML = '<div class="text-center" style="padding: 40px;">У вас пока нет активных аренд</div>';
-                return;
-            }
-
-            container.innerHTML = myRentals.map(booking => `
+            let c = document.getElementById('rentalsContainer');
+            if (!c) return;
+            let user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) { c.innerHTML = '<div class="text-center" style="padding:40px;">Войдите в аккаунт</div>'; return; }
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            let my = bookings.filter(b => b.renterId === user.id);
+            if (!my.length) { c.innerHTML = '<div class="text-center" style="padding:40px;">Нет аренд</div>'; return; }
+            c.innerHTML = my.map(b => `
                 <div class="booking-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-                        <div style="display: flex; gap: 16px; align-items: center;">
-                            <img src="${booking.itemImage || 'https://via.placeholder.com/70'}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 12px;">
-                            <div>
-                                <h4>${booking.itemTitle || 'Без названия'}</h4>
-                                <p>${formatDate(booking.startDate)} — ${formatDate(booking.endDate)} (${booking.days || 1} дн.)</p>
-                                <p>Сумма: ${booking.totalPrice || 0} ₽ | Залог: ${booking.deposit || 0} ₽</p>
-                                <span class="booking-status status-${booking.status}">${getStatusText(booking.status)}</span>
-                            </div>
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <img src="${b.itemImage || ''}" style="width:70px;height:70px;object-fit:cover;border-radius:12px;">
+                            <div><h4>${b.itemTitle || 'Без названия'}</h4>
+                            <p>${formatDate(b.startDate)} — ${formatDate(b.endDate)} (${b.days || 1} дн.)</p>
+                            <p>Сумма: ${b.totalPrice || 0} ₽ | Залог: ${b.deposit || 0} ₽</p>
+                            <span class="booking-status status-${b.status}">${getStatusText(b.status)}</span></div>
                         </div>
-                        <div>
-                            ${booking.status === 'pending' ? `<button onclick="updateBookingStatus('${booking.id}', 'cancelled')" class="btn-reject">Отменить</button>` : ''}
-                            <a href="item-details.html?id=${booking.itemId}" class="edit-btn" style="display: inline-block; text-decoration: none;">Подробнее</a>
-                        </div>
+                        <div><a href="item-details.html?id=${b.itemId}" class="edit-btn" style="text-decoration:none;">Подробнее</a></div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         function loadMyItems() {
-            const container = document.getElementById('myItemsContainer');
-            if (!container) return;
-
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (!currentUser) {
-                container.innerHTML = '<div class="text-center" style="padding: 40px;">Войдите, чтобы просмотреть свои товары</div>';
-                return;
-            }
-
-            const items = JSON.parse(localStorage.getItem('items')) || [];
-            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-            const myItems = items.filter(i => i.ownerId === currentUser.id);
-
-            if (myItems.length === 0) {
-                container.innerHTML = '<div class="text-center" style="padding: 40px;">У вас пока нет товаров. <a href="create-listing.html">Создать объявление</a></div>';
-                return;
-            }
-
-            let html = '<div class="my-items-grid">';
-            for (const item of myItems) {
-                const itemRequests = bookings.filter(b => b.itemId === item.id);
-                html += `
-                    <div class="booking-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-                            <div style="display: flex; gap: 16px; align-items: center;">
-                                <img src="${item.image || 'https://via.placeholder.com/70'}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 12px;">
-                                <div>
-                                    <h4>${item.title || 'Без названия'}</h4>
-                                    <p>${item.priceDay || 0} ₽/день | Залог: ${item.deposit || 0} ₽</p>
-                                    <p class="text-muted">${(item.description || '').substring(0, 80)}...</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 8px;">
-                                <button onclick="openEditModal('${item.id}')" class="edit-btn">Редактировать</button>
-                                <button onclick="deleteItem('${item.id}')" class="delete-btn">Удалить</button>
-                            </div>
+            let c = document.getElementById('myItemsContainer');
+            if (!c) return;
+            let user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) { c.innerHTML = '<div class="text-center" style="padding:40px;">Войдите в аккаунт</div>'; return; }
+            let items = JSON.parse(localStorage.getItem('items')) || [];
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            let my = items.filter(i => i.ownerId === user.id);
+            if (!my.length) { c.innerHTML = '<div class="text-center" style="padding:40px;">Нет товаров. <a href="create-listing.html">Создать</a></div>'; return; }
+            c.innerHTML = my.map(item => {
+                let reqs = bookings.filter(b => b.itemId === item.id);
+                return `<div class="booking-card">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <img src="${item.image || ''}" style="width:70px;height:70px;object-fit:cover;border-radius:12px;">
+                            <div><h4>${item.title || 'Без названия'}</h4>
+                            <p>${item.priceDay || 0} ₽/день | Залог: ${item.deposit || 0} ₽</p>
+                            <p>${(item.description || '').substring(0, 80)}...</p></div>
                         </div>
-                `;
-                
-                if (itemRequests.length > 0) {
-                    html += `
-                        <div class="requests-block">
-                            <div class="requests-title">Запросы на аренду (${itemRequests.length})</div>
-                    `;
-                    for (const r of itemRequests) {
-                        const startDate = r.startDate ? new Date(r.startDate).toLocaleDateString('ru-RU') : '—';
-                        const endDate = r.endDate ? new Date(r.endDate).toLocaleDateString('ru-RU') : '—';
-                        html += `
-                            <div class="request-item">
-                                <div class="request-header">
-                                    <span class="request-user">${r.renterName || 'Пользователь'}</span>
-                                    <span class="request-dates">${startDate} — ${endDate}</span>
-                                </div>
-                                <div class="request-price">
-                                    Сумма: ${r.totalPrice || 0} ₽ | Залог: ${r.deposit || 0} ₽
-                                </div>
-                                <div class="mt-4">
-                                    <span class="booking-status status-${r.status}">${getStatusText(r.status)}</span>
-                                    ${r.status === 'pending' ? `
-                                        <div class="mt-4">
-                                            <button onclick="updateBookingStatus('${r.id}', 'confirmed')" class="btn-confirm">Подтвердить</button>
-                                            <button onclick="updateBookingStatus('${r.id}', 'cancelled')" class="btn-reject">Отклонить</button>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        `;
-                    }
-                    html += `</div>`;
-                } else {
-                    html += `<div class="no-requests">Нет активных запросов</div>`;
-                }
-                html += `</div>`;
-            }
-            html += `</div>`;
-            container.innerHTML = html;
+                        <div><button onclick="openEditModal('${item.id}')" class="edit-btn">Ред.</button>
+                        <button onclick="deleteItem('${item.id}')" class="delete-btn">Удалить</button></div>
+                    </div>
+                    ${reqs.length ? `<div class="requests-block"><strong>Запросы (${reqs.length})</strong>${reqs.map(r => `<div class="request-item"><strong>${r.renterName || 'Пользователь'}</strong> ${formatDate(r.startDate)}—${formatDate(r.endDate)}<br>Сумма: ${r.totalPrice || 0} ₽<br><span class="booking-status status-${r.status}">${getStatusText(r.status)}</span>${r.status === 'pending' ? `<div class="mt-4"><button onclick="updateBookingStatus('${r.id}','confirmed')" class="btn-confirm">Подтвердить</button> <button onclick="updateBookingStatus('${r.id}','cancelled')" class="btn-reject">Отклонить</button></div>` : ''}</div>`).join('')}</div>` : '<div class="no-requests" style="margin-top:12px;">Нет запросов</div>'}
+                </div>`;
+            }).join('');
         }
 
-        // Переключение вкладок
-        const tabs = document.querySelectorAll('.type-tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                const type = tab.dataset.type;
-                if (type === 'rentals') {
-                    document.getElementById('rentalsContainer').style.display = 'block';
-                    document.getElementById('myItemsContainer').style.display = 'none';
-                    loadRentals();
-                } else {
-                    document.getElementById('rentalsContainer').style.display = 'none';
-                    document.getElementById('myItemsContainer').style.display = 'block';
-                    loadMyItems();
-                }
-            });
-        });
+        function openEditModal(id) {
+            let items = JSON.parse(localStorage.getItem('items')) || [];
+            let item = items.find(i => i.id === id);
+            if (!item) return;
+            let newTitle = prompt('Новое название:', item.title);
+            if (newTitle) item.title = newTitle;
+            let newPrice = prompt('Новая цена (₽/день):', item.priceDay);
+            if (newPrice) item.priceDay = parseInt(newPrice);
+            let newDeposit = prompt('Новый залог (₽):', item.deposit);
+            if (newDeposit) item.deposit = parseInt(newDeposit);
+            let newDesc = prompt('Новое описание:', item.description);
+            if (newDesc) item.description = newDesc;
+            localStorage.setItem('items', JSON.stringify(items));
+            showNotification('Товар обновлен', 'success');
+            loadMyItems();
+        }
 
-        document.getElementById('editModal').addEventListener('click', function(e) {
-            if (e.target === this) closeEditModal();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('editModal').classList.contains('active')) {
-                closeEditModal();
-            }
+        let tabs = document.querySelectorAll('.type-tab');
+        tabs.forEach(t => {
+            t.onclick = () => {
+                tabs.forEach(tt => { tt.classList.remove('active'); tt.style.borderBottom = 'none'; });
+                t.classList.add('active'); t.style.borderBottom = '2px solid var(--primary)';
+                if (t.dataset.type === 'rentals') { document.getElementById('rentalsContainer').style.display = 'block'; document.getElementById('myItemsContainer').style.display = 'none'; loadRentals(); }
+                else { document.getElementById('rentalsContainer').style.display = 'none'; document.getElementById('myItemsContainer').style.display = 'block'; loadMyItems(); }
+            };
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const loginBtn = document.getElementById('loginBtn');
-            const userMenu = document.getElementById('userMenu');
-            const userNameSpan = document.getElementById('userName');
-            
-            if (currentUser) {
-                if (loginBtn) loginBtn.classList.add('hidden');
-                if (userMenu) {
-                    userMenu.classList.remove('hidden');
-                    if (userNameSpan) userNameSpan.textContent = currentUser.name;
-                }
-            }
-            
-            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('currentUser');
-                window.location.href = 'index.html';
-            });
-            
+            let user = JSON.parse(localStorage.getItem('currentUser'));
+            let btn = document.getElementById('loginBtn');
+            let menu = document.getElementById('userMenu');
+            let nameSpan = document.getElementById('userName');
+            if (user) { if(btn) btn.classList.add('hidden'); if(menu) menu.classList.remove('hidden'); if(nameSpan) nameSpan.textContent = user.name; }
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('currentUser'); location.href='index.html'; });
             loadRentals();
         });
     </script>
