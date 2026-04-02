@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Модальное окно */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -34,7 +33,6 @@
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         .modal-header {
             display: flex;
@@ -47,7 +45,6 @@
             font-size: 1.25rem;
             font-weight: 600;
             margin: 0;
-            color: var(--text);
         }
         .modal-close {
             background: none;
@@ -55,11 +52,10 @@
             color: var(--text-muted);
             font-size: 1.25rem;
             cursor: pointer;
-            transition: color 0.2s;
             padding: 4px;
         }
         .modal-close:hover {
-            color: var(--danger);
+            color: #ef4444;
         }
         .modal-body {
             flex: 1;
@@ -84,18 +80,21 @@
             justify-content: flex-end;
             gap: 12px;
         }
+        .edit-preview {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 12px;
+            background: var(--gray);
+        }
         .btn-save {
             background: var(--primary);
             color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 12px;
-            font-weight: 500;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .btn-save:hover {
-            opacity: 0.9;
         }
         .btn-cancel-modal {
             background: var(--gray);
@@ -103,20 +102,7 @@
             border: none;
             padding: 10px 20px;
             border-radius: 12px;
-            font-weight: 500;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-cancel-modal:hover {
-            background: var(--gray-light);
-        }
-        .edit-preview {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 16px;
-            margin-top: 12px;
-            background: var(--gray);
         }
         .edit-btn {
             background: var(--primary);
@@ -126,23 +112,18 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.8rem;
-            transition: opacity 0.2s;
-        }
-        .edit-btn:hover {
-            opacity: 0.9;
         }
         .delete-btn {
             background: transparent;
-            border: 1px solid var(--danger);
-            color: var(--danger);
+            border: 1px solid #ef4444;
+            color: #ef4444;
             padding: 6px 14px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.8rem;
-            transition: all 0.2s;
         }
         .delete-btn:hover {
-            background: var(--danger);
+            background: #ef4444;
             color: white;
         }
         .booking-card {
@@ -151,7 +132,6 @@
             padding: 20px;
             margin-bottom: 16px;
             border: 1px solid var(--border);
-            transition: border-color 0.2s;
         }
         .booking-card:hover {
             border-color: var(--primary);
@@ -163,7 +143,6 @@
             color: var(--text-muted);
             font-weight: 600;
             cursor: pointer;
-            transition: color 0.2s;
         }
         .type-tab.active {
             color: var(--primary);
@@ -235,18 +214,44 @@
         }
         .requests-block {
             margin-top: 16px;
-            padding: 12px;
+            padding: 16px;
             background: var(--gray);
             border-radius: 12px;
+        }
+        .requests-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
         }
         .request-item {
             padding: 12px;
             background: var(--card-bg);
             border-radius: 10px;
             margin-bottom: 10px;
+            border: 1px solid var(--border);
         }
         .request-item:last-child {
             margin-bottom: 0;
+        }
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .request-user {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .request-dates {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .request-price {
+            font-size: 0.85rem;
+            margin: 6px 0;
         }
         .btn-confirm {
             background: #10b981;
@@ -273,7 +278,13 @@
             text-align: center;
         }
         .mt-4 {
-            margin-top: 16px;
+            margin-top: 12px;
+        }
+        .no-requests {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 12px;
         }
     </style>
 </head>
@@ -297,9 +308,9 @@
                     <span id="userName"></span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
-                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
-                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
-                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                        <a href="profile.html">Профиль</a>
+                        <a href="bookings.html">Бронирования</a>
+                        <a href="#" id="logoutBtn">Выйти</a>
                     </div>
                 </div>
             </div>
@@ -408,9 +419,17 @@
         let currentEditItemId = null;
 
         function formatDate(dateString) {
-            if (!dateString) return '—';
+            if (!dateString || dateString === 'undefined') return '—';
             const date = new Date(dateString);
+            if (isNaN(date.getTime())) return '—';
             return date.toLocaleDateString('ru-RU');
+        }
+
+        function formatDateShort(dateString) {
+            if (!dateString || dateString === 'undefined') return '—';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return '—';
+            return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
         }
 
         function getStatusText(status) {
@@ -459,12 +478,12 @@
             if (!item) return;
 
             currentEditItemId = itemId;
-            document.getElementById('editTitle').value = item.title;
-            document.getElementById('editCategory').value = item.category;
-            document.getElementById('editPrice').value = item.priceDay;
-            document.getElementById('editDeposit').value = item.deposit;
-            document.getElementById('editDescription').value = item.description;
-            document.getElementById('editImagePreview').src = item.image;
+            document.getElementById('editTitle').value = item.title || '';
+            document.getElementById('editCategory').value = item.category || 'tools';
+            document.getElementById('editPrice').value = item.priceDay || 0;
+            document.getElementById('editDeposit').value = item.deposit || 0;
+            document.getElementById('editDescription').value = item.description || '';
+            document.getElementById('editImagePreview').src = item.image || '';
 
             document.getElementById('editModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -560,11 +579,11 @@
                 <div class="booking-card">
                     <div class="item-row">
                         <div class="item-info-row">
-                            <img src="${booking.itemImage}" class="item-thumb">
+                            <img src="${booking.itemImage || 'https://via.placeholder.com/70'}" class="item-thumb" onerror="this.src='https://via.placeholder.com/70'">
                             <div class="item-details">
-                                <h4>${booking.itemTitle}</h4>
-                                <p>${formatDate(booking.startDate)} — ${formatDate(booking.endDate)} (${booking.days} дн.)</p>
-                                <p>Сумма: ${booking.totalPrice} ₽ | Залог: ${booking.deposit} ₽</p>
+                                <h4>${booking.itemTitle || 'Без названия'}</h4>
+                                <p>${formatDate(booking.startDate)} — ${formatDate(booking.endDate)} (${booking.days || 1} дн.)</p>
+                                <p>Сумма: ${booking.totalPrice || 0} ₽ | Залог: ${booking.deposit || 0} ₽</p>
                                 <span class="booking-status status-${booking.status}">${getStatusText(booking.status)}</span>
                             </div>
                         </div>
@@ -604,11 +623,11 @@
                             <div class="booking-card">
                                 <div class="item-row">
                                     <div class="item-info-row">
-                                        <img src="${item.image}" class="item-thumb">
+                                        <img src="${item.image || 'https://via.placeholder.com/70'}" class="item-thumb" onerror="this.src='https://via.placeholder.com/70'">
                                         <div class="item-details">
-                                            <h4>${item.title}</h4>
-                                            <p>${item.priceDay} ₽/день | Залог: ${item.deposit} ₽</p>
-                                            <p class="text-muted">${item.description.substring(0, 80)}...</p>
+                                            <h4>${item.title || 'Без названия'}</h4>
+                                            <p>${item.priceDay || 0} ₽/день | Залог: ${item.deposit || 0} ₽</p>
+                                            <p class="text-muted">${(item.description || '').substring(0, 80)}...</p>
                                         </div>
                                     </div>
                                     <div class="item-actions">
@@ -618,22 +637,29 @@
                                 </div>
                                 ${itemRequests.length > 0 ? `
                                     <div class="requests-block">
-                                        <strong>Запросы на аренду:</strong>
+                                        <div class="requests-title">Запросы на аренду</div>
                                         ${itemRequests.map(r => `
                                             <div class="request-item">
-                                                <p><strong>${r.renterName}</strong> хочет арендовать ${formatDate(r.startDate)} — ${formatDate(r.endDate)} (${r.days} дн.)</p>
-                                                <p>Сумма: ${r.totalPrice} ₽ | Залог: ${r.deposit} ₽</p>
-                                                <span class="booking-status status-${r.status}">${getStatusText(r.status)}</span>
-                                                ${r.status === 'pending' ? `
-                                                    <div class="mt-4">
-                                                        <button onclick="updateBookingStatus('${r.id}', 'confirmed')" class="btn-confirm">Подтвердить</button>
-                                                        <button onclick="updateBookingStatus('${r.id}', 'cancelled')" class="btn-reject">Отклонить</button>
-                                                    </div>
-                                                ` : ''}
+                                                <div class="request-header">
+                                                    <span class="request-user">${r.renterName || 'Пользователь'}</span>
+                                                    <span class="request-dates">${formatDateShort(r.startDate)} — ${formatDateShort(r.endDate)}</span>
+                                                </div>
+                                                <div class="request-price">
+                                                    Сумма: ${r.totalPrice || (r.days * r.deposit) || 0} ₽ | Залог: ${r.deposit || 0} ₽
+                                                </div>
+                                                <div class="mt-4">
+                                                    <span class="booking-status status-${r.status}">${getStatusText(r.status)}</span>
+                                                    ${r.status === 'pending' ? `
+                                                        <div class="mt-4">
+                                                            <button onclick="updateBookingStatus('${r.id}', 'confirmed')" class="btn-confirm">Подтвердить</button>
+                                                            <button onclick="updateBookingStatus('${r.id}', 'cancelled')" class="btn-reject">Отклонить</button>
+                                                        </div>
+                                                    ` : ''}
+                                                </div>
                                             </div>
                                         `).join('')}
                                     </div>
-                                ` : '<p class="text-muted" style="margin-top: 12px;">Нет активных запросов</p>'}
+                                ` : '<div class="no-requests">Нет активных запросов</div>'}
                             </div>
                         `;
                     }).join('')}
@@ -661,19 +687,16 @@
             });
         });
 
-        // Закрытие модалки по клику вне
         document.getElementById('editModal').addEventListener('click', function(e) {
             if (e.target === this) closeEditModal();
         });
 
-        // ESC для закрытия
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && document.getElementById('editModal').classList.contains('active')) {
                 closeEditModal();
             }
         });
 
-        // Навигация
         document.addEventListener('DOMContentLoaded', () => {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             const loginBtn = document.getElementById('loginBtn');
