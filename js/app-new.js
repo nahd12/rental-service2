@@ -365,19 +365,33 @@ function createListing(event) {
     event.preventDefault();
     
     if (!currentUser) {
-        alert('Войдите в аккаунт');
+        showNotification('Войдите в аккаунт', 'error');
         window.location.href = 'login.html';
+        return;
+    }
+    
+    const title = document.getElementById('itemTitle').value;
+    const category = document.getElementById('itemCategory').value;
+    const priceDay = parseInt(document.getElementById('itemPriceDay').value);
+    const deposit = parseInt(document.getElementById('itemDeposit').value);
+    const description = document.getElementById('itemDescription').value;
+    
+    // Получаем фото (если есть)
+    const imageFile = document.getElementById('itemImage').files[0];
+    
+    if (!title || !category || !priceDay || !deposit || !description) {
+        showNotification('Заполните все обязательные поля', 'error');
         return;
     }
     
     const newItem = {
         id: Date.now().toString(),
-        title: document.getElementById('itemTitle').value,
-        category: document.getElementById('itemCategory').value,
-        priceDay: parseInt(document.getElementById('itemPriceDay').value),
-        deposit: parseInt(document.getElementById('itemDeposit').value),
-        description: document.getElementById('itemDescription').value,
-        image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400',
+        title: title,
+        category: category,
+        priceDay: priceDay,
+        deposit: deposit,
+        description: description,
+        image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400', // фото по умолчанию
         ownerId: currentUser.id,
         ownerName: currentUser.name,
         rating: null,
@@ -385,10 +399,27 @@ function createListing(event) {
         createdAt: new Date().toISOString()
     };
     
-    items.push(newItem);
-    saveData();
-    alert('Объявление опубликовано!');
-    window.location.href = 'profile.html';
+    // Если есть загруженное фото, сохраняем его в localStorage
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            newItem.image = e.target.result; // сохраняем фото как base64
+            items.push(newItem);
+            saveData();
+            showNotification('Объявление опубликовано!', 'success');
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 1500);
+        };
+        reader.readAsDataURL(imageFile);
+    } else {
+        items.push(newItem);
+        saveData();
+        showNotification('Объявление опубликовано!', 'success');
+        setTimeout(() => {
+            window.location.href = 'profile.html';
+        }, 1500);
+    }
 }
 
 function setupSearch() {
