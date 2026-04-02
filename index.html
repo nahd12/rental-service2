@@ -261,7 +261,7 @@
         document.addEventListener('DOMContentLoaded', updateAdminLink);
         setInterval(updateAdminLink, 1000);
     </script>
-    // Обновление навигации после входа
+     
     function updateNavigation() {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         const loginBtn = document.getElementById('loginBtn');
@@ -280,10 +280,10 @@
         }
     }
     
-    // Запускаем при загрузке
+   
     document.addEventListener('DOMContentLoaded', updateNavigation);
     
-    // Проверяем каждую секунду (на случай если вход произошел на другой вкладке)
+     
     setInterval(updateNavigation, 1000);
 </script>
 </body>
