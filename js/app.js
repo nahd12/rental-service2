@@ -1,5 +1,5 @@
 // ============================================
-// OneTime - полная рабочая версия с ImgBB
+// OneTime - полная версия с Google Sheets
 // ============================================
 
 let currentUser = null;
@@ -7,10 +7,71 @@ let items = [];
 let bookings = [];
 let users = [];
 
-// ⚠️ ВСТАВЬТЕ ВАШ API КЛЮЧ IMGBB ВМЕСТО 'ВАШ_API_КЛЮЧ' ⚠️
-const IMGBB_API_KEY = 'cf1fa6e9b0d332a1807ca17414d32b06';
+// ⚠️ ВСТАВЬТЕ ВАШ URL ИЗ GOOGLE APPS SCRIPT ⚠️
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx20_EfftmyAfXCm_-FhD61QwwjBjRTHGKMRbGoIDWf1qTaxJpwIupOPZIfqODybVh5Jg/exec';
 
-// Инициализация данных
+// ============================================
+// GOOGLE SHEETS ФУНКЦИИ
+// ============================================
+
+// Отправка нового пользователя в Google Sheets
+async function saveUserToGoogleSheets(userData) {
+    try {
+        const response = await fetch(GOOGLE_SHEETS_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+        const result = await response.json();
+        console.log('📤 Google Sheets ответ:', result);
+        return result;
+    } catch(error) {
+        console.error('❌ Ошибка отправки в Google Sheets:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// Получение всех пользователей из Google Sheets
+async function getUsersFromGoogleSheets() {
+    try {
+        const response = await fetch(GOOGLE_SHEETS_URL);
+        const result = await response.json();
+        console.log('📥 Получено пользователей из Google Sheets:', result.users?.length || 0);
+        return result;
+    } catch(error) {
+        console.error('❌ Ошибка получения пользователей:', error);
+        return { success: false, users: [] };
+    }
+}
+
+// Синхронизация пользователей с Google Sheets
+async function syncUsersWithCloud() {
+    try {
+        const cloudResult = await getUsersFromGoogleSheets();
+        if (cloudResult.success && cloudResult.users && cloudResult.users.length > 0) {
+            let localUsers = JSON.parse(localStorage.getItem('users')) || [];
+            const existingEmails = new Set(localUsers.map(u => u.email));
+            const newUsers = cloudResult.users.filter(u => !existingEmails.has(u.email));
+            
+            if (newUsers.length > 0) {
+                const mergedUsers = [...localUsers, ...newUsers];
+                localStorage.setItem('users', JSON.stringify(mergedUsers));
+                console.log(`✅ Синхронизировано ${newUsers.length} новых пользователей из облака`);
+                return true;
+            }
+        }
+        return false;
+    } catch(error) {
+        console.error('❌ Ошибка синхронизации:', error);
+        return false;
+    }
+}
+
+// ============================================
+// ИНИЦИАЛИЗАЦИЯ ДАННЫХ
+// ============================================
+
 function initData() {
     const storedUsers = localStorage.getItem('users');
     if (storedUsers) {
@@ -25,6 +86,16 @@ function initData() {
                 phone: '+7 900 123-45-67',
                 address: 'г. Москва',
                 rating: 4.8,
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: '2',
+                name: 'Администратор',
+                email: 'admin@onetime.ru',
+                password: 'admin123',
+                phone: '+7 900 000-00-00',
+                address: 'г. Москва',
+                rating: 5.0,
                 createdAt: new Date().toISOString()
             }
         ];
@@ -176,54 +247,30 @@ function showNotification(message, type) {
         color: white;
         z-index: 10000;
         font-weight: 500;
-        animation: slideIn 0.3s ease;
     `;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
 }
 
 // ============================================
-// ФУНКЦИЯ ЗАГРУЗКИ ФОТО НА IMGBB
+// АВТОРИЗАЦИЯ (с синхронизацией с Google Sheets)
 // ============================================
 
-async function uploadImageToImgBB(file) {
-    showNotification('Загрузка фото...', 'info');
-    
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-            method: 'POST',
-            body: formData,
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            showNotification('Фото загружено!', 'success');
-            return result.data.url;
-        } else {
-            console.error('Ошибка ImgBB:', result);
-            showNotification('Ошибка загрузки фото', 'error');
-            return null;
-        }
-    } catch (error) {
-        console.error('Ошибка сети:', error);
-        showNotification('Ошибка сети', 'error');
-        return null;
-    }
-}
-
-// ============================================
-// АВТОРИЗАЦИЯ
-// ============================================
-
-function login(event) {
+async function login(event) {
     event.preventDefault();
+    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    const user = users.find(u => u.email === email && u.password === password);
+    
+    // Сначала пробуем найти в локальном хранилище
+    let user = users.find(u => u.email === email && u.password === password);
+    
+    // Если не нашли, пробуем синхронизировать с облаком
+    if (!user) {
+        await syncUsersWithCloud();
+        users = JSON.parse(localStorage.getItem('users')) || [];
+        user = users.find(u => u.email === email && u.password === password);
+    }
     
     if (user) {
         currentUser = user;
@@ -235,8 +282,9 @@ function login(event) {
     }
 }
 
-function register(event) {
+async function register(event) {
     event.preventDefault();
+    
     const name = document.getElementById('regName').value;
     const email = document.getElementById('regEmail').value;
     const phone = document.getElementById('regPhone').value;
@@ -247,8 +295,10 @@ function register(event) {
         showNotification('Пароли не совпадают', 'error');
         return;
     }
+    
+    // Проверяем в локальном хранилище
     if (users.find(u => u.email === email)) {
-        showNotification('Email уже используется', 'error');
+        showNotification('Пользователь уже существует', 'error');
         return;
     }
     
@@ -263,11 +313,31 @@ function register(event) {
         isAdmin: email === 'admin@onetime.ru',
         createdAt: new Date().toISOString()
     };
+    
+    // Сохраняем в локальное хранилище
     users.push(newUser);
     currentUser = newUser;
     saveData();
+    
+    // Отправляем в Google Sheets
+    showNotification('Синхронизация с облаком...', 'info');
+    const googleResult = await saveUserToGoogleSheets({
+        name: name,
+        email: email,
+        password: password,
+        phone: phone || ''
+    });
+    
+    if (googleResult.success) {
+        console.log('✅ Пользователь сохранен в Google Sheets');
+    } else {
+        console.warn('⚠️ Ошибка синхронизации с Google Sheets:', googleResult.error);
+    }
+    
     showNotification('Регистрация успешна!', 'success');
-    setTimeout(() => window.location.href = 'index.html', 1500);
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 1500);
 }
 
 // ============================================
@@ -472,7 +542,7 @@ function bookItem(itemId) {
 }
 
 // ============================================
-// СОЗДАНИЕ ТОВАРА (С ЗАГРУЗКОЙ ФОТО НА IMGBB)
+// СОЗДАНИЕ ТОВАРА
 // ============================================
 
 async function createListing(event) {
@@ -489,20 +559,10 @@ async function createListing(event) {
     const priceDay = parseInt(document.getElementById('itemPriceDay').value);
     const deposit = parseInt(document.getElementById('itemDeposit').value);
     const description = document.getElementById('itemDescription').value;
-    const imageFile = document.getElementById('itemImage').files[0];
     
     if (!title || !category || !priceDay || !deposit || !description) {
         showNotification('Заполните все поля', 'error');
         return;
-    }
-    
-    let finalImageUrl = 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400';
-    
-    if (imageFile) {
-        const uploadedUrl = await uploadImageToImgBB(imageFile);
-        if (uploadedUrl) {
-            finalImageUrl = uploadedUrl;
-        }
     }
     
     const newItem = {
@@ -512,7 +572,7 @@ async function createListing(event) {
         priceDay: priceDay,
         deposit: deposit,
         description: description,
-        image: finalImageUrl,
+        image: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400',
         ownerId: currentUser.id,
         ownerName: currentUser.name,
         rating: null,
@@ -532,11 +592,15 @@ async function createListing(event) {
 // ЗАПУСК
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('🔵 Сайт загружен, инициализация...');
     
     initData();
     updateNav();
+    
+    // Синхронизируем пользователей с облаком при загрузке
+    await syncUsersWithCloud();
+    users = JSON.parse(localStorage.getItem('users')) || [];
     
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -550,4 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('featuredItems')) loadFeaturedItems();
     if (document.getElementById('catalogItems')) loadCatalog();
     if (document.getElementById('itemDetails')) loadItemDetails();
+    
+    console.log('✅ Инициализация завершена');
 });
