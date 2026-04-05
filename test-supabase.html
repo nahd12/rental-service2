@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Тест Supabase</title>
+    <style>
+        body { font-family: Arial; padding: 40px; background: #0a0a0f; color: white; }
+        input, button { padding: 10px; margin: 10px 0; display: block; width: 300px; }
+        button { background: #7c3aed; color: white; border: none; cursor: pointer; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <h1>Тест подключения к Supabase</h1>
+    
+    <h3>Регистрация</h3>
+    <input type="text" id="name" placeholder="Имя">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Пароль">
+    <button onclick="testRegister()">Зарегистрироваться</button>
+    
+    <h3>Получить пользователей</h3>
+    <button onclick="getUsers()">Получить список</button>
+    
+    <div id="result"></div>
+
+    <script>
+        // ВСТАВЬТЕ ВАШИ КЛЮЧИ ИЗ SUPABASE
+        const SUPABASE_URL = 'https://ВАШ_ПРОЕКТ.supabase.co';
+        const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';
+        
+        async function testRegister() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            document.getElementById('result').innerHTML = '⏳ Отправка...';
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                        created_at: new Date().toISOString()
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('Ответ:', response.status, result);
+                
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = `<span class="success">✅ Успешно! Пользователь создан</span>`;
+                } else {
+                    document.getElementById('result').innerHTML = `<span class="error">❌ Ошибка: ${JSON.stringify(result)}</span>`;
+                }
+            } catch(error) {
+                document.getElementById('result').innerHTML = `<span class="error">❌ Ошибка: ${error.message}</span>`;
+            }
+        }
+        
+        async function getUsers() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                const users = await response.json();
+                document.getElementById('result').innerHTML = `<pre>${JSON.stringify(users, null, 2)}</pre>`;
+            } catch(error) {
+                document.getElementById('result').innerHTML = `<span class="error">❌ Ошибка: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
