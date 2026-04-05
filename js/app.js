@@ -281,11 +281,23 @@ async function login(event) {
     // Сначала пробуем найти в локальном хранилище
     let user = users.find(u => u.email === email && u.password === password);
     
-    // Если не нашли, пробуем синхронизировать с облаком
+    // Если не нашли, пробуем получить из Supabase
     if (!user) {
-        await syncUsersWithCloud();
-        users = JSON.parse(localStorage.getItem('users')) || [];
-        user = users.find(u => u.email === email && u.password === password);
+        showNotification('Синхронизация...', 'info');
+        const supabaseResult = await getUsersFromSupabase();
+        if (supabaseResult.success && supabaseResult.users.length > 0) {
+            // Объединяем пользователей из Supabase с локальными
+            const existingEmails = new Set(users.map(u => u.email));
+            const newUsers = supabaseResult.users.filter(u => !existingEmails.has(u.email));
+            
+            if (newUsers.length > 0) {
+                users.push(...newUsers);
+                saveData();
+                showNotification(`Синхронизировано ${newUsers.length} пользователей`, 'success');
+            }
+            
+            user = users.find(u => u.email === email && u.password === password);
+        }
     }
     
     if (user) {
@@ -297,7 +309,6 @@ async function login(event) {
         showNotification('Неверный email или пароль', 'error');
     }
 }
-
 async async function register(event) {
     event.preventDefault();
     
@@ -623,12 +634,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateNav();
     
     // Синхронизируем пользователей с облаком при загрузке
-    await syncUsersWithCloud();
-    users = JSON.parse(localStorage.getItem('users')) || [];
-    
-    document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        logout();
+ const supabaseResult = await getUsersFromSupabase();
+    if (supabaseResult.success && supabaseResult.users.length > 0) {
+        const existingEmails = new Set(users.map(u => u.email));
+        const newUsers = supabaseResult.users.filter(u => !existingEmails.has(u.email));
+        if (newUsers.length > 0) {
+            users.push(...newUsers);
+            saveData();
+            console.log(`✅ Синхронизировано ${newUsers.length} пользователей из Supabase`);
+        }
+    }
     });
     
     document.getElementById('loginFormElement')?.addEventListener('submit', login);
