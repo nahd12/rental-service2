@@ -7,67 +7,83 @@ let items = [];
 let bookings = [];
 let users = [];
 
-// ⚠️ ВСТАВЬТЕ ВАШ URL ИЗ GOOGLE APPS SCRIPT ⚠️
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx20_EfftmyAfXCm_-FhD61QwwjBjRTHGKMRbGoIDWf1qTaxJpwIupOPZIfqODybVh5Jg/exec';
-
 // ============================================
-// GOOGLE SHEETS ФУНКЦИИ
+// НАСТРОЙКИ SUPABASE
 // ============================================
 
-// Отправка нового пользователя в Google Sheets
-async function saveUserToGoogleSheets(userData) {
+const SUPABASE_URL = 'https://ВАШ_ПРОЕКТ.supabase.co';  // Вставьте ваш Project URL
+const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';  // Вставьте ваш anon key
+
+// Функция для сохранения пользователя в Supabase
+async function saveUserToSupabase(userData) {
     try {
-        const response = await fetch(GOOGLE_SHEETS_URL, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
             method: 'POST',
-            mode: 'cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+                phone: userData.phone || '',
+                created_at: new Date().toISOString()
+            })
         });
+        
         const result = await response.json();
-        console.log('📤 Google Sheets ответ:', result);
-        return result;
+        console.log('✅ Сохранено в Supabase:', result);
+        
+        if (response.ok) {
+            return { success: true, user: result[0] };
+        } else {
+            console.error('❌ Ошибка Supabase:', result);
+            return { success: false, error: result };
+        }
     } catch(error) {
-        console.error('❌ Ошибка отправки в Google Sheets:', error);
+        console.error('❌ Ошибка сети:', error);
         return { success: false, error: error.message };
     }
 }
 
-// Получение всех пользователей из Google Sheets
-async function getUsersFromGoogleSheets() {
+// Функция для получения всех пользователей из Supabase
+async function getUsersFromSupabase() {
     try {
-        const response = await fetch(GOOGLE_SHEETS_URL);
-        const result = await response.json();
-        console.log('📥 Получено пользователей из Google Sheets:', result.users?.length || 0);
-        return result;
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*`, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
+        
+        const users = await response.json();
+        return { success: true, users: users };
     } catch(error) {
-        console.error('❌ Ошибка получения пользователей:', error);
+        console.error('❌ Ошибка получения:', error);
         return { success: false, users: [] };
     }
 }
 
-// Синхронизация пользователей с Google Sheets
-async function syncUsersWithCloud() {
+// Функция для проверки email в Supabase
+async function checkEmailInSupabase(email) {
     try {
-        const cloudResult = await getUsersFromGoogleSheets();
-        if (cloudResult.success && cloudResult.users && cloudResult.users.length > 0) {
-            let localUsers = JSON.parse(localStorage.getItem('users')) || [];
-            const existingEmails = new Set(localUsers.map(u => u.email));
-            const newUsers = cloudResult.users.filter(u => !existingEmails.has(u.email));
-            
-            if (newUsers.length > 0) {
-                const mergedUsers = [...localUsers, ...newUsers];
-                localStorage.setItem('users', JSON.stringify(mergedUsers));
-                console.log(`✅ Синхронизировано ${newUsers.length} новых пользователей из облака`);
-                return true;
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${email}&select=email`, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
             }
-        }
-        return false;
+        });
+        
+        const users = await response.json();
+        return users.length > 0;
     } catch(error) {
-        console.error('❌ Ошибка синхронизации:', error);
+        console.error('❌ Ошибка проверки email:', error);
         return false;
     }
 }
-
 // ============================================
 // ИНИЦИАЛИЗАЦИЯ ДАННЫХ
 // ============================================
