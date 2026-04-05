@@ -11,8 +11,8 @@ let users = [];
 // НАСТРОЙКИ SUPABASE
 // ============================================
 
-const SUPABASE_URL = 'https://ВАШ_ПРОЕКТ.supabase.co';  // Вставьте ваш Project URL
-const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';  // Вставьте ваш anon key
+const SUPABASE_URL = 'https://hsaftnmupjsmrasorluy.supabase.co';  // Вставьте ваш Project URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzYWZ0bm11cGpzbXJhc29ybHV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMTM0ODcsImV4cCI6MjA5MDg4OTQ4N30.LG06ZAOkS25nF3OmFUK3FBseqpWZ2P_oy4LOabw_RZs';  // Вставьте ваш anon key
 
 // Функция для сохранения пользователя в Supabase
 async function saveUserToSupabase(userData) {
