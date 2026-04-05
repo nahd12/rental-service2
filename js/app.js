@@ -1,5 +1,5 @@
 // ============================================
-// OneTime - РАБОЧАЯ ВЕРСИЯ (без Supabase)
+// OneTime - РАБОЧАЯ ВЕРСИЯ С SUPABASE
 // ============================================
 
 let currentUser = null;
@@ -7,7 +7,94 @@ let items = [];
 let bookings = [];
 let users = [];
 
-// Инициализация данных
+// ⚠️ ВСТАВЬТЕ ВАШИ КЛЮЧИ ИЗ SUPABASE ⚠️
+const SUPABASE_URL = 'https://hsaftnmupjsmrasorluy.supabase.co';  // Ваш Project URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzYWZ0bm11cGpzbXJhc29ybHV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMTM0ODcsImV4cCI6MjA5MDg4OTQ4N30.LG06ZAOkS25nF3OmFUK3FBseqpWZ2P_oy4LOabw_RZs';  // Ваш anon public key
+
+// ============================================
+// ФУНКЦИИ SUPABASE
+// ============================================
+
+// Сохранение пользователя в Supabase
+async function saveUserToSupabase(userData) {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+                phone: userData.phone || '',
+                created_at: new Date().toISOString()
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Сохранено в Supabase:', result);
+            return { success: true };
+        } else {
+            const error = await response.json();
+            console.error('❌ Ошибка Supabase:', error);
+            return { success: false, error: error };
+        }
+    } catch(error) {
+        console.error('❌ Ошибка сети:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// Получение всех пользователей из Supabase
+async function getUsersFromSupabase() {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*`, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
+        
+        if (response.ok) {
+            const users = await response.json();
+            console.log('📥 Получено из Supabase:', users.length, 'пользователей');
+            return { success: true, users: users };
+        } else {
+            return { success: false, users: [] };
+        }
+    } catch(error) {
+        console.error('❌ Ошибка получения:', error);
+        return { success: false, users: [] };
+    }
+}
+
+// Синхронизация пользователей с Supabase
+async function syncUsersWithSupabase() {
+    const result = await getUsersFromSupabase();
+    if (result.success && result.users.length > 0) {
+        let localUsers = JSON.parse(localStorage.getItem('users')) || [];
+        const existingEmails = new Set(localUsers.map(u => u.email));
+        const newUsers = result.users.filter(u => !existingEmails.has(u.email));
+        
+        if (newUsers.length > 0) {
+            const mergedUsers = [...localUsers, ...newUsers];
+            localStorage.setItem('users', JSON.stringify(mergedUsers));
+            console.log(`✅ Синхронизировано ${newUsers.length} пользователей из Supabase`);
+            return true;
+        }
+    }
+    return false;
+}
+
+// ============================================
+// ИНИЦИАЛИЗАЦИЯ ДАННЫХ
+// ============================================
+
 function initData() {
     const storedUsers = localStorage.getItem('users');
     if (storedUsers) {
@@ -77,7 +164,7 @@ function initData() {
                 category: 'outdoor',
                 priceDay: 500,
                 deposit: 1500,
-                description: 'Для пикника, шампура в комплекте',
+                description: 'Для пикника',
                 image: 'https://images.unsplash.com/photo-1558954138-06e851f0c4c6?w=400',
                 ownerId: '1',
                 ownerName: 'Демо Пользователь',
@@ -133,7 +220,6 @@ function updateNav() {
             userMenu.classList.remove('hidden');
             if (userNameSpan) userNameSpan.textContent = currentUser.name;
         }
-        // Показываем админ-панель для администратора
         if (currentUser.email === 'admin@onetime.ru' && !adminLink) {
             const navLinks = document.querySelector('.nav-links');
             if (navLinks) {
@@ -175,7 +261,6 @@ function showNotification(message, type) {
         color: white;
         z-index: 10000;
         font-weight: 500;
-        animation: slideIn 0.3s ease;
     `;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
@@ -185,11 +270,22 @@ function showNotification(message, type) {
 // АВТОРИЗАЦИЯ
 // ============================================
 
-function login(event) {
+async function login(event) {
     event.preventDefault();
+    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    const user = users.find(u => u.email === email && u.password === password);
+    
+    // Сначала пробуем найти в локальном хранилище
+    let user = users.find(u => u.email === email && u.password === password);
+    
+    // Если не нашли, синхронизируем с Supabase
+    if (!user) {
+        showNotification('Синхронизация с облаком...', 'info');
+        await syncUsersWithSupabase();
+        users = JSON.parse(localStorage.getItem('users')) || [];
+        user = users.find(u => u.email === email && u.password === password);
+    }
     
     if (user) {
         currentUser = user;
@@ -202,8 +298,9 @@ function login(event) {
     }
 }
 
-function register(event) {
+async function register(event) {
     event.preventDefault();
+    
     const name = document.getElementById('regName').value;
     const email = document.getElementById('regEmail').value;
     const phone = document.getElementById('regPhone').value;
@@ -229,16 +326,37 @@ function register(event) {
         rating: null,
         createdAt: new Date().toISOString()
     };
+    
+    // Сохраняем в локальное хранилище
     users.push(newUser);
     currentUser = newUser;
     saveData();
     updateNav();
-    showNotification('Регистрация успешна!', 'success');
-    setTimeout(() => window.location.href = 'index.html', 1500);
+    
+    // Отправляем в Supabase (если не получится - не страшно, данные уже в localStorage)
+    showNotification('Сохранение в облако...', 'info');
+    const result = await saveUserToSupabase({
+        name: name,
+        email: email,
+        password: password,
+        phone: phone || ''
+    });
+    
+    if (result.success) {
+        console.log('✅ Пользователь сохранен в Supabase');
+        showNotification('Регистрация успешна!', 'success');
+    } else {
+        console.warn('⚠️ Не удалось сохранить в Supabase, но данные сохранены локально');
+        showNotification('Регистрация успешна!', 'success');
+    }
+    
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 1500);
 }
 
 // ============================================
-// ОТОБРАЖЕНИЕ ТОВАРОВ
+// ОСТАЛЬНЫЕ ФУНКЦИИ (товары, бронирования)
 // ============================================
 
 function getCategoryName(category) {
@@ -318,7 +436,7 @@ function loadItemDetails() {
                         <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${item.priceDay} ₽</span>
                     </div>
                     <div style="color: var(--text-muted);">
-                        <span>Залог: ${item.deposit} ₽ (возвращается после аренды)</span>
+                        <span>Залог: ${item.deposit} ₽</span>
                     </div>
                 </div>
                 ${isOwner ? `
@@ -332,11 +450,11 @@ function loadItemDetails() {
                         <h3 style="margin-bottom: 16px;">Забронировать</h3>
                         <div style="margin-bottom: 16px;">
                             <label>Дата начала:</label>
-                            <input type="date" id="startDate" class="form-control" style="width: 100%; padding: 12px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text);">
+                            <input type="date" id="startDate" class="form-control">
                         </div>
                         <div style="margin-bottom: 16px;">
                             <label>Дата окончания:</label>
-                            <input type="date" id="endDate" class="form-control" style="width: 100%; padding: 12px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text);">
+                            <input type="date" id="endDate" class="form-control">
                         </div>
                         <div id="totalPrice" style="margin-bottom: 16px;"></div>
                         <button onclick="bookItem('${item.id}')" class="btn btn-primary btn-full" style="width: 100%;">
@@ -360,8 +478,6 @@ function loadItemDetails() {
                 const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
                 if (days > 0) {
                     totalSpan.innerHTML = `<strong>Итого: ${days * item.priceDay} ₽ + залог ${item.deposit} ₽</strong>`;
-                } else {
-                    totalSpan.innerHTML = '<strong>Выберите корректные даты</strong>';
                 }
             }
         }
@@ -424,10 +540,8 @@ function bookItem(itemId) {
     
     bookings.push(newBooking);
     saveData();
-    showNotification('Заявка на бронирование отправлена!', 'success');
-    setTimeout(() => {
-        window.location.href = 'bookings.html';
-    }, 1500);
+    showNotification('Заявка отправлена!', 'success');
+    setTimeout(() => window.location.href = 'bookings.html', 1500);
 }
 
 function createListing(event) {
@@ -468,20 +582,22 @@ function createListing(event) {
     items.push(newItem);
     saveData();
     showNotification('Объявление опубликовано!', 'success');
-    setTimeout(() => {
-        window.location.href = 'profile.html';
-    }, 1500);
+    setTimeout(() => window.location.href = 'profile.html', 1500);
 }
 
 // ============================================
 // ЗАПУСК
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('🔵 Сайт загружен, инициализация...');
     
     initData();
     updateNav();
+    
+    // Синхронизация с Supabase при загрузке
+    await syncUsersWithSupabase();
+    users = JSON.parse(localStorage.getItem('users')) || [];
     
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
