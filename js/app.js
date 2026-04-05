@@ -298,7 +298,7 @@ async function login(event) {
     }
 }
 
-async function register(event) {
+async async function register(event) {
     event.preventDefault();
     
     const name = document.getElementById('regName').value;
@@ -318,6 +318,14 @@ async function register(event) {
         return;
     }
     
+    // Проверяем в Supabase
+    showNotification('Проверка...', 'info');
+    const emailExists = await checkEmailInSupabase(email);
+    if (emailExists) {
+        showNotification('Email уже зарегистрирован', 'error');
+        return;
+    }
+    
     const newUser = {
         id: Date.now().toString(),
         name: name,
@@ -326,7 +334,7 @@ async function register(event) {
         phone: phone || '',
         address: '',
         rating: null,
-        isAdmin: email === 'admin@onetime.ru',
+        role: email === 'admin@onetime.ru' ? 'admin' : 'user',
         createdAt: new Date().toISOString()
     };
     
@@ -335,27 +343,27 @@ async function register(event) {
     currentUser = newUser;
     saveData();
     
-    // Отправляем в Google Sheets
-    showNotification('Синхронизация с облаком...', 'info');
-    const googleResult = await saveUserToGoogleSheets({
+    // Отправляем в Supabase
+    showNotification('Сохранение в облако...', 'info');
+    const supabaseResult = await saveUserToSupabase({
         name: name,
         email: email,
         password: password,
         phone: phone || ''
     });
     
-    if (googleResult.success) {
-        console.log('✅ Пользователь сохранен в Google Sheets');
+    if (supabaseResult.success) {
+        console.log('✅ Пользователь сохранен в Supabase');
+        showNotification('Регистрация успешна!', 'success');
     } else {
-        console.warn('⚠️ Ошибка синхронизации с Google Sheets:', googleResult.error);
+        console.warn('⚠️ Ошибка синхронизации с Supabase');
+        showNotification('Регистрация успешна! (данные сохранены локально)', 'success');
     }
     
-    showNotification('Регистрация успешна!', 'success');
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1500);
 }
-
 // ============================================
 // ОТОБРАЖЕНИЕ ТОВАРОВ
 // ============================================
