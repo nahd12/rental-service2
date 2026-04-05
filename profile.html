@@ -24,7 +24,7 @@
             <div class="nav-user" id="navUser">
                 <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
                 <div class="user-menu hidden" id="userMenu">
-                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar" style="width: 40px; height: 40px; border-radius: 50%;">
                     <span id="userName"></span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
@@ -50,11 +50,11 @@
                 <div class="profile-layout">
                     <aside class="profile-sidebar">
                         <div class="profile-avatar">
-                            <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&size=128&bold=true" alt="avatar">
+                            <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&size=128&bold=true" alt="avatar" style="width: 120px; height: 120px; border-radius: 50%;">
                         </div>
                         <div class="profile-info">
-                            <h3 id="profileName">Имя пользователя</h3>
-                            <p id="profileEmail">email@example.com</p>
+                            <h3 id="profileName">Загрузка...</h3>
+                            <p id="profileEmail">загрузка...</p>
                             <div class="profile-stats">
                                 <div class="stat">
                                     <span id="listingsCount">0</span>
@@ -92,7 +92,6 @@
                                 <div style="text-align: center; padding: 40px;">
                                     <i class="fas fa-star" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
                                     <p>У вас пока нет отзывов</p>
-                                    <p style="font-size: 14px; color: var(--text-muted);">После завершения аренды вы сможете оставлять отзывы</p>
                                 </div>
                             </div>
                         </div>
@@ -127,10 +126,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>One<span class="accent">Time</span></span>
-                    </a>
+                    <a href="index.html" class="logo">One<span class="accent">Time</span></a>
                     <p>OneTime — сервис аренды вещей на один раз.</p>
                 </div>
                 <div class="footer-links">
@@ -151,68 +147,45 @@
 
     <script src="js/app.js"></script>
     <script>
-        // Функция показа уведомлений (без alert)
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 12px 24px;
-                border-radius: 12px;
-                background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                color: white;
-                z-index: 1000;
-                font-weight: 500;
-                animation: slideIn 0.3s ease;
-            `;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔵 Профиль загружен');
+        // Функция для загрузки профиля
+        function loadProfileData() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const items = JSON.parse(localStorage.getItem('items')) || [];
             
-            // Переключение вкладок
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    const tabId = this.dataset.tab + 'Tab';
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
+            console.log('Текущий пользователь:', currentUser);
             
-            // Загрузка объявлений пользователя
-            function loadUserListings() {
-                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                const items = JSON.parse(localStorage.getItem('items')) || [];
-                const container = document.getElementById('userListings');
-                
-                if (!currentUser) {
-                    container.innerHTML = '<div style="text-align: center; padding: 40px;">Войдите в аккаунт</div>';
-                    return;
-                }
-                
-                const userItems = items.filter(item => item.ownerId === currentUser.id);
-                
-                if (userItems.length === 0) {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 40px;">
-                            <i class="fas fa-box-open" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
-                            <p>У вас пока нет объявлений</p>
-                            <a href="create-listing.html" class="btn btn-primary" style="margin-top: 16px;">Создать объявление</a>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                container.innerHTML = userItems.map(item => `
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Обновляем информацию о пользователе
+            document.getElementById('profileName').textContent = currentUser.name || 'Без имени';
+            document.getElementById('profileEmail').textContent = currentUser.email || 'email@example.com';
+            
+            // Считаем объявления пользователя
+            const userItems = items.filter(item => item.ownerId === currentUser.id);
+            document.getElementById('listingsCount').textContent = userItems.length;
+            document.getElementById('reviewsCount').textContent = currentUser.reviewsCount || 0;
+            document.getElementById('ratingValue').textContent = currentUser.rating || 'Нет';
+            
+            // Заполняем форму настроек
+            document.getElementById('editName').value = currentUser.name || '';
+            document.getElementById('editPhone').value = currentUser.phone || '';
+            document.getElementById('editAddress').value = currentUser.address || '';
+            
+            // Загружаем объявления пользователя
+            const listingsContainer = document.getElementById('userListings');
+            if (userItems.length === 0) {
+                listingsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                        <p>У вас пока нет объявлений</p>
+                        <a href="create-listing.html" class="btn btn-primary" style="margin-top: 16px;">Создать объявление</a>
+                    </div>
+                `;
+            } else {
+                listingsContainer.innerHTML = userItems.map(item => `
                     <div style="background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);">
                         <div>
                             <h4 style="margin-bottom: 8px;">${item.title}</h4>
@@ -227,77 +200,102 @@
                     </div>
                 `).join('');
             }
-            
-            // Удаление объявления
-            window.deleteItem = function(itemId) {
-                if (confirm('Удалить это объявление?')) {
-                    let items = JSON.parse(localStorage.getItem('items')) || [];
-                    items = items.filter(i => i.id !== itemId);
-                    localStorage.setItem('items', JSON.stringify(items));
-                    showNotification('Объявление удалено', 'success');
-                    loadUserListings();
-                    
-                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                    if (currentUser) {
-                        const count = items.filter(i => i.ownerId === currentUser.id).length;
-                        document.getElementById('listingsCount').textContent = count;
-                    }
-                }
-            };
-            
-            // Загрузка настроек
-            function loadSettings() {
-                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                if (currentUser) {
-                    document.getElementById('editName').value = currentUser.name || '';
-                    document.getElementById('editPhone').value = currentUser.phone || '';
-                    document.getElementById('editAddress').value = currentUser.address || '';
-                }
+        }
+        
+        // Функция удаления объявления
+        window.deleteItem = function(itemId) {
+            if (confirm('Удалить это объявление?')) {
+                let items = JSON.parse(localStorage.getItem('items')) || [];
+                items = items.filter(i => i.id !== itemId);
+                localStorage.setItem('items', JSON.stringify(items));
+                showNotification('Объявление удалено', 'success');
+                loadProfileData();
             }
+        };
+        
+        // Функция уведомлений
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 12px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                z-index: 10000;
+                font-weight: 500;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        // Сохранение настроек профиля
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Сохранение настроек
-            const profileForm = document.getElementById('profileForm');
-            if (profileForm) {
-                profileForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                    
-                    if (currentUser) {
-                        currentUser.name = document.getElementById('editName').value;
-                        currentUser.phone = document.getElementById('editPhone').value;
-                        currentUser.address = document.getElementById('editAddress').value;
-                        
-                        let users = JSON.parse(localStorage.getItem('users')) || [];
-                        const userIndex = users.findIndex(u => u.id === currentUser.id);
-                        if (userIndex !== -1) {
-                            users[userIndex] = currentUser;
-                        }
-                        localStorage.setItem('users', JSON.stringify(users));
-                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                        
-                        document.getElementById('profileName').textContent = currentUser.name;
-                        showNotification('Профиль обновлен', 'success');
-                    }
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) return;
+            
+            // Обновляем данные пользователя
+            currentUser.name = document.getElementById('editName').value;
+            currentUser.phone = document.getElementById('editPhone').value;
+            currentUser.address = document.getElementById('editAddress').value;
+            
+            // Обновляем в массиве users
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+            }
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Обновляем отображение
+            document.getElementById('profileName').textContent = currentUser.name;
+            showNotification('Профиль обновлен', 'success');
+        });
+        
+        // Переключение вкладок
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
                 });
-            }
+                document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+            });
+        });
+        
+        // Загрузка профиля при открытии страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            // Обновляем навигацию
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const loginBtn = document.getElementById('loginBtn');
+            const userMenu = document.getElementById('userMenu');
+            const userNameSpan = document.getElementById('userName');
             
-            // Обновление статистики
-            function updateStats() {
-                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                if (currentUser) {
-                    const items = JSON.parse(localStorage.getItem('items')) || [];
-                    const userItemsCount = items.filter(i => i.ownerId === currentUser.id).length;
-                    document.getElementById('listingsCount').textContent = userItemsCount;
-                    document.getElementById('profileName').textContent = currentUser.name;
-                    document.getElementById('profileEmail').textContent = currentUser.email;
-                    document.getElementById('reviewsCount').textContent = currentUser.reviewsCount || 0;
-                    document.getElementById('ratingValue').textContent = currentUser.rating || 'Нет';
+            if (currentUser) {
+                if (loginBtn) loginBtn.classList.add('hidden');
+                if (userMenu) {
+                    userMenu.classList.remove('hidden');
+                    if (userNameSpan) userNameSpan.textContent = currentUser.name;
                 }
             }
             
-            loadUserListings();
-            loadSettings();
-            updateStats();
+            // Кнопка выхода
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+            
+            // Загружаем данные профиля
+            loadProfileData();
         });
     </script>
 </body>
