@@ -1,5 +1,5 @@
 // ============================================
-// OneTime - РАБОЧАЯ ВЕРСИЯ С SUPABASE
+// OneTime - РАБОЧАЯ ВЕРСИЯ С GOOGLE SHEETS
 // ============================================
 
 let currentUser = null;
@@ -7,86 +7,110 @@ let items = [];
 let bookings = [];
 let users = [];
 
-// ⚠️ ВСТАВЬТЕ ВАШИ КЛЮЧИ ИЗ SUPABASE ⚠️
-const SUPABASE_URL = 'https://hsaftnmupjsmrasorluy.supabase.co';  // Ваш Project URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzYWZ0bm11cGpzbXJhc29ybHV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMTM0ODcsImV4cCI6MjA5MDg4OTQ4N30.LG06ZAOkS25nF3OmFUK3FBseqpWZ2P_oy4LOabw_RZs';  // Ваш anon public key
+// ⚠️ ВСТАВЬТЕ ВАШ URL ИЗ GOOGLE APPS SCRIPT ⚠️
+const API_URL = 'https://script.google.com/macros/s/AKfycby4Sza7nPiOz4jDlYAWZdO8jhHU7WPLMv_6YJB2-tn60snGom7p8plOJvn-qGIpLMY/exec';
 
 // ============================================
-// ФУНКЦИИ SUPABASE
+// ФУНКЦИИ ДЛЯ РАБОТЫ С GOOGLE SHEETS
 // ============================================
 
-// Сохранение пользователя в Supabase
-async function saveUserToSupabase(userData) {
+// Сохранение нового пользователя
+async function saveUserToSheet(userData) {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+        const response = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                action: 'addUser',
+                sheet: 'users',
+                id: userData.id,
                 name: userData.name,
                 email: userData.email,
                 password: userData.password,
-                phone: userData.phone || '',
-                created_at: new Date().toISOString()
+                phone: userData.phone || ''
             })
         });
-        
-        if (response.ok) {
-            const result = await response.json();
-            console.log('✅ Сохранено в Supabase:', result);
-            return { success: true };
-        } else {
-            const error = await response.json();
-            console.error('❌ Ошибка Supabase:', error);
-            return { success: false, error: error };
-        }
+        const result = await response.json();
+        console.log('Ответ Google Sheets:', result);
+        return result.success;
     } catch(error) {
-        console.error('❌ Ошибка сети:', error);
-        return { success: false, error: error.message };
+        console.error('Ошибка сохранения:', error);
+        return false;
     }
 }
 
-// Получение всех пользователей из Supabase
-async function getUsersFromSupabase() {
+// Получение всех товаров из Google Sheets
+async function getItemsFromSheet() {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*`, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            }
-        });
-        
-        if (response.ok) {
-            const users = await response.json();
-            console.log('📥 Получено из Supabase:', users.length, 'пользователей');
-            return { success: true, users: users };
-        } else {
-            return { success: false, users: [] };
+        const response = await fetch(`${API_URL}?action=getData&sheet=items`);
+        const result = await response.json();
+        if (result.success && result.data) {
+            return result.data;
         }
+        return [];
     } catch(error) {
-        console.error('❌ Ошибка получения:', error);
-        return { success: false, users: [] };
+        console.error('Ошибка получения товаров:', error);
+        return [];
     }
 }
 
-// Синхронизация пользователей с Supabase
-async function syncUsersWithSupabase() {
-    const result = await getUsersFromSupabase();
-    if (result.success && result.users.length > 0) {
-        let localUsers = JSON.parse(localStorage.getItem('users')) || [];
-        const existingEmails = new Set(localUsers.map(u => u.email));
-        const newUsers = result.users.filter(u => !existingEmails.has(u.email));
-        
-        if (newUsers.length > 0) {
-            const mergedUsers = [...localUsers, ...newUsers];
-            localStorage.setItem('users', JSON.stringify(mergedUsers));
-            console.log(`✅ Синхронизировано ${newUsers.length} пользователей из Supabase`);
-            return true;
+// Сохранение нового товара в Google Sheets
+async function saveItemToSheet(itemData) {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'addItem',
+                sheet: 'items',
+                id: itemData.id,
+                title: itemData.title,
+                category: itemData.category,
+                price_day: itemData.priceDay,
+                deposit: itemData.deposit,
+                description: itemData.description,
+                image: itemData.image,
+                owner_id: itemData.ownerId,
+                owner_name: itemData.ownerName
+            })
+        });
+        const result = await response.json();
+        return result.success;
+    } catch(error) {
+        console.error('Ошибка сохранения товара:', error);
+        return false;
+    }
+}
+
+// Получение всех пользователей из Google Sheets (для админки)
+async function getUsersFromSheet() {
+    try {
+        const response = await fetch(`${API_URL}?action=getData&sheet=users`);
+        const result = await response.json();
+        if (result.success && result.data) {
+            return result.data;
         }
+        return [];
+    } catch(error) {
+        console.error('Ошибка получения пользователей:', error);
+        return [];
+    }
+}
+
+// Синхронизация каталога с облаком
+async function syncCatalogFromCloud() {
+    showNotification('Загрузка каталога...', 'info');
+    const cloudItems = await getItemsFromSheet();
+    
+    if (cloudItems.length > 0) {
+        localStorage.setItem('items', JSON.stringify(cloudItems));
+        items = cloudItems;
+        if (typeof loadCatalog === 'function') loadCatalog();
+        if (typeof loadFeaturedItems === 'function') loadFeaturedItems();
+        showNotification(`Загружено ${cloudItems.length} товаров`, 'success');
+        return true;
     }
     return false;
 }
@@ -164,7 +188,7 @@ function initData() {
                 category: 'outdoor',
                 priceDay: 500,
                 deposit: 1500,
-                description: 'Для пикника',
+                description: 'Для пикника, шампура в комплекте',
                 image: 'https://images.unsplash.com/photo-1558954138-06e851f0c4c6?w=400',
                 ownerId: '1',
                 ownerName: 'Демо Пользователь',
@@ -261,6 +285,7 @@ function showNotification(message, type) {
         color: white;
         z-index: 10000;
         font-weight: 500;
+        animation: slideIn 0.3s ease;
     `;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
@@ -276,16 +301,7 @@ async function login(event) {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
-    // Сначала пробуем найти в локальном хранилище
     let user = users.find(u => u.email === email && u.password === password);
-    
-    // Если не нашли, синхронизируем с Supabase
-    if (!user) {
-        showNotification('Синхронизация с облаком...', 'info');
-        await syncUsersWithSupabase();
-        users = JSON.parse(localStorage.getItem('users')) || [];
-        user = users.find(u => u.email === email && u.password === password);
-    }
     
     if (user) {
         currentUser = user;
@@ -311,6 +327,7 @@ async function register(event) {
         showNotification('Пароли не совпадают', 'error');
         return;
     }
+    
     if (users.find(u => u.email === email)) {
         showNotification('Email уже используется', 'error');
         return;
@@ -327,27 +344,20 @@ async function register(event) {
         createdAt: new Date().toISOString()
     };
     
-    // Сохраняем в локальное хранилище
+    // Сохраняем локально
     users.push(newUser);
     currentUser = newUser;
     saveData();
     updateNav();
     
-    // Отправляем в Supabase (если не получится - не страшно, данные уже в localStorage)
+    // Отправляем в Google Sheets
     showNotification('Сохранение в облако...', 'info');
-    const result = await saveUserToSupabase({
-        name: name,
-        email: email,
-        password: password,
-        phone: phone || ''
-    });
+    const saved = await saveUserToSheet(newUser);
     
-    if (result.success) {
-        console.log('✅ Пользователь сохранен в Supabase');
+    if (saved) {
         showNotification('Регистрация успешна!', 'success');
     } else {
-        console.warn('⚠️ Не удалось сохранить в Supabase, но данные сохранены локально');
-        showNotification('Регистрация успешна!', 'success');
+        showNotification('Регистрация успешна (ошибка синхронизации)', 'warning');
     }
     
     setTimeout(() => {
@@ -356,7 +366,7 @@ async function register(event) {
 }
 
 // ============================================
-// ОСТАЛЬНЫЕ ФУНКЦИИ (товары, бронирования)
+// ОТОБРАЖЕНИЕ ТОВАРОВ
 // ============================================
 
 function getCategoryName(category) {
@@ -436,7 +446,7 @@ function loadItemDetails() {
                         <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${item.priceDay} ₽</span>
                     </div>
                     <div style="color: var(--text-muted);">
-                        <span>Залог: ${item.deposit} ₽</span>
+                        <span>Залог: ${item.deposit} ₽ (возвращается после аренды)</span>
                     </div>
                 </div>
                 ${isOwner ? `
@@ -450,11 +460,11 @@ function loadItemDetails() {
                         <h3 style="margin-bottom: 16px;">Забронировать</h3>
                         <div style="margin-bottom: 16px;">
                             <label>Дата начала:</label>
-                            <input type="date" id="startDate" class="form-control">
+                            <input type="date" id="startDate" class="form-control" style="width: 100%; padding: 12px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text);">
                         </div>
                         <div style="margin-bottom: 16px;">
                             <label>Дата окончания:</label>
-                            <input type="date" id="endDate" class="form-control">
+                            <input type="date" id="endDate" class="form-control" style="width: 100%; padding: 12px; background: var(--gray); border: 1px solid var(--border); border-radius: 12px; color: var(--text);">
                         </div>
                         <div id="totalPrice" style="margin-bottom: 16px;"></div>
                         <button onclick="bookItem('${item.id}')" class="btn btn-primary btn-full" style="width: 100%;">
@@ -478,6 +488,8 @@ function loadItemDetails() {
                 const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
                 if (days > 0) {
                     totalSpan.innerHTML = `<strong>Итого: ${days * item.priceDay} ₽ + залог ${item.deposit} ₽</strong>`;
+                } else {
+                    totalSpan.innerHTML = '<strong>Выберите корректные даты</strong>';
                 }
             }
         }
@@ -486,7 +498,7 @@ function loadItemDetails() {
     }
 }
 
-function deleteItem(itemId) {
+async function deleteItem(itemId) {
     if (confirm('Удалить этот товар?')) {
         items = items.filter(i => i.id !== itemId);
         saveData();
@@ -540,11 +552,17 @@ function bookItem(itemId) {
     
     bookings.push(newBooking);
     saveData();
-    showNotification('Заявка отправлена!', 'success');
-    setTimeout(() => window.location.href = 'bookings.html', 1500);
+    showNotification('Заявка на бронирование отправлена!', 'success');
+    setTimeout(() => {
+        window.location.href = 'bookings.html';
+    }, 1500);
 }
 
-function createListing(event) {
+// ============================================
+// СОЗДАНИЕ ТОВАРА
+// ============================================
+
+async function createListing(event) {
     event.preventDefault();
     
     if (!currentUser) {
@@ -579,10 +597,23 @@ function createListing(event) {
         createdAt: new Date().toISOString()
     };
     
+    // Сохраняем локально
     items.push(newItem);
     saveData();
-    showNotification('Объявление опубликовано!', 'success');
-    setTimeout(() => window.location.href = 'profile.html', 1500);
+    
+    // Сохраняем в Google Sheets
+    showNotification('Сохранение в облако...', 'info');
+    const saved = await saveItemToSheet(newItem);
+    
+    if (saved) {
+        showNotification('Объявление опубликовано!', 'success');
+    } else {
+        showNotification('Объявление опубликовано! (ошибка синхронизации)', 'warning');
+    }
+    
+    setTimeout(() => {
+        window.location.href = 'profile.html';
+    }, 1500);
 }
 
 // ============================================
@@ -595,9 +626,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     initData();
     updateNav();
     
-    // Синхронизация с Supabase при загрузке
-    await syncUsersWithSupabase();
-    users = JSON.parse(localStorage.getItem('users')) || [];
+    // Синхронизируем каталог с облаком
+    await syncCatalogFromCloud();
     
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
