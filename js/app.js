@@ -349,6 +349,28 @@ async function register(event) {
     saveData();
     updateNav();
     
+    // ⬇️⬇️⬇️ ОТПРАВКА В GOOGLE SHEETS ⬇️⬇️⬇️
+    showNotification('Сохранение в облако...', 'info');
+    const saved = await saveUserToSheet(newUser);
+    
+    if (saved) {
+        showNotification('Регистрация успешна!', 'success');
+    } else {
+        showNotification('Регистрация успешна (ошибка синхронизации)', 'warning');
+    }
+    // ⬆️⬆️⬆️ КОНЕЦ ОТПРАВКИ ⬆️⬆️⬆️
+    
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 1500);
+}
+    
+    // Сохраняем локально
+    users.push(newUser);
+    currentUser = newUser;
+    saveData();
+    updateNav();
+    
     // Отправляем в Google Sheets
     showNotification('Сохранение в облако...', 'info');
     const saved = await saveUserToSheet(newUser);
