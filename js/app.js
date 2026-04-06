@@ -19,7 +19,6 @@ async function saveUserToSheet(userData) {
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'addUser',
@@ -33,7 +32,7 @@ async function saveUserToSheet(userData) {
         });
         const result = await response.json();
         console.log('Ответ Google Sheets:', result);
-        return result.success;
+        return result && result.success === true;
     } catch(error) {
         console.error('Ошибка сохранения:', error);
         return false;
@@ -55,12 +54,11 @@ async function getItemsFromSheet() {
     }
 }
 
-// Сохранение нового товара в Google Sheets
+// Сохранение нового товара
 async function saveItemToSheet(itemData) {
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'addItem',
@@ -77,7 +75,8 @@ async function saveItemToSheet(itemData) {
             })
         });
         const result = await response.json();
-        return result.success;
+        console.log('Ответ Google Sheets (товар):', result);
+        return result && result.success === true;
     } catch(error) {
         console.error('Ошибка сохранения товара:', error);
         return false;
