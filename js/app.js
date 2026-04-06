@@ -8,7 +8,7 @@ let bookings = [];
 let users = [];
 
 // ⚠️ ВСТАВЬТЕ ВАШ URL ИЗ GOOGLE APPS SCRIPT ⚠️
-const API_URL = 'https://script.google.com/macros/s/AKfycby4Sza7nPiOz4jDlYAWZdO8jhHU7WPLMv_6YJB2-tn60snGom7p8plOJvn-qGIpLMY/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxj1n_n6hgxft0pvtD766QOsAzBdpUvA2qPFh60JbkBTcemY0nL8eRnr7MHiu27veJyvA/exec';
 
 // ============================================
 // ФУНКЦИИ ДЛЯ РАБОТЫ С GOOGLE SHEETS
