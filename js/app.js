@@ -16,6 +16,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxj1n_n6hgxft0pvtD766QO
 
 // Сохранение нового пользователя
 async function saveUserToSheet(userData) {
+    console.log('📤 Отправка в Google Sheets:', userData);
+    
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
@@ -31,14 +33,13 @@ async function saveUserToSheet(userData) {
             })
         });
         const result = await response.json();
-        console.log('Ответ Google Sheets:', result);
-        return result && result.success === true;
+        console.log('✅ Ответ Google Sheets:', result);
+        return result.success === true;
     } catch(error) {
-        console.error('Ошибка сохранения:', error);
+        console.error('❌ Ошибка сохранения:', error);
         return false;
     }
 }
-
 // Получение всех товаров из Google Sheets
 async function getItemsFromSheet() {
     try {
