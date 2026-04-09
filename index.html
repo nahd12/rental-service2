@@ -3,86 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аренда на раз | Сервис аренды вещей на один раз</title>
+    <title>Помогатор | Бесплатная помощь людям с ОВЗ</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-badge {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: 3rem;
+        }
+        .help-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        .help-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .help-card i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
-                <i class="fas fa-exchange-alt"></i>
-                <span>Аренда<span class="accent">НаРаз</span></span>
+                <i class="fas fa-hands-helping"></i>
+                <span>Помо<span class="accent">гатор</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html" class="active">Главная</a>
-                <a href="catalog.html">Каталог</a>
-                <a href="create-listing.html">Сдать вещь</a>
-                <a href="bookings.html">Мои бронирования</a>
+                <a href="catalog.html">Каталог помощи</a>
+                <a href="create-listing.html">Предложить помощь</a>
+                <a href="bookings.html">Мои заявки</a>
             </div>
             <div class="nav-user" id="navUser">
-    <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
-    <div class="user-menu hidden" id="userMenu">
-        <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
-        <span id="userName"></span>
-        <i class="fas fa-chevron-down"></i>
-        <div class="dropdown">
-            <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
-            <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
-            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
-        </div>
-    </div>
-</div>
+                <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
+                <div class="user-menu hidden" id="userMenu">
+                    <img src="https://ui-avatars.com/api/?background=0891b2&color=fff&bold=true" style="width: 40px; height: 40px; border-radius: 50%;">
+                    <span id="userName"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <a href="profile.html">Профиль</a>
+                        <a href="bookings.html">Мои заявки</a>
+                        <a href="favorites.html"><i class="fas fa-heart"></i> Избранное</a>
+                        <a href="#" id="logoutBtn">Выйти</a>
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h1>Арендуйте вещи <span class="accent">на один раз</span></h1>
-                    <p>Дрель на час, костюм для фотосессии, мангал для пикника или проектор для киновечера — находите и арендуйте редко используемые предметы у соседей по городу</p>
+                    <div class="hero-badge">
+                        <i class="fas fa-heart"></i> Социальный проект
+                    </div>
+                    <h1>Помогаем <span class="accent">тем, кто нуждается</span></h1>
+                    <p>Инвалидные коляски, ходунки, трости, кровати и другое реабилитационное оборудование — всё это можно получить БЕСПЛАТНО во временное пользование</p>
                     <div class="hero-buttons">
-                        <a href="catalog.html" class="btn btn-primary">Найти вещь</a>
-                        <a href="create-listing.html" class="btn btn-outline-light">Сдать в аренду</a>
+                        <a href="catalog.html" class="btn btn-primary">Нужна помощь</a>
+                        <a href="create-listing.html" class="btn btn-outline-light">Хочу помочь</a>
                     </div>
                     <div class="hero-stats">
                         <div class="stat">
-                            <span class="stat-number">500+</span>
-                            <span class="stat-label">вещей</span>
+                            <span class="stat-number">250+</span>
+                            <span class="stat-label">получили помощь</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number">1000+</span>
-                            <span class="stat-label">арендаторов</span>
+                            <span class="stat-number">120+</span>
+                            <span class="stat-label">активных дарителей</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-number">98%</span>
-                            <span class="stat-label">довольных</span>
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">бесплатно</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Search Section -->
         <section class="search-section">
             <div class="container">
                 <div class="search-card">
                     <div class="search-input-group">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Что хотите арендовать? (дрель, костюм, мангал...)">
+                        <input type="text" id="searchInput" placeholder="Что нужно? (коляска, ходунки, трость, кровать...)">
                     </div>
                     <div class="search-filters">
                         <select id="categoryFilter">
                             <option value="">Все категории</option>
-                            <option value="tools">Инструменты</option>
-                            <option value="clothing">Одежда и аксессуары</option>
-                            <option value="outdoor">Отдых и пикник</option>
-                            <option value="electronics">Электроника</option>
-                            <option value="sports">Спорт</option>
+                            <option value="mobility">Средства передвижения</option>
+                            <option value="daily">Товары для быта</option>
+                            <option value="rehabilitation">Реабилитация</option>
+                            <option value="medical">Медицинские</option>
                         </select>
                         <button id="searchBtn" class="btn btn-primary">Найти</button>
                     </div>
@@ -90,101 +125,65 @@
             </div>
         </section>
 
-        <!-- Categories -->
         <section class="categories">
             <div class="container">
-                <h2 class="section-title">Популярные категории</h2>
+                <h2 class="section-title">Что можно получить?</h2>
                 <div class="categories-grid">
-                    <div class="category-card" data-category="tools">
-                        <i class="fas fa-tools"></i>
-                        <span>Инструменты</span>
-                    </div>
-                    <div class="category-card" data-category="clothing">
-                        <i class="fas fa-tshirt"></i>
-                        <span>Одежда</span>
-                    </div>
-                    <div class="category-card" data-category="outdoor">
-                        <i class="fas fa-campground"></i>
-                        <span>Отдых</span>
-                    </div>
-                    <div class="category-card" data-category="electronics">
-                        <i class="fas fa-tv"></i>
-                        <span>Электроника</span>
-                    </div>
-                    <div class="category-card" data-category="sports">
-                        <i class="fas fa-futbol"></i>
-                        <span>Спорт</span>
-                    </div>
+                    <div class="category-card" data-category="mobility"><i class="fas fa-wheelchair"></i><span>Коляски и ходунки</span></div>
+                    <div class="category-card" data-category="daily"><i class="fas fa-bed"></i><span>Кровати и матрасы</span></div>
+                    <div class="category-card" data-category="rehabilitation"><i class="fas fa-hand-holding-heart"></i><span>Трости и опоры</span></div>
+                    <div class="category-card" data-category="medical"><i class="fas fa-stethoscope"></i><span>Медицинские товары</span></div>
                 </div>
             </div>
         </section>
 
-        <!-- Featured Items -->
         <section class="featured">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">Популярные товары</h2>
-                    <a href="catalog.html" class="view-all">Смотреть все <i class="fas fa-arrow-right"></i></a>
+                    <h2 class="section-title">Доступно для получения</h2>
+                    <a href="catalog.html" class="view-all">Все товары <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <div class="items-grid" id="featuredItems">
-                    <!-- Items will be loaded by JS -->
-                </div>
+                <div class="items-grid" id="featuredItems"></div>
             </div>
         </section>
 
-        <!-- How It Works -->
         <section class="how-it-works">
             <div class="container">
                 <h2 class="section-title">Как это работает</h2>
                 <div class="steps">
-                    <div class="step">
-                        <div class="step-icon"><i class="fas fa-search"></i></div>
-                        <h3>1. Найдите вещь</h3>
-                        <p>Выберите из каталога то, что вам нужно на время</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
-                        <h3>2. Забронируйте</h3>
-                        <p>Укажите дату и время, внесите предоплату и залог</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-icon"><i class="fas fa-truck"></i></div>
-                        <h3>3. Получите</h3>
-                        <p>Доставка или самовывоз — выбирайте удобный способ</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-icon"><i class="fas fa-star"></i></div>
-                        <h3>4. Оставьте отзыв</h3>
-                        <p>После возврата оцените вещь и арендодателя</p>
-                    </div>
+                    <div class="step"><div class="step-icon"><i class="fas fa-search"></i></div><h3>1. Найдите</h3><p>Выберите нужный товар из каталога</p></div>
+                    <div class="step"><div class="step-icon"><i class="fas fa-calendar-check"></i></div><h3>2. Оставьте заявку</h3><p>Укажите даты и оставьте заявку</p></div>
+                    <div class="step"><div class="step-icon"><i class="fas fa-hand-holding-heart"></i></div><h3>3. Получите</h3><p>Свяжитесь с помощником и получите вещь</p></div>
+                    <div class="step"><div class="step-icon"><i class="fas fa-star"></i></div><h3>4. Поблагодарите</h3><p>Оставьте отзыв о помощнике</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- Features -->
+        <div class="help-cards container">
+            <div class="help-card">
+                <i class="fas fa-gift"></i>
+                <h3>Совершенно бесплатно</h3>
+                <p>Никакой оплаты — только помощь и поддержка</p>
+            </div>
+            <div class="help-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Проверенные помощники</h3>
+                <p>Все пользователи проходят проверку</p>
+            </div>
+            <div class="help-card">
+                <i class="fas fa-users"></i>
+                <h3>Сообщество помощи</h3>
+                <p>Более 250 человек уже получили помощь</p>
+            </div>
+        </div>
+
         <section class="features">
             <div class="container">
                 <div class="features-grid">
-                    <div class="feature">
-                        <i class="fas fa-shield-alt"></i>
-                        <h3>Безопасный залог</h3>
-                        <p>Залог хранится на платформе и возвращается после возврата вещи</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-star-half-alt"></i>
-                        <h3>Рейтинг и отзывы</h3>
-                        <p>Прозрачная система оценок арендаторов и арендодателей</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-truck-fast"></i>
-                        <h3>Удобная доставка</h3>
-                        <p>Сами договоритесь о встрече или закажите доставку</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-credit-card"></i>
-                        <h3>Безопасная оплата</h3>
-                        <p>Все платежи проходят через защищенный сервис</p>
-                    </div>
+                    <div class="feature"><i class="fas fa-heart"></i><h3>Доброта</h3><p>Наша миссия — помогать тем, кто в этом нуждается</p></div>
+                    <div class="feature"><i class="fas fa-star-half-alt"></i><h3>Отзывы</h3><p>Прозрачная система оценок помощников</p></div>
+                    <div class="feature"><i class="fas fa-truck-fast"></i><h3>Доставка</h3><p>Договоритесь о встрече с помощником</p></div>
+                    <div class="feature"><i class="fas fa-credit-card"></i><h3>Безопасность</h3><p>Все заявки проходят модерацию</p></div>
                 </div>
             </div>
         </section>
@@ -194,53 +193,50 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>Аренда<span class="accent">НаРаз</span></span>
-                    </a>
-                    <p>Сервис аренды вещей на один раз. Делитесь редко используемыми предметами и зарабатывайте.</p>
+                    <a href="index.html" class="logo"><i class="fas fa-hands-helping"></i><span>Помо<span class="accent">гатор</span></span></a>
+                    <p>Помогатор — помогаем тем, кто нуждается. Бесплатно.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
-                    <a href="#">Как это работает</a>
-                    <a href="#">Помощь</a>
-                </div>
-                <div class="footer-links">
-                    <h4>Правила</h4>
-                    <a href="#">Условия использования</a>
-                    <a href="#">Политика конфиденциальности</a>
-                    <a href="#">Страхование</a>
+                    <a href="catalog.html">Каталог помощи</a>
+                    <a href="create-listing.html">Предложить помощь</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@arenanaraz.ru">support@arenanaraz.ru</a>
-                    <a href="tel:+78001234567">8 (800) 123-45-67</a>
-                    <div class="socials">
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                        <a href="#"><i class="fab fa-vk"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    </div>
+                    <a href="mailto:help@pomogator.ru">help@pomogator.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 АрендаНаРаз. Все права защищены.</p>
+                <p>&copy; 2025 Помогатор. Социальный проект помощи людям с ОВЗ.</p>
             </div>
         </div>
     </footer>
 
     <script src="js/app.js"></script>
     <script>
-        // Показываем ссылку на админ-панель только для администратора
+        function updateMenu() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const loginBtn = document.getElementById('loginBtn');
+            const userMenu = document.getElementById('userMenu');
+            const userNameSpan = document.getElementById('userName');
+            
+            if (user && user.name) {
+                if (loginBtn) loginBtn.classList.add('hidden');
+                if (userMenu) userMenu.classList.remove('hidden');
+                if (userNameSpan) userNameSpan.innerText = user.name;
+            } else {
+                if (loginBtn) loginBtn.classList.remove('hidden');
+                if (userMenu) userMenu.classList.add('hidden');
+            }
+        }
+        
         function updateAdminLink() {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const adminEmail = 'mishkakirill12@gmail.com'; // ← ЗДЕСЬ ЗАМЕНИТЬ НА ВАШ EMAIL
+            const adminEmail = 'mishkakirill12@gmail.com';
             const navLinks = document.querySelector('.nav-links');
             
             if (navLinks) {
                 let adminLink = document.querySelector('.admin-link');
-                
                 if (currentUser && currentUser.email === adminEmail) {
                     if (!adminLink) {
                         const link = document.createElement('a');
@@ -250,38 +246,69 @@
                         link.innerHTML = '👑 Админ-панель';
                         navLinks.appendChild(link);
                     }
-                } else {
-                    if (adminLink) {
-                        adminLink.remove();
-                    }
+                } else if (adminLink) {
+                    adminLink.remove();
                 }
             }
         }
         
-        document.addEventListener('DOMContentLoaded', updateAdminLink);
-        setInterval(updateAdminLink, 1000);
-    </script>
-     
-function updateMainNav() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            const loginBtn = document.getElementById('loginBtn');
-            const userMenu = document.getElementById('userMenu');
-            const userNameSpan = document.getElementById('userName');
-            
-            if (currentUser) {
-                if (loginBtn) loginBtn.classList.add('hidden');
-                if (userMenu) {
-                    userMenu.classList.remove('hidden');
-                    if (userNameSpan) userNameSpan.textContent = currentUser.name;
-                }
-            } else {
-                if (loginBtn) loginBtn.classList.remove('hidden');
-                if (userMenu) userMenu.classList.add('hidden');
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.onclick = function(e) {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                updateMenu();
+                updateAdminLink();
+                window.location.href = 'index.html';
+                return false;
+            };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMenu();
+            updateAdminLink();
+        });
+        
+        function loadFeaturedItems() {
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            const container = document.getElementById('featuredItems');
+            if (container && items.length > 0) {
+                const featured = items.slice(0, 4);
+                container.innerHTML = featured.map(item => `
+                    <div class="item-card" onclick="location.href='item-details.html?id=${item.id}'">
+                        <div class="item-image" style="background-image: url('${item.image || 'https://placehold.co/300x200'}'); background-size: cover; background-position: center; height: 180px;"></div>
+                        <div class="item-info">
+                            <div class="item-title">${item.title}</div>
+                            <div class="item-price"><span class="free-badge">БЕСПЛАТНО</span></div>
+                            <div class="item-deposit" style="color: #10b981;">Помощь нуждающимся</div>
+                        </div>
+                    </div>
+                `).join('');
+            } else if (container) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Пока нет доступных товаров. Будьте первым помощником!</div>';
             }
         }
         
-        document.addEventListener('DOMContentLoaded', updateMainNav);
-        setInterval(updateMainNav, 1000);
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        
+        if (searchBtn) {
+            searchBtn.onclick = function() {
+                const query = searchInput ? searchInput.value : '';
+                const category = categoryFilter ? categoryFilter.value : '';
+                window.location.href = `catalog.html?search=${encodeURIComponent(query)}&category=${category}`;
+            };
+        }
+        
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.onclick = function() {
+                const cat = this.dataset.category;
+                window.location.href = `catalog.html?category=${cat}`;
+            };
+        });
+        
+        loadFeaturedItems();
     </script>
 </body>
 </html>
