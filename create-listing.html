@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сдать вещь | OneTime</title>
+    <title>Предложить помощь | Помогатор</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,25 +12,25 @@
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
-                <i class="fas fa-exchange-alt"></i>
-                <span>One<span class="accent">Time</span></span>
+                <i class="fas fa-hands-helping"></i>
+                <span>Помо<span class="accent">гатор</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
-                <a href="catalog.html">Каталог</a>
-                <a href="create-listing.html" class="active">Сдать вещь</a>
-                <a href="bookings.html">Мои бронирования</a>
+                <a href="catalog.html">Каталог помощи</a>
+                <a href="create-listing.html" class="active">Предложить помощь</a>
+                <a href="bookings.html">Мои заявки</a>
             </div>
             <div class="nav-user" id="navUser">
                 <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
                 <div class="user-menu hidden" id="userMenu">
-                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <img src="https://ui-avatars.com/api/?background=0891b2&color=fff&bold=true" style="width: 40px; height: 40px; border-radius: 50%;">
                     <span id="userName"></span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
-                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
-                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
-                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                        <a href="profile.html">Профиль</a>
+                        <a href="bookings.html">Мои заявки</a>
+                        <a href="#" id="logoutBtn">Выйти</a>
                     </div>
                 </div>
             </div>
@@ -40,19 +40,24 @@
     <main>
         <div class="page-header">
             <div class="container">
-                <h1>Сдать вещь в аренду</h1>
-                <p>Зарабатывайте на вещах, которые редко используете</p>
+                <h1>Предложить помощь</h1>
+                <p>Поделитесь вещами, которые могут помочь нуждающимся</p>
             </div>
         </div>
 
         <section class="create-listing-section">
             <div class="container">
                 <div class="create-listing-card">
+                    <div style="background: var(--gray); padding: 16px; border-radius: 12px; margin-bottom: 24px; text-align: center;">
+                        <i class="fas fa-heart" style="color: #10b981; font-size: 1.5rem;"></i>
+                        <p style="margin-top: 8px;">Все вещи предоставляются <strong>БЕСПЛАТНО</strong> для людей с ограниченными возможностями</p>
+                    </div>
+                    
                     <form id="createListingForm">
                         <div class="form-row">
                             <div class="form-group full-width">
-                                <label>Название товара *</label>
-                                <input type="text" id="itemTitle" class="form-control" required>
+                                <label>Название вещи *</label>
+                                <input type="text" id="itemTitle" class="form-control" placeholder="Например: Инвалидная коляска, Ходунки, Трость..." required>
                             </div>
                         </div>
 
@@ -61,17 +66,16 @@
                                 <label>Категория *</label>
                                 <select id="itemCategory" class="form-control" required>
                                     <option value="">Выберите категорию</option>
-                                    <option value="tools">Инструменты</option>
-                                    <option value="clothing">Одежда</option>
-                                    <option value="outdoor">Отдых</option>
-                                    <option value="electronics">Электроника</option>
-                                    <option value="sports">Спорт</option>
+                                    <option value="mobility">Средства передвижения (коляски, ходунки)</option>
+                                    <option value="daily">Товары для быта (кровати, матрасы)</option>
+                                    <option value="rehabilitation">Реабилитация (трости, опоры)</option>
+                                    <option value="medical">Медицинские товары</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Состояние</label>
                                 <select id="itemCondition" class="form-control">
-                                    <option value="new">Как новый</option>
+                                    <option value="new">Отличное</option>
                                     <option value="good">Хорошее</option>
                                     <option value="normal">Нормальное</option>
                                 </select>
@@ -80,26 +84,21 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Цена за день (₽) *</label>
-                                <input type="number" id="itemPriceDay" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Сумма залога (₽) *</label>
-                                <input type="number" id="itemDeposit" class="form-control" required>
+                                <label>Срок помощи (дней) *</label>
+                                <input type="number" id="itemDuration" class="form-control" placeholder="На сколько дней можно взять" required>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group full-width">
                                 <label>Описание *</label>
-                                <textarea id="itemDescription" rows="4" class="form-control" required></textarea>
+                                <textarea id="itemDescription" rows="4" class="form-control" placeholder="Опишите вещь, её особенности, размеры и т.д." required></textarea>
                             </div>
                         </div>
 
-                        <!-- БЛОК ДЛЯ ЗАГРУЗКИ ФОТО -->
                         <div class="form-row">
                             <div class="form-group full-width">
-                                <label>Фото товара</label>
+                                <label>Фото вещи</label>
                                 <input type="file" id="itemImage" accept="image/*" style="display: none;">
                                 <div id="imagePreview" style="width: 100%; height: 150px; background: var(--gray); border: 1px dashed var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="document.getElementById('itemImage').click();">
                                     <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-muted);"></i>
@@ -108,7 +107,9 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-full">Опубликовать объявление</button>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-hand-holding-heart"></i> Предложить помощь
+                        </button>
                     </form>
                 </div>
             </div>
@@ -119,31 +120,54 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>One<span class="accent">Time</span></span>
-                    </a>
-                    <p>OneTime — сервис аренды вещей на один раз.</p>
+                    <a href="index.html" class="logo">Помо<span class="accent">гатор</span></a>
+                    <p>Помогатор — помогаем тем, кто нуждается.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="catalog.html">Каталог помощи</a>
+                    <a href="create-listing.html">Предложить помощь</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
+                    <a href="mailto:help@pomogator.ru">help@pomogator.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 OneTime. Все права защищены.</p>
+                <p>&copy; 2025 Помогатор. Социальный проект.</p>
             </div>
         </div>
     </footer>
 
     <script src="js/app.js"></script>
     <script>
-        // Показываем превью фото при выборе
+        function updateMenu() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const loginBtn = document.getElementById('loginBtn');
+            const userMenu = document.getElementById('userMenu');
+            const userNameSpan = document.getElementById('userName');
+            
+            if (user && user.name) {
+                if (loginBtn) loginBtn.classList.add('hidden');
+                if (userMenu) userMenu.classList.remove('hidden');
+                if (userNameSpan) userNameSpan.innerText = user.name;
+            } else {
+                if (loginBtn) loginBtn.classList.remove('hidden');
+                if (userMenu) userMenu.classList.add('hidden');
+            }
+        }
+        
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.onclick = function(e) {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                updateMenu();
+                window.location.href = 'index.html';
+                return false;
+            };
+        }
+        
         document.getElementById('itemImage').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -155,6 +179,66 @@
                 reader.readAsDataURL(file);
             }
         });
+        
+        document.getElementById('createListingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Войдите в аккаунт, чтобы предложить помощь');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const title = document.getElementById('itemTitle').value;
+            const category = document.getElementById('itemCategory').value;
+            const condition = document.getElementById('itemCondition').value;
+            const duration = parseInt(document.getElementById('itemDuration').value);
+            const description = document.getElementById('itemDescription').value;
+            const imageFile = document.getElementById('itemImage').files[0];
+            
+            if (!title || !category || !duration || !description) {
+                alert('Заполните все обязательные поля');
+                return;
+            }
+            
+            function saveItem(imageData) {
+                const items = JSON.parse(localStorage.getItem('items')) || [];
+                const newItem = {
+                    id: Date.now().toString(),
+                    title: title,
+                    category: category,
+                    condition: condition,
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: duration,
+                    description: description,
+                    image: imageData || 'https://placehold.co/300x200',
+                    ownerId: currentUser.id,
+                    ownerName: currentUser.name,
+                    available: true,
+                    isFree: true,
+                    rating: null,
+                    createdAt: new Date().toISOString()
+                };
+                items.push(newItem);
+                localStorage.setItem('items', JSON.stringify(items));
+                alert('Спасибо! Ваша помощь опубликована.');
+                window.location.href = 'catalog.html';
+            }
+            
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    saveItem(event.target.result);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveItem(null);
+            }
+        });
+        
+        updateMenu();
     </script>
 </body>
 </html>
