@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои бронирования | OneTime</title>
+    <title>Мои заявки | Помогатор</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,7 +12,7 @@
             display: flex;
             gap: 16px;
             margin-bottom: 32px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
         }
         .type-tab {
             padding: 12px 24px;
@@ -21,17 +21,24 @@
             color: var(--text-muted);
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
         }
         .type-tab.active {
             color: var(--primary);
             border-bottom: 2px solid var(--primary);
         }
         .booking-card {
-            background: var(--card-bg);
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s;
+        }
+        .booking-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
         .booking-status {
             display: inline-block;
@@ -45,12 +52,17 @@
         .status-completed { background: #6b7280; color: white; }
         .status-cancelled { background: #ef4444; color: white; }
         .edit-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
             border: none;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px -5px rgba(37, 99, 235, 0.4);
         }
         .delete-btn {
             background: transparent;
@@ -59,6 +71,11 @@
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        .delete-btn:hover {
+            background: #ef4444;
+            color: white;
         }
         .btn-confirm {
             background: #10b981;
@@ -67,6 +84,10 @@
             border-radius: 6px;
             color: white;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-confirm:hover {
+            background: #059669;
         }
         .btn-reject {
             background: #ef4444;
@@ -75,19 +96,23 @@
             border-radius: 6px;
             color: white;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-reject:hover {
+            background: #dc2626;
         }
         .requests-block {
             margin-top: 16px;
             padding: 16px;
-            background: var(--gray);
+            background: rgba(15, 23, 42, 0.5);
             border-radius: 12px;
         }
         .request-item {
             padding: 12px;
-            background: var(--card-bg);
+            background: rgba(30, 41, 59, 0.6);
             border-radius: 10px;
             margin-bottom: 10px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
         .item-row {
             display: flex;
@@ -113,30 +138,46 @@
             padding: 60px;
             color: var(--text-muted);
         }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        .free-badge-small {
+            background: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
-                <i class="fas fa-exchange-alt"></i>
-                <span>One<span class="accent">Time</span></span>
+                <i class="fas fa-hands-helping"></i>
+                <span>Помо<span class="accent">гатор</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
-                <a href="catalog.html">Каталог</a>
-                <a href="create-listing.html">Сдать вещь</a>
-                <a href="bookings.html" class="active">Мои бронирования</a>
+                <a href="catalog.html">Каталог помощи</a>
+                <a href="create-listing.html">Предложить помощь</a>
+                <a href="bookings.html" class="active">Мои заявки</a>
             </div>
             <div class="nav-user" id="navUser">
                 <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
                 <div class="user-menu hidden" id="userMenu">
-                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" class="avatar" style="width: 40px; height: 40px; border-radius: 50%;">
+                    <img src="https://ui-avatars.com/api/?background=2563eb&color=fff&bold=true" class="avatar" style="width: 40px; height: 40px; border-radius: 50%;">
                     <span id="userName"></span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
                         <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
-                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Мои заявки</a>
+                        <a href="favorites.html"><i class="fas fa-heart"></i> Избранное</a>
                         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
                     </div>
                 </div>
@@ -147,16 +188,20 @@
     <main>
         <div class="page-header">
             <div class="container">
-                <h1>Мои бронирования</h1>
-                <p>Управление арендой и вашими товарами</p>
+                <h1><i class="fas fa-hands-helping"></i> Мои заявки</h1>
+                <p>Управление заявками на помощь и вашими предложениями</p>
             </div>
         </div>
 
         <section class="bookings-section">
             <div class="container">
                 <div class="booking-type-tabs">
-                    <button class="type-tab active" data-type="rentals">Мои заявки на помощь</button>
-                    <button class="type-tab" data-type="my-items">Мои предложения помощи</button>
+                    <button class="type-tab active" data-type="rentals">
+                        <i class="fas fa-calendar-alt"></i> Мои заявки на помощь
+                    </button>
+                    <button class="type-tab" data-type="my-items">
+                        <i class="fas fa-hand-holding-heart"></i> Мои предложения помощи
+                    </button>
                 </div>
                 <div id="rentalsContainer"></div>
                 <div id="myItemsContainer" style="display: none;"></div>
@@ -168,31 +213,41 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">One<span class="accent">Time</span></a>
-                    <p>OneTime — сервис аренды вещей на один раз.</p>
+                    <a href="index.html" class="logo">Помо<span class="accent">гатор</span></a>
+                    <p>Помогатор — помогаем тем, кто нуждается. Бесплатно.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="catalog.html">Каталог помощи</a>
+                    <a href="create-listing.html">Предложить помощь</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
+                    <a href="mailto:help@pomogator.ru">help@pomogator.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 OneTime. Все права защищены.</p>
+                <p>&copy; 2025 Помогатор. Социальный проект помощи людям с ОВЗ.</p>
             </div>
         </div>
     </footer>
 
     <script src="js/app.js"></script>
     <script>
-        // Функции для работы с бронированиями
-        function formatDate(d) { if (!d) return '—'; let date = new Date(d); return isNaN(date.getTime()) ? '—' : date.toLocaleDateString('ru-RU'); }
+        function formatDate(d) { 
+            if (!d) return '—'; 
+            let date = new Date(d); 
+            return isNaN(date.getTime()) ? '—' : date.toLocaleDateString('ru-RU'); 
+        }
         
-        function getStatusText(s) { return { pending:'Ожидает', confirmed:'Подтверждена', completed:'Завершена', cancelled:'Отменена' }[s] || s; }
+        function getStatusText(s) { 
+            return { 
+                pending: 'Ожидает подтверждения', 
+                confirmed: 'Подтверждена', 
+                completed: 'Завершена', 
+                cancelled: 'Отменена' 
+            }[s] || s; 
+        }
         
         function showNotification(m, t) {
             let n = document.createElement('div');
@@ -205,15 +260,21 @@
         function updateBookingStatus(id, status) {
             let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
             let idx = bookings.findIndex(b => b.id === id);
-            if (idx !== -1) { bookings[idx].status = status; localStorage.setItem('bookings', JSON.stringify(bookings)); showNotification('Статус изменен', 'success'); loadRentals(); loadMyItems(); }
+            if (idx !== -1) { 
+                bookings[idx].status = status; 
+                localStorage.setItem('bookings', JSON.stringify(bookings)); 
+                showNotification(status === 'confirmed' ? 'Заявка подтверждена!' : 'Заявка отклонена', 'success'); 
+                loadRentals(); 
+                loadMyItems(); 
+            }
         }
 
         function deleteItem(id) {
-            if (!confirm('Удалить товар?')) return;
+            if (!confirm('Удалить это предложение помощи?')) return;
             let items = JSON.parse(localStorage.getItem('items')) || [];
             items = items.filter(i => i.id !== id);
             localStorage.setItem('items', JSON.stringify(items));
-            showNotification('Товар удален', 'success');
+            showNotification('Предложение удалено', 'success');
             loadMyItems();
             if (typeof loadCatalog === 'function') loadCatalog();
         }
@@ -222,24 +283,30 @@
             let c = document.getElementById('rentalsContainer');
             if (!c) return;
             let user = JSON.parse(localStorage.getItem('currentUser'));
-            if (!user) { c.innerHTML = '<div class="empty-state">Войдите в аккаунт</div>'; return; }
+            if (!user) { 
+                c.innerHTML = '<div class="empty-state"><i class="fas fa-sign-in-alt"></i><h3>Войдите в аккаунт</h3><p>Чтобы увидеть свои заявки</p><a href="login.html" class="btn btn-primary" style="margin-top:16px;">Войти</a></div>'; 
+                return; 
+            }
             let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
             let my = bookings.filter(b => b.renterId === user.id);
-            if (!my.length) { c.innerHTML = '<div class="empty-state">Нет активных аренд</div>'; return; }
+            if (!my.length) { 
+                c.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-alt"></i><h3>У вас пока нет заявок</h3><p>Перейдите в каталог и оставьте заявку на помощь</p><a href="catalog.html" class="btn btn-primary" style="margin-top:16px;">Перейти в каталог</a></div>'; 
+                return; 
+            }
             c.innerHTML = my.map(b => `
                 <div class="booking-card">
                     <div class="item-row">
                         <div class="item-info-row">
-                            <img src="${b.itemImage || ''}" class="item-thumb" onerror="this.src='https://placehold.co/70x70'">
+                            <img src="${b.itemImage || 'https://placehold.co/70x70'}" class="item-thumb" onerror="this.src='https://placehold.co/70x70/2563eb/white?text=Помощь'">
                             <div>
-                                <h4>${b.itemTitle || 'Без названия'}</h4>
-                                <p>${formatDate(b.startDate)} — ${formatDate(b.endDate)} (${b.days || 1} дн.)</p>
-                                <p>Сумма: ${b.totalPrice || 0} ₽ | Залог: ${b.deposit || 0} ₽</p>
+                                <h4>${b.itemTitle || 'Без названия'} <span class="free-badge-small">Бесплатно</span></h4>
+                                <p>📅 ${formatDate(b.startDate)} — ${formatDate(b.endDate)} (${b.days || 1} дн.)</p>
+                                <p>👤 Помощник: ${b.ownerName || 'Пользователь'}</p>
                                 <span class="booking-status status-${b.status}">${getStatusText(b.status)}</span>
                             </div>
                         </div>
                         <div>
-                            <a href="item-details.html?id=${b.itemId}" class="edit-btn" style="text-decoration:none;">Подробнее</a>
+                            <a href="item-details.html?id=${b.itemId}" class="edit-btn" style="text-decoration:none; display:inline-block;">Подробнее</a>
                         </div>
                     </div>
                 </div>
@@ -250,11 +317,17 @@
             let c = document.getElementById('myItemsContainer');
             if (!c) return;
             let user = JSON.parse(localStorage.getItem('currentUser'));
-            if (!user) { c.innerHTML = '<div class="empty-state">Войдите в аккаунт</div>'; return; }
+            if (!user) { 
+                c.innerHTML = '<div class="empty-state"><i class="fas fa-sign-in-alt"></i><h3>Войдите в аккаунт</h3><p>Чтобы управлять своими предложениями</p></div>'; 
+                return; 
+            }
             let items = JSON.parse(localStorage.getItem('items')) || [];
             let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
             let my = items.filter(i => i.ownerId === user.id);
-            if (!my.length) { c.innerHTML = '<div class="empty-state">У вас пока нет товаров.<br><a href="create-listing.html" class="btn btn-primary" style="margin-top:12px;">Создать объявление</a></div>'; return; }
+            if (!my.length) { 
+                c.innerHTML = '<div class="empty-state"><i class="fas fa-hand-holding-heart"></i><h3>У вас пока нет предложений помощи</h3><p>Станьте помощником — предложите вещи, которые могут кому-то помочь</p><a href="create-listing.html" class="btn btn-primary" style="margin-top:16px;">Предложить помощь</a></div>'; 
+                return; 
+            }
             
             c.innerHTML = my.map(item => {
                 let reqs = bookings.filter(b => b.itemId === item.id);
@@ -262,11 +335,11 @@
                     <div class="booking-card">
                         <div class="item-row">
                             <div class="item-info-row">
-                                <img src="${item.image || ''}" class="item-thumb" onerror="this.src='https://placehold.co/70x70'">
+                                <img src="${item.image || 'https://placehold.co/70x70'}" class="item-thumb" onerror="this.src='https://placehold.co/70x70/2563eb/white?text=Помощь'">
                                 <div>
-                                    <h4>${item.title || 'Без названия'}</h4>
-                                    <p>${item.priceDay || 0} ₽/день | Залог: ${item.deposit || 0} ₽</p>
-                                    <p class="text-muted">${(item.description || '').substring(0, 80)}...</p>
+                                    <h4>${item.title || 'Без названия'} <span class="free-badge-small">Бесплатно</span></h4>
+                                    <p>📦 Срок помощи: ${item.duration || 30} дней</p>
+                                    <p>👁️ Просмотров: ${item.views || 0}</p>
                                 </div>
                             </div>
                             <div>
@@ -276,22 +349,22 @@
                         </div>
                         ${reqs.length ? `
                             <div class="requests-block">
-                                <strong>Запросы на аренду (${reqs.length})</strong>
+                                <strong><i class="fas fa-users"></i> Заявки на помощь (${reqs.length})</strong>
                                 ${reqs.map(r => `
                                     <div class="request-item">
-                                        <strong>${r.renterName || 'Пользователь'}</strong> ${formatDate(r.startDate)} — ${formatDate(r.endDate)}<br>
-                                        Сумма: ${r.totalPrice || 0} ₽<br>
+                                        <strong>${r.renterName || 'Пользователь'}</strong><br>
+                                        📅 ${formatDate(r.startDate)} — ${formatDate(r.endDate)} (${r.days || 1} дн.)<br>
                                         <span class="booking-status status-${r.status}">${getStatusText(r.status)}</span>
                                         ${r.status === 'pending' ? `
                                             <div class="mt-4">
-                                                <button onclick="updateBookingStatus('${r.id}','confirmed')" class="btn-confirm">Подтвердить</button>
-                                                <button onclick="updateBookingStatus('${r.id}','cancelled')" class="btn-reject">Отклонить</button>
+                                                <button onclick="updateBookingStatus('${r.id}','confirmed')" class="btn-confirm"><i class="fas fa-check"></i> Подтвердить</button>
+                                                <button onclick="updateBookingStatus('${r.id}','cancelled')" class="btn-reject"><i class="fas fa-times"></i> Отказать</button>
                                             </div>
                                         ` : ''}
                                     </div>
                                 `).join('')}
                             </div>
-                        ` : '<div class="requests-block" style="color:var(--text-muted);">Нет запросов</div>'}
+                        ` : '<div class="requests-block" style="color:var(--text-muted);"><i class="fas fa-info-circle"></i> Нет активных заявок</div>'}
                     </div>
                 `;
             }).join('');
