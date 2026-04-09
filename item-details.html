@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Детали товара | OneTime</title>
+    <title>Помощь | Помогатор</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -136,31 +136,51 @@
             border-radius: 12px;
             cursor: pointer;
         }
+        .free-badge-large {
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .help-info {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+        .help-info i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
-                <i class="fas fa-exchange-alt"></i>
-                <span>One<span class="accent">Time</span></span>
+                <i class="fas fa-hands-helping"></i>
+                <span>Помо<span class="accent">гатор</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
-                <a href="catalog.html">Каталог</a>
-                <a href="create-listing.html">Сдать вещь</a>
-                <a href="bookings.html">Мои бронирования</a>
+                <a href="catalog.html">Каталог помощи</a>
+                <a href="create-listing.html">Предложить помощь</a>
+                <a href="bookings.html">Мои заявки</a>
             </div>
             <div class="nav-user" id="navUser">
                 <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
                 <div class="user-menu hidden" id="userMenu">
-                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <img src="https://ui-avatars.com/api/?background=0891b2&color=fff&bold=true" alt="avatar" class="avatar" style="width: 40px; height: 40px; border-radius: 50%;">
                     <span id="userName"></span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
-                        <a href="profile.html">Профиль</a>
-                        <a href="bookings.html">Бронирования</a>
-                        <a href="#" id="logoutBtn">Выйти</a>
+                        <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Мои заявки</a>
+                        <a href="favorites.html"><i class="fas fa-heart"></i> Избранное</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
                     </div>
                 </div>
             </div>
@@ -181,23 +201,23 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <a href="index.html" class="logo">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>One<span class="accent">Time</span></span>
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Помо<span class="accent">гатор</span></span>
                     </a>
-                    <p>OneTime — сервис аренды вещей на один раз.</p>
+                    <p>Помогатор — помогаем тем, кто нуждается. Бесплатно.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="catalog.html">Каталог помощи</a>
+                    <a href="create-listing.html">Предложить помощь</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
+                    <a href="mailto:help@pomogator.ru">help@pomogator.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 OneTime. Все права защищены.</p>
+                <p>&copy; 2025 Помогатор. Социальный проект помощи людям с ОВЗ.</p>
             </div>
         </div>
     </footer>
@@ -219,20 +239,15 @@
                 <div class="form-group">
                     <label>Категория</label>
                     <select id="editCategory" class="form-control">
-                        <option value="tools">Инструменты</option>
-                        <option value="clothing">Одежда</option>
-                        <option value="outdoor">Отдых</option>
-                        <option value="electronics">Электроника</option>
-                        <option value="sports">Спорт</option>
+                        <option value="mobility">Средства передвижения</option>
+                        <option value="daily">Товары для быта</option>
+                        <option value="rehabilitation">Реабилитация</option>
+                        <option value="medical">Медицинские товары</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Цена за день (₽)</label>
-                    <input type="number" id="editPrice" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Залог (₽)</label>
-                    <input type="number" id="editDeposit" class="form-control">
+                    <label>Срок помощи (дней)</label>
+                    <input type="number" id="editDuration" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Описание</label>
@@ -279,8 +294,7 @@
             
             document.getElementById('editTitle').value = item.title;
             document.getElementById('editCategory').value = item.category;
-            document.getElementById('editPrice').value = item.priceDay;
-            document.getElementById('editDeposit').value = item.deposit;
+            document.getElementById('editDuration').value = item.duration || 30;
             document.getElementById('editDescription').value = item.description;
             document.getElementById('editImagePreview').src = item.image;
             
@@ -308,8 +322,7 @@
                 ...items[index],
                 title: document.getElementById('editTitle').value,
                 category: document.getElementById('editCategory').value,
-                priceDay: parseInt(document.getElementById('editPrice').value),
-                deposit: parseInt(document.getElementById('editDeposit').value),
+                duration: parseInt(document.getElementById('editDuration').value),
                 description: document.getElementById('editDescription').value
             };
             
@@ -319,10 +332,9 @@
                 if (imgData) updatedItem.image = imgData;
                 items[index] = updatedItem;
                 localStorage.setItem('items', JSON.stringify(items));
-                showNotification('Товар обновлен', 'success');
+                showNotification('Информация обновлена', 'success');
                 closeModal();
                 loadItemDetails();
-                if (typeof loadCatalog === 'function') loadCatalog();
             }
             
             if (imageFile) {
@@ -335,13 +347,13 @@
         }
 
         function deleteCurrentItem() {
-            if (!confirm('Удалить этот товар?')) return;
+            if (!confirm('Удалить это предложение помощи?')) return;
             
             let items = JSON.parse(localStorage.getItem('items')) || [];
             items = items.filter(i => i.id !== currentItemId);
             localStorage.setItem('items', JSON.stringify(items));
             
-            showNotification('Товар удален', 'success');
+            showNotification('Предложение удалено', 'success');
             setTimeout(() => {
                 window.location.href = 'catalog.html';
             }, 1000);
@@ -358,6 +370,16 @@
             }
         });
 
+        function getCategoryName(category) {
+            const categories = {
+                mobility: 'Средства передвижения',
+                daily: 'Товары для быта',
+                rehabilitation: 'Реабилитация',
+                medical: 'Медицинские товары'
+            };
+            return categories[category] || category;
+        }
+
         function loadItemDetails() {
             const container = document.getElementById('itemDetails');
             const urlParams = new URLSearchParams(window.location.search);
@@ -368,7 +390,7 @@
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             
             if (!item) {
-                container.innerHTML = '<div style="text-align: center; padding: 60px;"><h2>Товар не найден</h2><a href="catalog.html" class="btn btn-primary">Вернуться в каталог</a></div>';
+                container.innerHTML = '<div style="text-align: center; padding: 60px;"><h2>Предложение не найдено</h2><a href="catalog.html" class="btn btn-primary">Вернуться в каталог</a></div>';
                 return;
             }
             
@@ -380,24 +402,31 @@
                 container.innerHTML = `
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
                         <div>
-                            <img src="${item.image}" style="width: 100%; border-radius: 24px;">
+                            <img src="${item.image}" style="width: 100%; border-radius: 24px;" onerror="this.src='https://placehold.co/600x400/0891b2/white?text=Помощь'">
                         </div>
                         <div>
                             <h1 style="font-size: 2rem; margin-bottom: 16px;">${item.title}</h1>
                             <div style="margin-bottom: 16px;">
                                 <i class="fas fa-star" style="color: #f59e0b;"></i>
-                                <span>${item.rating || 'Новый'}</span>
+                                <span>${item.rating || 'Новый помощник'}</span>
+                                <span style="margin-left: 16px;"><i class="fas fa-tag"></i> ${getCategoryName(item.category)}</span>
                             </div>
                             <p style="color: var(--text-muted); margin-bottom: 24px;">${item.description}</p>
                             <div style="background: var(--card-bg); padding: 24px; border-radius: 20px; margin-bottom: 24px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Аренда на день:</span>
-                                    <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${item.priceDay} ₽</span>
+                                    <span>Помощь:</span>
+                                    <span style="font-size: 1.5rem; font-weight: 700; color: #10b981;">
+                                        <i class="fas fa-gift"></i> БЕСПЛАТНО
+                                    </span>
                                 </div>
-                                <div style="color: var(--text-muted);">Залог: ${item.deposit} ₽</div>
+                                <div style="color: var(--text-muted);">Срок помощи: ${item.duration || 30} дней</div>
+                                <div style="color: var(--text-muted); margin-top: 8px;">Без залога и оплаты</div>
+                            </div>
+                            <div class="help-info">
+                                <i class="fas fa-heart"></i> Это ваше предложение помощи
                             </div>
                             <div class="owner-actions">
-                                <p style="margin-bottom: 16px;">Это ваш товар</p>
+                                <p style="margin-bottom: 16px;">Управление предложением</p>
                                 <div class="owner-buttons">
                                     <button onclick="openModal(currentItem)" class="btn-edit">Редактировать</button>
                                     <button onclick="deleteCurrentItem()" class="btn-delete">Удалить</button>
@@ -410,24 +439,31 @@
                 container.innerHTML = `
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
                         <div>
-                            <img src="${item.image}" style="width: 100%; border-radius: 24px;">
+                            <img src="${item.image}" style="width: 100%; border-radius: 24px;" onerror="this.src='https://placehold.co/600x400/0891b2/white?text=Помощь'">
                         </div>
                         <div>
                             <h1 style="font-size: 2rem; margin-bottom: 16px;">${item.title}</h1>
                             <div style="margin-bottom: 16px;">
                                 <i class="fas fa-star" style="color: #f59e0b;"></i>
-                                <span>${item.rating || 'Новый'}</span>
+                                <span>${item.rating || 'Новый помощник'}</span>
+                                <span style="margin-left: 16px;"><i class="fas fa-tag"></i> ${getCategoryName(item.category)}</span>
                             </div>
                             <p style="color: var(--text-muted); margin-bottom: 24px;">${item.description}</p>
                             <div style="background: var(--card-bg); padding: 24px; border-radius: 20px; margin-bottom: 24px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Аренда на день:</span>
-                                    <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${item.priceDay} ₽</span>
+                                    <span>Помощь:</span>
+                                    <span style="font-size: 1.5rem; font-weight: 700; color: #10b981;">
+                                        <i class="fas fa-gift"></i> БЕСПЛАТНО
+                                    </span>
                                 </div>
-                                <div style="color: var(--text-muted);">Залог: ${item.deposit} ₽</div>
+                                <div style="color: var(--text-muted);">Срок помощи: ${item.duration || 30} дней</div>
+                                <div style="color: var(--text-muted); margin-top: 8px;">Без залога и оплаты</div>
                             </div>
-                            <div style="background: var(--card-bg); padding: 24px; border-radius: 20px;">
-                                <h3 style="margin-bottom: 16px;">Забронировать</h3>
+                            <div class="help-info">
+                                <i class="fas fa-info-circle"></i> Всё что нужно — оставить заявку. Помощник свяжется с вами.
+                            </div>
+                            <div style="background: var(--card-bg); padding: 24px; border-radius: 20px; margin-top: 24px;">
+                                <h3 style="margin-bottom: 16px;"><i class="fas fa-calendar-alt"></i> Оставить заявку на помощь</h3>
                                 <div style="margin-bottom: 16px;">
                                     <label>Дата начала:</label>
                                     <input type="date" id="startDate" class="form-control">
@@ -436,9 +472,9 @@
                                     <label>Дата окончания:</label>
                                     <input type="date" id="endDate" class="form-control">
                                 </div>
-                                <div id="totalPrice" style="margin-bottom: 16px;"></div>
-                                <button onclick="bookItem('${item.id}')" class="btn btn-primary btn-full" style="width: 100%;">
-                                    ${currentUser ? 'Забронировать' : 'Войдите, чтобы забронировать'}
+                                <div id="durationInfo" style="margin-bottom: 16px; color: var(--text-muted);"></div>
+                                <button onclick="requestHelp('${item.id}')" class="btn btn-primary btn-full" style="width: 100%;">
+                                    ${currentUser ? '<i class="fas fa-hand-holding-heart"></i> Отправить заявку' : '<i class="fas fa-sign-in-alt"></i> Войдите, чтобы оставить заявку'}
                                 </button>
                             </div>
                         </div>
@@ -447,26 +483,33 @@
                 
                 const startDate = document.getElementById('startDate');
                 const endDate = document.getElementById('endDate');
-                const totalSpan = document.getElementById('totalPrice');
+                const durationInfo = document.getElementById('durationInfo');
                 
                 if (startDate && endDate) {
-                    function calculateTotal() {
+                    function calculateDuration() {
                         if (startDate.value && endDate.value) {
                             const start = new Date(startDate.value);
                             const end = new Date(endDate.value);
                             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
                             if (days > 0) {
-                                totalSpan.innerHTML = `<strong>Итого: ${days * item.priceDay} ₽ + залог ${item.deposit} ₽</strong>`;
+                                const maxDays = item.duration || 30;
+                                if (days <= maxDays) {
+                                    durationInfo.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Срок использования: ${days} дней (максимум ${maxDays} дней)`;
+                                } else {
+                                    durationInfo.innerHTML = `<i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i> Превышен максимальный срок помощи (${maxDays} дней)`;
+                                }
+                            } else {
+                                durationInfo.innerHTML = '';
                             }
                         }
                     }
-                    startDate.addEventListener('change', calculateTotal);
-                    endDate.addEventListener('change', calculateTotal);
+                    startDate.addEventListener('change', calculateDuration);
+                    endDate.addEventListener('change', calculateDuration);
                 }
             }
         }
 
-        function bookItem(itemId) {
+        function requestHelp(itemId) {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (!currentUser) {
                 showNotification('Войдите в аккаунт', 'error');
@@ -488,6 +531,12 @@
             const start = new Date(startDate);
             const end = new Date(endDate);
             const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            const maxDays = item.duration || 30;
+            
+            if (days > maxDays) {
+                showNotification(`Максимальный срок помощи - ${maxDays} дней`, 'error');
+                return;
+            }
             
             const newBooking = {
                 id: Date.now().toString(),
@@ -501,15 +550,16 @@
                 startDate: startDate,
                 endDate: endDate,
                 days: days,
-                totalPrice: days * item.priceDay,
-                deposit: item.deposit,
+                totalPrice: 0,
+                deposit: 0,
                 status: 'pending',
+                isFree: true,
                 createdAt: new Date().toISOString()
             };
             
             bookings.push(newBooking);
             localStorage.setItem('bookings', JSON.stringify(bookings));
-            showNotification('Заявка отправлена', 'success');
+            showNotification('Заявка отправлена! Помощник свяжется с вами', 'success');
             setTimeout(() => window.location.href = 'bookings.html', 1500);
         }
 
