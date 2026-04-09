@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Каталог | OneTime</title>
+    <title>Каталог помощи | Помогатор</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,13 +26,10 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .filter-panel {
-            transition: transform 0.3s ease;
-        }
-        
         @media (max-width: 768px) {
             .catalog-layout {
                 position: relative;
+                flex-direction: column;
             }
             
             .filter-toggle {
@@ -105,30 +102,343 @@
         .filter-close {
             display: none;
         }
+
+        /* Стили для карточек товаров */
+        .catalog-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+        }
+        
+        @media (max-width: 768px) {
+            .catalog-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .item-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .item-image-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: var(--gray);
+        }
+        
+        .item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .item-card:hover .item-image {
+            transform: scale(1.05);
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--gray) 0%, var(--darker) 100%);
+            color: var(--text-muted);
+            font-size: 3rem;
+        }
+        
+        .favorite-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        .favorite-btn i {
+            color: #ccc;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        
+        .favorite-btn.active i,
+        .favorite-btn:hover i {
+            color: #ef4444;
+        }
+        
+        .item-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            z-index: 10;
+        }
+        
+        .item-category-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            z-index: 10;
+        }
+        
+        .item-info {
+            padding: 16px;
+        }
+        
+        .item-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        
+        .free-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .item-duration {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .item-rating i {
+            color: #f59e0b;
+            margin-right: 4px;
+        }
+        
+        .item-views i {
+            margin-right: 4px;
+        }
+        
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .sort-select {
+            padding: 10px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            cursor: pointer;
+        }
+        
+        .filter-group {
+            margin-bottom: 24px;
+        }
+        
+        .filter-group h3 {
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        .filter-categories label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1/-1;
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+            grid-column: 1/-1;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .global-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            font-weight: 500;
+        }
+        
+        .notification-content.success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .notification-content.error {
+            background: #ef4444;
+            color: white;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 180px;
+            z-index: 100;
+        }
+        
+        .user-menu:hover .dropdown {
+            display: block;
+        }
+        
+        .dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            color: var(--text);
+            text-decoration: none;
+        }
+        
+        .dropdown a:hover {
+            background: var(--gray);
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
-                <i class="fas fa-exchange-alt"></i>
-                <span>One<span class="accent">Time</span></span>
+                <i class="fas fa-hands-helping"></i>
+                <span>Помо<span class="accent">гатор</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
-                <a href="catalog.html" class="active">Каталог</a>
-                <a href="create-listing.html">Сдать вещь</a>
-                <a href="bookings.html">Мои бронирования</a>
+                <a href="catalog.html" class="active">Каталог помощи</a>
+                <a href="create-listing.html">Предложить помощь</a>
+                <a href="bookings.html">Мои заявки</a>
             </div>
             <div class="nav-user" id="navUser">
                 <a href="login.html" class="btn btn-outline" id="loginBtn">Войти</a>
                 <div class="user-menu hidden" id="userMenu">
-                    <img src="https://ui-avatars.com/api/?background=7c3aed&color=fff&bold=true" alt="avatar" class="avatar">
+                    <img src="https://ui-avatars.com/api/?background=0891b2&color=fff&bold=true" alt="avatar" class="avatar" style="width: 40px; height: 40px; border-radius: 50%;">
                     <span id="userName"></span>
                     <i class="fas fa-chevron-down"></i>
                     <div class="dropdown">
                         <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
-                        <a href="bookings.html"><i class="fas fa-calendar"></i> Бронирования</a>
+                        <a href="bookings.html"><i class="fas fa-calendar"></i> Мои заявки</a>
+                        <a href="favorites.html"><i class="fas fa-heart"></i> Избранное</a>
                         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
                     </div>
                 </div>
@@ -139,8 +449,8 @@
     <main>
         <div class="page-header">
             <div class="container">
-                <h1>Каталог товаров</h1>
-                <p>Найдите идеальную вещь для вашего мероприятия</p>
+                <h1>Каталог помощи</h1>
+                <p>Найдите то, что вам нужно, совершенно бесплатно</p>
             </div>
         </div>
 
@@ -154,25 +464,14 @@
                             <h3>Категории</h3>
                             <div class="filter-categories" id="filterCategories">
                                 <label><input type="radio" name="category" value=""> Все</label>
-                                <label><input type="radio" name="category" value="tools"> Инструменты</label>
-                                <label><input type="radio" name="category" value="clothing"> Одежда</label>
-                                <label><input type="radio" name="category" value="outdoor"> Отдых</label>
-                                <label><input type="radio" name="category" value="electronics"> Электроника</label>
-                                <label><input type="radio" name="category" value="sports"> Спорт</label>
+                                <label><input type="radio" name="category" value="mobility"> 🦽 Средства передвижения</label>
+                                <label><input type="radio" name="category" value="daily"> 🛏️ Товары для быта</label>
+                                <label><input type="radio" name="category" value="rehabilitation"> 🩼 Реабилитация</label>
+                                <label><input type="radio" name="category" value="medical"> 💊 Медицинские товары</label>
                             </div>
                         </div>
                         <div class="filter-group">
-                            <h3>Цена за день</h3>
-                            <div class="price-range">
-                                <input type="range" id="priceRange" min="0" max="10000" step="100" value="10000">
-                                <div class="price-values">
-                                    <span>0 ₽</span>
-                                    <span id="priceValue">10000 ₽</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <h3>Рейтинг</h3>
+                            <h3>Рейтинг помощника</h3>
                             <div class="rating-filter">
                                 <label><input type="radio" name="rating" value="0"> Любой</label>
                                 <label><input type="radio" name="rating" value="4"> 4+ ★</label>
@@ -192,16 +491,19 @@
 
                     <div class="catalog-content">
                         <div class="catalog-header">
-                            <span id="itemsCount">0 товаров</span>
-                            <select id="sortBy">
+                            <span id="itemsCount">0 предложений</span>
+                            <select id="sortBy" class="sort-select">
                                 <option value="default">По умолчанию</option>
-                                <option value="price_asc">По возрастанию цены</option>
-                                <option value="price_desc">По убыванию цены</option>
                                 <option value="rating">По рейтингу</option>
+                                <option value="popular">По популярности</option>
+                                <option value="newest">Сначала новые</option>
                             </select>
                         </div>
                         <div class="items-grid" id="catalogItems">
-                            <!-- Товары загружаются через JS -->
+                            <div class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Загрузка...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,42 +515,406 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">One<span class="accent">Time</span></a>
-                    <p>OneTime — сервис аренды вещей на один раз.</p>
+                    <a href="index.html" class="logo">Помо<span class="accent">гатор</span></a>
+                    <p>Помогатор — помогаем тем, кто нуждается. Бесплатно.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="catalog.html">Каталог помощи</a>
+                    <a href="create-listing.html">Предложить помощь</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
+                    <a href="mailto:help@pomogator.ru">help@pomogator.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 OneTime. Все права защищены.</p>
+                <p>&copy; 2025 Помогатор. Социальный проект помощи людям с ОВЗ.</p>
             </div>
         </div>
     </footer>
 
-    <script src="js/app.js"></script>
     <script>
-        // Мобильный фильтр
+        // ============================================
+        // КОНСТАНТЫ
+        // ============================================
+        const DEFAULT_IMAGES = {
+            mobility: 'https://images.pexels.com/photos/3759660/pexels-photo-3759660.jpeg?w=300&h=200&fit=crop',
+            daily: 'https://images.pexels.com/photos/2766518/pexels-photo-2766518.jpeg?w=300&h=200&fit=crop',
+            rehabilitation: 'https://images.pexels.com/photos/3759661/pexels-photo-3759661.jpeg?w=300&h=200&fit=crop',
+            medical: 'https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?w=300&h=200&fit=crop'
+        };
+        
+        const FALLBACK_IMAGE = 'https://placehold.co/600x400/0891b2/white?text=Помощь';
+
+        // ============================================
+        // ФУНКЦИЯ ПОЛУЧЕНИЯ ИЗОБРАЖЕНИЯ
+        // ============================================
+        function getItemImage(item) {
+            if (item.image && item.image !== 'https://placehold.co/300x200' && !item.image.includes('unsplash')) {
+                return item.image;
+            }
+            return DEFAULT_IMAGES[item.category] || FALLBACK_IMAGE;
+        }
+
+        // ============================================
+        // ФУНКЦИЯ УВЕДОМЛЕНИЙ
+        // ============================================
+        function showNotification(message, type) {
+            const oldNotification = document.querySelector('.global-notification');
+            if (oldNotification) oldNotification.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'global-notification';
+            notification.innerHTML = `
+                <div class="notification-content ${type}">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // ============================================
+        // ФУНКЦИЯ ДЛЯ ИЗБРАННОГО
+        // ============================================
+        function toggleFavorite(itemId) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                showNotification('Войдите в аккаунт', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1000);
+                return;
+            }
+            
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || {};
+            const userFavorites = favorites[currentUser.id] || [];
+            
+            if (userFavorites.includes(itemId)) {
+                favorites[currentUser.id] = userFavorites.filter(id => id !== itemId);
+                showNotification('Удалено из избранного', 'success');
+            } else {
+                favorites[currentUser.id] = [...userFavorites, itemId];
+                showNotification('Добавлено в избранное', 'success');
+            }
+            
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadCatalogItems();
+        }
+
+        // ============================================
+        // ФУНКЦИЯ ПОЛУЧЕНИЯ НАЗВАНИЯ КАТЕГОРИИ
+        // ============================================
+        function getCategoryName(category) {
+            const categories = {
+                mobility: 'Средства передвижения',
+                daily: 'Товары для быта',
+                rehabilitation: 'Реабилитация',
+                medical: 'Медицинские товары'
+            };
+            return categories[category] || category;
+        }
+
+        // ============================================
+        // ОСНОВНАЯ ФУНКЦИЯ ЗАГРУЗКИ ТОВАРОВ
+        // ============================================
+        function loadCatalogItems() {
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            const container = document.getElementById('catalogItems');
+            const countSpan = document.getElementById('itemsCount');
+            
+            if (!container) return;
+            
+            // Получаем значения фильтров
+            const selectedCategory = document.querySelector('input[name="category"]:checked');
+            const category = selectedCategory ? selectedCategory.value : '';
+            
+            const selectedRating = document.querySelector('input[name="rating"]:checked');
+            const rating = selectedRating ? parseFloat(selectedRating.value) : 0;
+            
+            const sortBy = document.getElementById('sortBy') ? document.getElementById('sortBy').value : 'default';
+            
+            // Фильтрация
+            let filtered = items.filter(item => {
+                if (category && item.category !== category) return false;
+                if (rating > 0 && (item.rating || 0) < rating) return false;
+                return true;
+            });
+            
+            // Сортировка
+            if (sortBy === 'rating') {
+                filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            } else if (sortBy === 'popular') {
+                filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
+            } else if (sortBy === 'newest') {
+                filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
+            
+            if (countSpan) countSpan.textContent = filtered.length + ' ' + getDeclension(filtered.length, 'предложение', 'предложения', 'предложений');
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Ничего не найдено</h3><p>Попробуйте изменить параметры поиска</p></div>';
+                return;
+            }
+            
+            // Получаем избранное текущего пользователя
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || {};
+            const userFavorites = currentUser ? (favorites[currentUser.id] || []) : [];
+            
+            // Рендер товаров
+            container.innerHTML = filtered.map(item => {
+                const isFavorite = userFavorites.includes(item.id);
+                const imageUrl = getItemImage(item);
+                
+                return `
+                    <div class="item-card" onclick="location.href='item-details.html?id=${item.id}'">
+                        <div class="item-image-wrapper">
+                            <img src="${imageUrl}" alt="${escapeHtml(item.title)}" class="item-image" onerror="this.onerror=null; this.src='${FALLBACK_IMAGE}';">
+                            <button class="favorite-btn" onclick="event.stopPropagation(); toggleFavorite('${item.id}')">
+                                <i class="fas fa-heart" style="color: ${isFavorite ? '#ef4444' : '#ccc'}"></i>
+                            </button>
+                            ${!item.available ? '<span class="item-badge">Выдано</span>' : ''}
+                            <span class="item-category-badge">${getCategoryName(item.category)}</span>
+                        </div>
+                        <div class="item-info">
+                            <div class="item-title">${escapeHtml(item.title)}</div>
+                            <div class="free-badge">БЕСПЛАТНО</div>
+                            <div class="item-duration">Срок помощи: ${item.duration || 30} дней</div>
+                            <div class="item-meta">
+                                <span class="item-rating">
+                                    <i class="fas fa-star"></i>
+                                    ${item.rating || 'Новый помощник'}
+                                </span>
+                                <span class="item-views">
+                                    <i class="fas fa-eye"></i>
+                                    ${item.views || 0}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Функция для склонения слов
+        function getDeclension(n, one, two, five) {
+            n = Math.abs(n) % 100;
+            if (n >= 5 && n <= 20) return five;
+            n %= 10;
+            if (n === 1) return one;
+            if (n >= 2 && n <= 4) return two;
+            return five;
+        }
+        
+        // Функция для экранирования HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ ДЕМО-ДАННЫХ
+        // ============================================
+        function initDemoData() {
+            const existingItems = localStorage.getItem('items');
+            if (existingItems && JSON.parse(existingItems).length > 0) {
+                console.log('Товары уже есть');
+                return;
+            }
+            
+            const demoItems = [
+                {
+                    id: 'demo_1',
+                    title: 'Инвалидная коляска складная',
+                    category: 'mobility',
+                    condition: 'good',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 30,
+                    description: 'Складная инвалидная коляска. Регулируемые подлокотники, съемные колеса. Отличное состояние, поможет людям с ограниченной подвижностью. Легко складывается и помещается в багажник.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Алексей',
+                    available: true,
+                    isFree: true,
+                    rating: 4.9,
+                    views: 45,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_2',
+                    title: 'Ходунки алюминиевые',
+                    category: 'mobility',
+                    condition: 'new',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 20,
+                    description: 'Легкие алюминиевые ходунки с колесиками. Регулируются по высоте. Идеальны для восстановления после травм и операций. Оснащены противоскользящими накладками.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Марина',
+                    available: true,
+                    isFree: true,
+                    rating: 4.8,
+                    views: 32,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_3',
+                    title: 'Функциональная кровать',
+                    category: 'daily',
+                    condition: 'good',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 60,
+                    description: 'Многофункциональная кровать с подъемным механизмом. Регулируемые секции, откидные бортики. Отличное состояние. Идеально для лежачих больных.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Дмитрий',
+                    available: true,
+                    isFree: true,
+                    rating: 4.9,
+                    views: 28,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_4',
+                    title: 'Трость телескопическая',
+                    category: 'rehabilitation',
+                    condition: 'new',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 15,
+                    description: 'Складная телескопическая трость. Анатомическая ручка, нескользящий наконечник. Регулируется по высоте от 70 до 95 см. Очень легкая (всего 300г).',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Елена',
+                    available: true,
+                    isFree: true,
+                    rating: 4.7,
+                    views: 56,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_5',
+                    title: 'Противопролежневый матрас',
+                    category: 'medical',
+                    condition: 'good',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 30,
+                    description: 'Динамический противопролежневый матрас с компрессором. Помогает предотвратить пролежни у лежачих больных. Компрессор работает бесшумно.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Сергей',
+                    available: true,
+                    isFree: true,
+                    rating: 4.9,
+                    views: 41,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_6',
+                    title: 'Костыли подмышечные',
+                    category: 'rehabilitation',
+                    condition: 'good',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 20,
+                    description: 'Алюминиевые подмышечные костыли. Регулируются по высоте. В хорошем состоянии. Подходят для взрослых. Прочные и надежные.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Андрей',
+                    available: true,
+                    isFree: true,
+                    rating: 4.6,
+                    views: 38,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_7',
+                    title: 'Стул для ванны',
+                    category: 'daily',
+                    condition: 'new',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 25,
+                    description: 'Противоскользящий стул для ванны и душа. Регулируемые ножки, удобные подлокотники. Помогает людям с ограниченной подвижностью принимать душ.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Ольга',
+                    available: true,
+                    isFree: true,
+                    rating: 4.8,
+                    views: 29,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_8',
+                    title: 'Тонометр автоматический',
+                    category: 'medical',
+                    condition: 'good',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 14,
+                    description: 'Автоматический тонометр на запястье. Большой дисплей, память на 2 пользователя. Измеряет давление и пульс.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Ирина',
+                    available: true,
+                    isFree: true,
+                    rating: 4.9,
+                    views: 52,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_9',
+                    title: 'Поручни для унитаза',
+                    category: 'daily',
+                    condition: 'new',
+                    priceDay: 0,
+                    deposit: 0,
+                    duration: 30,
+                    description: 'Надставные поручни для унитаза. Регулируются по высоте и ширине. Обеспечивают безопасность и комфорт.',
+                    image: '',
+                    ownerId: 'demo_user',
+                    ownerName: 'Михаил',
+                    available: true,
+                    isFree: true,
+                    rating: 4.7,
+                    views: 23,
+                    createdAt: new Date().toISOString()
+                }
+            ];
+            
+            localStorage.setItem('items', JSON.stringify(demoItems));
+            console.log('✅ Добавлено 9 предложений помощи!');
+        }
+
+        // ============================================
+        // МОБИЛЬНЫЙ ФИЛЬТР
+        // ============================================
         const filterPanel = document.getElementById('filterPanel');
         const filterToggle = document.getElementById('filterToggleBtn');
         const filterClose = document.getElementById('filterCloseBtn');
         const filterOverlay = document.getElementById('filterOverlay');
         
         function openFilter() {
-            filterPanel.classList.add('open');
-            filterOverlay.classList.add('active');
+            if (filterPanel) filterPanel.classList.add('open');
+            if (filterOverlay) filterOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
         
         function closeFilter() {
-            filterPanel.classList.remove('open');
-            filterOverlay.classList.remove('active');
+            if (filterPanel) filterPanel.classList.remove('open');
+            if (filterOverlay) filterOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
         
@@ -262,118 +928,9 @@
             filterOverlay.addEventListener('click', closeFilter);
         }
         
-        // Обновление цены
-        const priceRange = document.getElementById('priceRange');
-        const priceValue = document.getElementById('priceValue');
-        if (priceRange) {
-            priceRange.addEventListener('input', function() {
-                priceValue.textContent = this.value + ' ₽';
-            });
-        }
-        
-        // Загрузка товаров
-        function loadCatalogItems() {
-            const items = JSON.parse(localStorage.getItem('items')) || [];
-            const container = document.getElementById('catalogItems');
-            const countSpan = document.getElementById('itemsCount');
-            
-            if (!container) return;
-            
-            // Получаем значения фильтров
-            const selectedCategory = document.querySelector('input[name="category"]:checked');
-            const category = selectedCategory ? selectedCategory.value : '';
-            
-            const maxPrice = priceRange ? parseInt(priceRange.value) : 10000;
-            
-            const selectedRating = document.querySelector('input[name="rating"]:checked');
-            const rating = selectedRating ? parseFloat(selectedRating.value) : 0;
-            
-            const sortBy = document.getElementById('sortBy') ? document.getElementById('sortBy').value : 'default';
-            
-            // Фильтрация
-            let filtered = items.filter(item => {
-                if (category && item.category !== category) return false;
-                if (item.priceDay > maxPrice) return false;
-                if (rating > 0 && (item.rating || 0) < rating) return false;
-                return true;
-            });
-            
-            // Сортировка
-            if (sortBy === 'price_asc') {
-                filtered.sort((a, b) => a.priceDay - b.priceDay);
-            } else if (sortBy === 'price_desc') {
-                filtered.sort((a, b) => b.priceDay - a.priceDay);
-            } else if (sortBy === 'rating') {
-                filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-            }
-            
-            if (countSpan) countSpan.textContent = filtered.length + ' товаров';
-            
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 60px;">Ничего не найдено</div>';
-                return;
-            }
-            
-            container.innerHTML = filtered.map(item => `
-                <div class="item-card" onclick="location.href='item-details.html?id=${item.id}'">
-                    <div class="item-image" style="background-image: url('${item.image}'); background-size: cover; background-position: center; height: 180px;">
-                        <span class="item-category">${getCategoryName(item.category)}</span>
-                    </div>
-                    <div class="item-info">
-                        <div class="item-title">${item.title}</div>
-                        <div class="item-price">${item.priceDay} ₽ / день</div>
-                        <div class="item-deposit">Залог: ${item.deposit} ₽</div>
-                        <div class="item-rating">
-                            <i class="fas fa-star"></i>
-                            <span>${item.rating || 'Новый'}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function getCategoryName(category) {
-            const categories = {
-                tools: 'Инструменты',
-                clothing: 'Одежда',
-                outdoor: 'Отдых',
-                electronics: 'Электроника',
-                sports: 'Спорт'
-            };
-            return categories[category] || category;
-        }
-        
-        // Обновление при изменении фильтров
-        function bindFilters() {
-            const filters = document.querySelectorAll('input[name="category"], input[name="rating"], #sortBy');
-            filters.forEach(filter => {
-                filter.addEventListener('change', () => {
-                    loadCatalogItems();
-                    if (window.innerWidth <= 768) closeFilter();
-                });
-            });
-            
-            if (priceRange) {
-                priceRange.addEventListener('input', () => {
-                    loadCatalogItems();
-                });
-            }
-            
-            const resetBtn = document.getElementById('resetFilters');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    document.querySelectorAll('input[name="category"]').forEach(i => i.checked = false);
-                    document.querySelectorAll('input[name="rating"]').forEach(i => i.checked = false);
-                    if (priceRange) priceRange.value = 10000;
-                    if (priceValue) priceValue.textContent = '10000 ₽';
-                    document.getElementById('sortBy').value = 'default';
-                    loadCatalogItems();
-                    if (window.innerWidth <= 768) closeFilter();
-                });
-            }
-        }
-        
-        // Навигация
+        // ============================================
+        // ОБНОВЛЕНИЕ НАВИГАЦИИ
+        // ============================================
         function updateNav() {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             const loginBtn = document.getElementById('loginBtn');
@@ -392,139 +949,50 @@
             }
         }
         
+        // ============================================
+        // ОБНОВЛЕНИЕ ПРИ ИЗМЕНЕНИИ ФИЛЬТРОВ
+        // ============================================
+        function bindFilters() {
+            const filters = document.querySelectorAll('input[name="category"], input[name="rating"], #sortBy');
+            filters.forEach(filter => {
+                filter.addEventListener('change', () => {
+                    loadCatalogItems();
+                    if (window.innerWidth <= 768) closeFilter();
+                });
+            });
+            
+            const resetBtn = document.getElementById('resetFilters');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    document.querySelectorAll('input[name="category"]').forEach(i => i.checked = false);
+                    document.querySelector('input[name="category"][value=""]').checked = true;
+                    document.querySelectorAll('input[name="rating"]').forEach(i => i.checked = false);
+                    document.querySelector('input[name="rating"][value="0"]').checked = true;
+                    document.getElementById('sortBy').value = 'default';
+                    loadCatalogItems();
+                    if (window.innerWidth <= 768) closeFilter();
+                });
+            }
+        }
+        
+        // ============================================
+        // ВЫХОД ИЗ АККАУНТА
+        // ============================================
         document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('currentUser');
             window.location.href = 'index.html';
         });
         
-        // Запуск
+        // ============================================
+        // ЗАПУСК
+        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            initDemoData();
             updateNav();
             loadCatalogItems();
             bindFilters();
         });
     </script>
-    function initDemoData() {
-    const existingItems = localStorage.getItem('items');
-    if (existingItems && JSON.parse(existingItems).length > 0) {
-        console.log('Товары уже есть');
-        return;
-    }
-    
-    const demoItems = [
-        {
-            id: 'demo_1',
-            title: 'Инвалидная коляска складная',
-            category: 'mobility',
-            condition: 'good',
-            priceDay: 0,
-            deposit: 0,
-            duration: 30,
-            description: 'Складная инвалидная коляска. Регулируемые подлокотники, съемные колеса. Отличное состояние, поможет людям с ограниченной подвижностью.',
-            image: '',
-            ownerId: 'demo_user',
-            ownerName: 'Алексей',
-            available: true,
-            isFree: true,
-            rating: 4.9,
-            views: 45,
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 'demo_2',
-            title: 'Ходунки алюминиевые',
-            category: 'mobility',
-            condition: 'new',
-            priceDay: 0,
-            deposit: 0,
-            duration: 20,
-            description: 'Легкие алюминиевые ходунки с колесиками. Регулируются по высоте. Идеальны для восстановления после травм.',
-            image: '',
-            ownerId: 'demo_user',
-            ownerName: 'Марина',
-            available: true,
-            isFree: true,
-            rating: 4.8,
-            views: 32,
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 'demo_3',
-            title: 'Функциональная кровать',
-            category: 'daily',
-            condition: 'good',
-            priceDay: 0,
-            deposit: 0,
-            duration: 60,
-            description: 'Многофункциональная кровать с подъемным механизмом. Регулируемые секции, откидные бортики. Отличное состояние.',
-            image: '',
-            ownerId: 'demo_user',
-            ownerName: 'Дмитрий',
-            available: true,
-            isFree: true,
-            rating: 4.9,
-            views: 28,
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 'demo_4',
-            title: 'Трость телескопическая',
-            category: 'rehabilitation',
-            condition: 'new',
-            priceDay: 0,
-            deposit: 0,
-            duration: 15,
-            description: 'Складная телескопическая трость. Анатомическая ручка, нескользящий наконечник. Регулируется по высоте.',
-            image: '',
-            ownerId: 'demo_user',
-            ownerName: 'Елена',
-            available: true,
-            isFree: true,
-            rating: 4.7,
-            views: 56,
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 'demo_5',
-            title: 'Противопролежневый матрас',
-            category: 'medical',
-            condition: 'good',
-            priceDay: 0,
-            deposit: 0,
-            duration: 30,
-            description: 'Динамический противопролежневый матрас с компрессором. Помогает предотвратить пролежни у лежачих больных.',
-            image: '',
-            ownerId: 'demo_user',
-            ownerName: 'Сергей',
-            available: true,
-            isFree: true,
-            rating: 4.9,
-            views: 41,
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 'demo_6',
-            title: 'Костыли подмышечные',
-            category: 'rehabilitation',
-            condition: 'good',
-            priceDay: 0,
-            deposit: 0,
-            duration: 20,
-            description: 'Алюминиевые подмышечные костыли. Регулируются по высоте. В хорошем состоянии.',
-            image: '',
-            ownerId: 'demo_user',
-            ownerName: 'Андрей',
-            available: true,
-            isFree: true,
-            rating: 4.6,
-            views: 38,
-            createdAt: new Date().toISOString()
-        }
-    ];
-    
-    localStorage.setItem('items', JSON.stringify(demoItems));
-    console.log('✅ Добавлены демо-товары для помощи!');
-}
 </body>
 </html>
