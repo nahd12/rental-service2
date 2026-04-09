@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход | OneTime</title>
+    <title>Вход | Помогатор</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,14 +12,14 @@
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
-                <i class="fas fa-exchange-alt"></i>
-                <span>One<span class="accent">Time</span></span>
+                <i class="fas fa-hands-helping"></i>
+                <span>Помо<span class="accent">гатор</span></span>
             </a>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
-                <a href="catalog.html">Каталог</a>
-                <a href="create-listing.html">Сдать вещь</a>
-                <a href="bookings.html">Мои бронирования</a>
+                <a href="catalog.html">Каталог помощи</a>
+                <a href="create-listing.html">Предложить помощь</a>
+                <a href="bookings.html">Мои заявки</a>
             </div>
             <div class="nav-user">
                 <a href="login.html" class="btn btn-outline">Войти</a>
@@ -29,15 +29,18 @@
 
     <main style="min-height: calc(100vh - 300px); display: flex; align-items: center; justify-content: center; padding: 48px 24px;">
         <div style="max-width: 480px; width: 100%; background: var(--card-bg); border-radius: 24px; padding: 40px; border: 1px solid var(--border);">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <i class="fas fa-hands-helping" style="font-size: 3rem; color: var(--accent);"></i>
+                <h2 style="margin-top: 16px;">Добро пожаловать в Помогатор</h2>
+                <p style="color: var(--text-muted);">Вместе мы можем больше</p>
+            </div>
+            
             <div style="display: flex; gap: 16px; margin-bottom: 32px; border-bottom: 1px solid var(--border);">
                 <button id="tabLogin" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--primary); font-weight: 600; font-size: 1rem; cursor: pointer; border-bottom: 2px solid var(--primary); margin-bottom: -1px;">Вход</button>
                 <button id="tabRegister" style="flex: 1; text-align: center; padding: 12px 0; background: none; border: none; color: var(--text-muted); font-weight: 600; font-size: 1rem; cursor: pointer;">Регистрация</button>
             </div>
 
-            <!-- Форма входа -->
             <div id="loginFormBlock">
-                <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Добро пожаловать!</h2>
-                <p style="color: var(--text-muted); margin-bottom: 24px;">Войдите в свой аккаунт</p>
                 <form id="loginForm">
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email</label>
@@ -53,15 +56,9 @@
                     <p style="margin-bottom: 8px;">📌 Тестовый аккаунт:</p>
                     <code style="background: var(--dark); padding: 4px 8px; border-radius: 6px; color: var(--primary);">demo@example.com</code> / <code style="background: var(--dark); padding: 4px 8px; border-radius: 6px; color: var(--primary);">123456</code>
                 </div>
-                <div style="text-align: center; margin-top: 24px;">
-                    <a href="index.html" style="color: var(--text-muted); text-decoration: none;">← На главную</a>
-                </div>
             </div>
 
-            <!-- Форма регистрации -->
             <div id="registerFormBlock" style="display: none;">
-                <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Создать аккаунт</h2>
-                <p style="color: var(--text-muted); margin-bottom: 24px;">Присоединяйтесь к сообществу</p>
                 <form id="registerForm">
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 8px; font-weight: 500;">Имя *</label>
@@ -85,9 +82,9 @@
                     </div>
                     <button type="submit" style="width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Зарегистрироваться</button>
                 </form>
-                <div style="text-align: center; margin-top: 24px;">
-                    <a href="index.html" style="color: var(--text-muted); text-decoration: none;">← На главную</a>
-                </div>
+            </div>
+            <div style="text-align: center; margin-top: 24px;">
+                <a href="index.html" style="color: var(--text-muted); text-decoration: none;">← На главную</a>
             </div>
         </div>
     </main>
@@ -96,32 +93,27 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>One<span class="accent">Time</span></span>
-                    </a>
-                    <p>OneTime — сервис аренды вещей на один раз.</p>
+                    <a href="index.html" class="logo">Помо<span class="accent">гатор</span></a>
+                    <p>Помогатор — помогаем тем, кто нуждается.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Сервис</h4>
-                    <a href="catalog.html">Каталог</a>
-                    <a href="create-listing.html">Сдать вещь</a>
+                    <a href="catalog.html">Каталог помощи</a>
+                    <a href="create-listing.html">Предложить помощь</a>
                 </div>
                 <div class="footer-links">
                     <h4>Контакты</h4>
-                    <a href="mailto:support@onetime.ru">support@onetime.ru</a>
+                    <a href="mailto:help@pomogator.ru">help@pomogator.ru</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 OneTime. Все права защищены.</p>
+                <p>&copy; 2025 Помогатор. Социальный проект.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Функция красивого уведомления (без alert!)
         function showNotification(message, type) {
-            // Удаляем старые уведомления, если есть
             const oldNotifications = document.querySelectorAll('.custom-notification');
             oldNotifications.forEach(n => n.remove());
             
@@ -150,33 +142,19 @@
             }, 2500);
         }
 
-        // Добавляем анимации
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
             }
             @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
             }
         `;
         document.head.appendChild(style);
 
-        // Переключение между вкладками
         const tabLogin = document.getElementById('tabLogin');
         const tabRegister = document.getElementById('tabRegister');
         const loginBlock = document.getElementById('loginFormBlock');
@@ -200,7 +178,6 @@
             loginBlock.style.display = 'none';
         });
 
-        // Вход (без alert!)
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
@@ -225,7 +202,6 @@
             }
         });
 
-        // Регистрация (без alert!)
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('regName').value.trim();
