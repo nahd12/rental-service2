@@ -405,5 +405,126 @@
             bindFilters();
         });
     </script>
+    function initDemoData() {
+    const existingItems = localStorage.getItem('items');
+    if (existingItems && JSON.parse(existingItems).length > 0) {
+        console.log('Товары уже есть');
+        return;
+    }
+    
+    const demoItems = [
+        {
+            id: 'demo_1',
+            title: 'Инвалидная коляска складная',
+            category: 'mobility',
+            condition: 'good',
+            priceDay: 0,
+            deposit: 0,
+            duration: 30,
+            description: 'Складная инвалидная коляска. Регулируемые подлокотники, съемные колеса. Отличное состояние, поможет людям с ограниченной подвижностью.',
+            image: '',
+            ownerId: 'demo_user',
+            ownerName: 'Алексей',
+            available: true,
+            isFree: true,
+            rating: 4.9,
+            views: 45,
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 'demo_2',
+            title: 'Ходунки алюминиевые',
+            category: 'mobility',
+            condition: 'new',
+            priceDay: 0,
+            deposit: 0,
+            duration: 20,
+            description: 'Легкие алюминиевые ходунки с колесиками. Регулируются по высоте. Идеальны для восстановления после травм.',
+            image: '',
+            ownerId: 'demo_user',
+            ownerName: 'Марина',
+            available: true,
+            isFree: true,
+            rating: 4.8,
+            views: 32,
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 'demo_3',
+            title: 'Функциональная кровать',
+            category: 'daily',
+            condition: 'good',
+            priceDay: 0,
+            deposit: 0,
+            duration: 60,
+            description: 'Многофункциональная кровать с подъемным механизмом. Регулируемые секции, откидные бортики. Отличное состояние.',
+            image: '',
+            ownerId: 'demo_user',
+            ownerName: 'Дмитрий',
+            available: true,
+            isFree: true,
+            rating: 4.9,
+            views: 28,
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 'demo_4',
+            title: 'Трость телескопическая',
+            category: 'rehabilitation',
+            condition: 'new',
+            priceDay: 0,
+            deposit: 0,
+            duration: 15,
+            description: 'Складная телескопическая трость. Анатомическая ручка, нескользящий наконечник. Регулируется по высоте.',
+            image: '',
+            ownerId: 'demo_user',
+            ownerName: 'Елена',
+            available: true,
+            isFree: true,
+            rating: 4.7,
+            views: 56,
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 'demo_5',
+            title: 'Противопролежневый матрас',
+            category: 'medical',
+            condition: 'good',
+            priceDay: 0,
+            deposit: 0,
+            duration: 30,
+            description: 'Динамический противопролежневый матрас с компрессором. Помогает предотвратить пролежни у лежачих больных.',
+            image: '',
+            ownerId: 'demo_user',
+            ownerName: 'Сергей',
+            available: true,
+            isFree: true,
+            rating: 4.9,
+            views: 41,
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 'demo_6',
+            title: 'Костыли подмышечные',
+            category: 'rehabilitation',
+            condition: 'good',
+            priceDay: 0,
+            deposit: 0,
+            duration: 20,
+            description: 'Алюминиевые подмышечные костыли. Регулируются по высоте. В хорошем состоянии.',
+            image: '',
+            ownerId: 'demo_user',
+            ownerName: 'Андрей',
+            available: true,
+            isFree: true,
+            rating: 4.6,
+            views: 38,
+            createdAt: new Date().toISOString()
+        }
+    ];
+    
+    localStorage.setItem('items', JSON.stringify(demoItems));
+    console.log('✅ Добавлены демо-товары для помощи!');
+}
 </body>
 </html>
